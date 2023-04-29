@@ -16,7 +16,7 @@ function App() {
     history.location = useLocation();
 
     return (
-        <div className="app-container">
+        <div className="app-container xs">
             <Nav />
             <Alert />
             <div className="container pt-4 pb-4">
