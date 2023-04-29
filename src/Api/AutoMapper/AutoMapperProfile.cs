@@ -1,7 +1,9 @@
 namespace WebApi.AutoMapper;
 
+using Domain.Cup;
 using Domain.Users;
 using global::AutoMapper;
+using Service.Cups.Models;
 using Service.Users.Models;
 
 public class AutoMapperProfile : Profile
@@ -26,5 +28,8 @@ public class AutoMapperProfile : Profile
                     return true;
                 }
             ));
+
+        CreateMap<Cup, CupDto>()
+            .ForMember(dest => dest.Participants, opt => opt.MapFrom(src => src.Participants.Select(p => new ParticipantDto() { UserId = p.UserId }).ToList()));
     }
 }

@@ -3,11 +3,9 @@
 using AutoMapper;
 using global::AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Service.Users;
 using Service.Users.Models;
 using WebApi.Authorization;
-using WebApi.Settings;
 
 [Authorize]
 [ApiController]
@@ -15,17 +13,10 @@ using WebApi.Settings;
 public class UsersController : ControllerBase
 {
     private IUserService _userService;
-    private IMapper _mapper;
-    private readonly AppSettings _appSettings;
 
-    public UsersController(
-        IUserService userService,
-        IMapper mapper,
-        IOptions<AppSettings> appSettings)
+    public UsersController(IUserService userService)
     {
         _userService = userService;
-        _mapper = mapper;
-        _appSettings = appSettings.Value;
     }
 
     [AllowAnonymous]

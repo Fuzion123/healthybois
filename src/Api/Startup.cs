@@ -8,6 +8,7 @@ using Service.Users.Dependencies;
 using WebApi.Middleware;
 using Service.Users;
 using Infrastructure;
+using Service.Cups;
 
 namespace WebApi
 {
@@ -53,8 +54,10 @@ namespace WebApi
             // configure DI for application services
             services.AddScoped<IJwtUtils, JwtUtils>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<CupService>();
             services.AddEFCoreRepositories();
             services.AddEFCoreConfigurations();
+            services.AddHttpContextAccessor();
 
             // swagger
             services.AddSwaggerGen(setup =>

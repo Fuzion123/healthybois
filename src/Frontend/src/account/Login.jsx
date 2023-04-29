@@ -28,7 +28,7 @@ function Login() {
 
     return (
         <div>
-            <img className="image-center" height="75%" width="75%" src={process.env.PUBLIC_URL + '/logo.png'} /> 
+            <img alt='yo' className="image-center" height="75%" width="75%" src={process.env.PUBLIC_URL + '/logo.png'} /> 
             <div className="card m-3">
                 <h4 className="card-header">Login</h4>
                 <div className="card-body">

@@ -8,7 +8,7 @@ import { App } from './App';
 import './index.css';
 
 // setup fake backend
-import { fakeBackend } from './_helpers';
+// import { fakeBackend } from './_helpers';
 //fakeBackend();
 
 const container = document.getElementById('root');

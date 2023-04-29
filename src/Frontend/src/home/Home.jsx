@@ -11,6 +11,7 @@ function Home() {
             <div>
                 <h1>Hi {auth?.firstName}!</h1>
                 <p><Link to="/users">Manage Users</Link></p>
+                <p><Link to="/cups">Manage Cups</Link></p>
             </div>
         );
     }
@@ -18,6 +19,7 @@ function Home() {
     return (
         <div>
             <h1>Hi {auth?.firstName}!</h1>
+            <p><Link to="/cups">Manage Cups</Link></p>
         </div>
     );
 }

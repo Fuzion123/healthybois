@@ -5,6 +5,7 @@ import { Nav, Alert, PrivateRoute } from '_components';
 import { Home } from 'home';
 import { AccountLayout } from 'account';
 import { UsersLayout } from 'users';
+import { CupsLayout } from 'cups';
 
 export { App };
 
@@ -24,6 +25,7 @@ function App() {
                     <Route element={<PrivateRoute />}>
                         <Route path="/" element={<Home />} />
                         <Route path="users/*" element={<UsersLayout />} />
+                        <Route path="cups/*" element={<CupsLayout />} />
                     </Route>
                     {/* public */}
                     <Route path="account/*" element={<AccountLayout />} />

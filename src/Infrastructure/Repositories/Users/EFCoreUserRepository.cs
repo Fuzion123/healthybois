@@ -22,6 +22,11 @@ namespace Infrastructure.Repositories.Users
             return await dbContext.Users.AnyAsync(x => x.UserName == userName, cancellationToken);
         }
 
+        public async Task<bool> Exists(int userId, CancellationToken cancellationToken)
+        {
+            return await dbContext.Users.AnyAsync(x => x.Id == userId, cancellationToken);
+        }
+
         public async Task<List<User>> GetAll(CancellationToken cancellationToken)
         {
             return await dbContext.Users.Where(x => true).ToListAsync();
