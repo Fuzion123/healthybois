@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(EndureanceCupDbContext))]
-    [Migration("20230429195241_cups")]
-    partial class cups
+    [Migration("20230430140232_startDates")]
+    partial class startDates
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,7 @@ namespace WebApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Domain.Cup.Cup", b =>
+            modelBuilder.Entity("Domain.Events.Event", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,8 +35,10 @@ namespace WebApi.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("EndsAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("OwnerUserId")
-                        .HasMaxLength(255)
                         .HasColumnType("int");
 
                     b.Property<byte[]>("RowVersion")
@@ -44,6 +46,9 @@ namespace WebApi.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("StartsAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -66,10 +71,10 @@ namespace WebApi.Migrations
 
                     SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("Title"), false);
 
-                    b.ToTable("Cups");
+                    b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("Domain.Cup.Participant", b =>
+            modelBuilder.Entity("Domain.Events.Participant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -80,20 +85,34 @@ namespace WebApi.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CupId")
+                    b.Property<int>("EventId")
                         .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
+                        .HasMaxLength(255)
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CupId");
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
 
-                    b.ToTable("Participant");
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("UserId"), false);
+
+                    b.ToTable("Participants");
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>
@@ -151,16 +170,16 @@ namespace WebApi.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Domain.Cup.Participant", b =>
+            modelBuilder.Entity("Domain.Events.Participant", b =>
                 {
-                    b.HasOne("Domain.Cup.Cup", null)
+                    b.HasOne("Domain.Events.Event", null)
                         .WithMany("_participants")
-                        .HasForeignKey("CupId")
+                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Cup.Cup", b =>
+            modelBuilder.Entity("Domain.Events.Event", b =>
                 {
                     b.Navigation("_participants");
                 });

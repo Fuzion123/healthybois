@@ -1,6 +1,6 @@
 namespace WebApi.AutoMapper;
 
-using Domain.Cup;
+using Domain.Events;
 using Domain.Users;
 using global::AutoMapper;
 using Service.Cups.Models;
@@ -29,7 +29,7 @@ public class AutoMapperProfile : Profile
                 }
             ));
 
-        CreateMap<Cup, CupDto>()
+        CreateMap<Event, EventDto>()
             .ForMember(dest => dest.Participants, opt => opt.MapFrom(src => src.Participants.Select(p => new ParticipantDto() { UserId = p.UserId }).ToList()));
     }
 }

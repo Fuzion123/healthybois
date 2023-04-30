@@ -1,8 +1,8 @@
-﻿using Domain.Cup;
+﻿using Domain.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Repositories.Cups.Configurations
+namespace Infrastructure.Repositories.Events.Configurations
 {
     public class ParticipantConfiguration : IEntityTypeConfiguration<Participant>
     {

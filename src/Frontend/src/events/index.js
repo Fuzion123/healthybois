@@ -1,3 +1,3 @@
 export * from './AddEdit';
 export * from './List';
-export * from './CupsLayout';
+export * from './EventsLayout';

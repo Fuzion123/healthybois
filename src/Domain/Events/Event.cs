@@ -1,25 +1,28 @@
-﻿using Domain.Cup.Input;
+﻿using Domain.Events.Input;
 using Domain.Exceptions;
 
-namespace Domain.Cup
+namespace Domain.Events
 {
-    public class Cup
+    public class Event
     {
         public int Id { get; private set; }
         public string Title { get; private set; }
         public int OwnerUserId { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
+        public DateTime StartsAt { get; private set; }
+        public DateTime EndsAt { get; private set; }
+        public bool EventIsActive => DateTime.UtcNow >= StartsAt && DateTime.UtcNow >= EndsAt;
 
         private readonly List<Participant> _participants;
         public IReadOnlyList<Participant> Participants => _participants.AsReadOnly();
 
-        public Cup()
+        public Event()
         {
             _participants = new List<Participant>();
         }
 
-        public Cup(int cupOwner, CupInput input) : this()
+        public Event(int EventOwner, EventInput input) : this()
         {
             if (input is null)
             {
@@ -32,13 +35,15 @@ namespace Domain.Cup
             }
 
             Title = input.Title;
-            OwnerUserId = cupOwner;
+            StartsAt = input.StartsAt;
+            EndsAt = input.EndsAt;
+            OwnerUserId = EventOwner;
             AddParticipant(new ParticipantInput() { UserId = OwnerUserId }); // add the owner as the first participant as default. (can be removed after again).
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = CreatedAt;
         }
 
-        public bool Update(CupInput input)
+        public bool Update(EventInput input)
         {
             if (input is null)
             {
@@ -47,7 +52,7 @@ namespace Domain.Cup
 
             var updated = false;
 
-            if(Title != input.Title)
+            if (Title != input.Title)
             {
                 Title = input.Title;
 
@@ -69,9 +74,9 @@ namespace Domain.Cup
                 throw new ArgumentNullException(nameof(input));
             }
 
-            if(_participants.Any(x => x.UserId == input.UserId))
+            if (_participants.Any(x => x.UserId == input.UserId))
             {
-                throw new DomainException($"User with id {input.UserId} already exists as participant on cup {Title}");
+                throw new DomainException($"User with id {input.UserId} already exists as participant on Event {Title}");
             }
 
             _participants.Add(new Participant(Id, input));
@@ -90,13 +95,13 @@ namespace Domain.Cup
 
             var p = _participants.FirstOrDefault(x => x.UserId == input.UserId);
 
-            if(p != null)
+            if (p != null)
             {
                 removed = true;
 
                 _participants.Remove(p);
 
-                UpdatedAt = DateTime.UtcNow;    
+                UpdatedAt = DateTime.UtcNow;
             }
 
             return removed;

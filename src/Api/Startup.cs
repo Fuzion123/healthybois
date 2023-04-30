@@ -54,7 +54,7 @@ namespace WebApi
             // configure DI for application services
             services.AddScoped<IJwtUtils, JwtUtils>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<CupService>();
+            services.AddScoped<EventService>();
             services.AddEFCoreRepositories();
             services.AddEFCoreConfigurations();
             services.AddHttpContextAccessor();

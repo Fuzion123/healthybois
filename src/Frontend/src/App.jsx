@@ -3,9 +3,9 @@ import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-
 import { history } from '_helpers';
 import { Nav, Alert, PrivateRoute } from '_components';
 import { Home } from 'home';
-import { AccountLayout } from 'account';
-import { UsersLayout } from 'users';
-import { CupsLayout } from 'cups';
+import { AccountLayout } from './account';
+import { UsersLayout } from './users';
+import { EventsLayout } from './events';
 
 export { App };
 
@@ -25,7 +25,7 @@ function App() {
                     <Route element={<PrivateRoute />}>
                         <Route path="/" element={<Home />} />
                         <Route path="users/*" element={<UsersLayout />} />
-                        <Route path="cups/*" element={<CupsLayout />} />
+                        <Route path="events/*" element={<EventsLayout />} />
                     </Route>
                     {/* public */}
                     <Route path="account/*" element={<AccountLayout />} />

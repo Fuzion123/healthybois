@@ -3,7 +3,7 @@ import { fetchWrapper } from '_helpers';
 
 // create slice
 
-const name = 'cups';
+const name = 'events';
 const initialState = createInitialState();
 const extraActions = createExtraActions();
 const extraReducers = createExtraReducers();
@@ -11,8 +11,8 @@ const slice = createSlice({ name, initialState, extraReducers });
 
 // exports
 
-export const cupsActions = { ...slice.actions, ...extraActions };
-export const cupsReducer = slice.reducer;
+export const eventsActions = { ...slice.actions, ...extraActions };
+export const eventsReducer = slice.reducer;
 
 // implementation
 
@@ -24,7 +24,7 @@ function createInitialState() {
 }
 
 function createExtraActions() {
-    const baseUrl = `${process.env.REACT_APP_API_URL}/cups`;
+    const baseUrl = `${process.env.REACT_APP_API_URL}/events`;
 
     return {
         create: create(),
@@ -35,7 +35,7 @@ function createExtraActions() {
     function create() {
         return createAsyncThunk(
             `${name}`,
-            async (cupInput) => await fetchWrapper.post(`${baseUrl}`, cupInput.data)
+            async (eventInput) => await fetchWrapper.post(`${baseUrl}`, eventInput.data)
         );
     }
 
@@ -94,15 +94,15 @@ function createExtraReducers() {
             var { pending, fulfilled, rejected } = extraActions.delete;
             builder
                 .addCase(pending, (state, action) => {
-                    const cup = state.list.value.find(x => x.id === action.meta.arg);
-                    cup.isDeleting = true;
+                    const event = state.list.value.find(x => x.id === action.meta.arg);
+                    event.isDeleting = true;
                 })
                 .addCase(fulfilled, (state, action) => {
                     state.list.value = state.list.value.filter(x => x.id !== action.meta.arg);
                 })
                 .addCase(rejected, (state, action) => {
-                    const cup = state.list.value.find(x => x.id === action.meta.arg);
-                    cup.isDeleting = false;
+                    const event = state.list.value.find(x => x.id === action.meta.arg);
+                    event.isDeleting = false;
                 });
             }
     }

@@ -2,9 +2,9 @@ import { Routes, Route } from 'react-router-dom';
 
 import { List, AddEdit } from './';
 
-export { CupsLayout };
+export { EventsLayout };
 
-function CupsLayout() {
+function EventsLayout() {
     return (
         <div className="p-4">
             <div className="container">

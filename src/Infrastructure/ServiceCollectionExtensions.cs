@@ -1,7 +1,7 @@
-﻿using Domain.Cup;
+﻿using Domain.Events;
 using Domain.Users;
-using Infrastructure.Repositories.Cups;
-using Infrastructure.Repositories.Cups.Configurations;
+using Infrastructure.Repositories.Events;
+using Infrastructure.Repositories.Events.Configurations;
 using Infrastructure.Repositories.Users;
 using Infrastructure.Repositories.Users.Configurations;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +13,7 @@ namespace Infrastructure
         public static IServiceCollection AddEFCoreRepositories(this IServiceCollection services)
         {
             services.AddTransient<IUserRepository, EFCoreUserRepository>();
-            services.AddTransient<ICupRepository, EFCoreCupRepository>();
+            services.AddTransient<IEventRepository, EFCoreEventRepository>();
 
             return services;
         }
@@ -21,7 +21,7 @@ namespace Infrastructure
         public static IServiceCollection AddEFCoreConfigurations(this IServiceCollection services)
         {
             services.AddScoped<UserConfiguration>();
-            services.AddScoped<CupConfiguration>();
+            services.AddScoped<EventConfiguration>();
 
             return services;
         }

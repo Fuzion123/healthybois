@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { history } from '_helpers';
-import { cupsActions, alertActions } from '_store';
+import { eventsActions, alertActions } from '_store';
 
 export { AddEdit };
 
 function AddEdit() {
     const [title, setTitle] = useState();
     const dispatch = useDispatch();
-    const cup = useSelector(x => x.users?.item);
+    const event = useSelector(x => x.users?.item);
 
     // form validation rules 
     const validationSchema = Yup.object().shape({
@@ -27,20 +27,20 @@ function AddEdit() {
     const { errors, isSubmitting } = formState;
 
     useEffect(() => {
-        setTitle('Add Cup');
+        setTitle('Add event');
     }, []);
 
     async function onSubmit(data) {
         dispatch(alertActions.clear());
         try {
             // create or update user based on id param
-            let message = "Cup added";
+            let message = "event added";
 
                 console.log(data)
 
-            await dispatch(cupsActions.create({ data })).unwrap();
+            await dispatch(eventsActions.create({ data })).unwrap();
 
-            history.navigate('/cups');
+            history.navigate('/events');
 
             dispatch(alertActions.success({ message, showAfterRedirect: true }));
 
@@ -52,7 +52,7 @@ function AddEdit() {
     return (
         <>
             <h1>{title}</h1>
-            {!(cup?.loading || cup?.error) &&
+            {!(event?.loading || event?.error) &&
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="row">
                         <div className="mb-3 col">
@@ -66,18 +66,18 @@ function AddEdit() {
                             Create
                         </button>
                         <button onClick={() => reset()} type="button" disabled={isSubmitting} className="btn btn-secondary">Reset</button>
-                        <Link to="/cups" className="btn btn-link">Cancel</Link>
+                        <Link to="/events" className="btn btn-link">Cancel</Link>
                     </div>
                 </form>
             }
-            {cup?.loading &&
+            {event?.loading &&
                 <div className="text-center m-5">
                     <span className="spinner-border spinner-border-lg align-center"></span>
                 </div>
             }
-            {cup?.error &&
+            {event?.error &&
                 <div class="text-center m-5">
-                    <div class="text-danger">Error loading user: {cup.error}</div>
+                    <div class="text-danger">Error loading user: {event.error}</div>
                 </div>
             }
         </>
