@@ -9,6 +9,7 @@ using WebApi.Middleware;
 using Service.Users;
 using Infrastructure;
 using Service.Cups;
+using Serilog;
 
 namespace WebApi
 {
@@ -26,6 +27,8 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(config => config.AddConsole());
+
             var appSettings = new AppSettings();
 
             configuration.Bind(appSettings);

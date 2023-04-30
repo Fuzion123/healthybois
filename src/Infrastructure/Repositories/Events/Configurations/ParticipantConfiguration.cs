@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories.Events.Configurations
             builder.Property(x => x.UserId).HasMaxLength(255).IsRequired();
 
             builder.HasKey(x => x.Id).IsClustered(true);
-            builder.HasIndex(x => x.UserId).IsClustered(false).IsUnique();
+            builder.HasIndex(x => x.UserId).IsClustered(false).IsUnique(false);
         }
     }
 }
