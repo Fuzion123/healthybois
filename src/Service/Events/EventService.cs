@@ -2,10 +2,10 @@
 using Domain.Events;
 using Domain.Events.Input;
 using Domain.Users;
-using Service.Cups.Models;
+using Service.Events.Models;
 using Service.Exceptions;
 
-namespace Service.Cups
+namespace Service.Events
 {
     public class EventService
     {
@@ -112,12 +112,77 @@ namespace Service.Cups
         {
             var Event = await EventRepository.GetById(EventId, cancellationToken);
 
-            if (Event.OwnerUserId != ownerUserId)
-            {
-                throw new AppException($"Cant remove participant to Event because the current user is not the owner of this Event");
-            }
+            Event.RemoveParticipant(input, ownerUserId);
 
-            Event.RemoveParticipant(input);
+            await EventRepository.SaveChangesAsync(cancellationToken);
+
+            return mapper.Map<EventDto>(Event);
+        }
+
+        public async Task<EventDto> AddActivity(ActivityInput input, CancellationToken cancellationToken)
+        {
+            var exist = await userRepository.Exists(input.OwnerUserId, cancellationToken);
+
+            if (!exist)
+                throw new AppException($"No user with id {input.OwnerUserId} exist. Cant add an activity for a owner user that does not exist to this Event");
+
+            var Event = await EventRepository.GetById(input.EventId, cancellationToken);
+
+            Event.AddActivity(input);
+
+            await EventRepository.SaveChangesAsync(cancellationToken);
+
+            return mapper.Map<EventDto>(Event);
+        }
+
+        public async Task<EventDto> RemoveActivity(ActivityInput input, CancellationToken cancellationToken)
+        {
+            var Event = await EventRepository.GetById(input.EventId, cancellationToken);
+
+            Event.RemoveActivity(input);
+
+            await EventRepository.SaveChangesAsync(cancellationToken);
+
+            return mapper.Map<EventDto>(Event);
+        }
+
+        public async Task<EventDto> AddOrUpdateResult(ResultInput input, CancellationToken cancellationToken)
+        {
+            var exist = await userRepository.Exists(input.ParticipantId, cancellationToken);
+
+            if (!exist)
+                throw new AppException($"No user with id {input.ParticipantId} exist. Cant add a result to an activity for a owner user that does not exist to this Event");
+
+            var Event = await EventRepository.GetById(input.EventId, cancellationToken);
+
+            if (Event == null)
+                throw new AppException($"Found no event with id {input.EventId}. Cant add result");
+
+            var activity = Event.Activities.FirstOrDefault(x => x.Id == input.ActivityId);
+
+            if (activity == null)
+                throw new AppException($"Found no activity with id {input.ActivityId} on event with id {input.EventId}. Cant add result");
+
+            activity.AddOrUpdateResult(input);
+
+            await EventRepository.SaveChangesAsync(cancellationToken);
+
+            return mapper.Map<EventDto>(Event);
+        }
+
+        public async Task<EventDto> RemoveResult(ResultRemoveInput input, CancellationToken cancellationToken)
+        {
+            var Event = await EventRepository.GetById(input.EventId, cancellationToken);
+
+            if (Event == null)
+                throw new AppException($"Found no event with id {input.EventId}. Cant remove result");
+
+            var activity = Event.Activities.FirstOrDefault(x => x.Id == input.ActivityId);
+
+            if (activity == null)
+                throw new AppException($"Found no activity with id {input.ActivityId} on event with id {input.EventId}. Cant add result");
+
+            activity.RemoveResult(input);
 
             await EventRepository.SaveChangesAsync(cancellationToken);
 

@@ -1,4 +1,4 @@
-﻿namespace Service.Cups.Models
+﻿namespace Service.Events.Models
 {
     public class ParticipantDto
     {

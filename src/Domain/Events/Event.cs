@@ -17,9 +17,13 @@ namespace Domain.Events
         private readonly List<Participant> _participants;
         public IReadOnlyList<Participant> Participants => _participants.AsReadOnly();
 
+        private readonly List<Activity> _activities;
+        public IReadOnlyList<Activity> Activities => _activities.AsReadOnly();
+
         public Event()
         {
             _participants = new List<Participant>();
+            _activities = new List<Activity>();
         }
 
         public Event(int EventOwner, EventInput input) : this()
@@ -32,6 +36,11 @@ namespace Domain.Events
             if (string.IsNullOrEmpty(input.Title))
             {
                 throw new ArgumentException($"'{nameof(input.Title)}' cannot be null or empty.", nameof(input.Title));
+            }
+
+            if(input.EndsAt <= input.StartsAt)
+            {
+                throw new DomainException("End date needs to be after start date");
             }
 
             Title = input.Title;
@@ -84,7 +93,7 @@ namespace Domain.Events
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public bool RemoveParticipant(ParticipantInput input)
+        public bool RemoveParticipant(ParticipantInput input, int ownerUserId)
         {
             var removed = false;
 
@@ -95,11 +104,61 @@ namespace Domain.Events
 
             var p = _participants.FirstOrDefault(x => x.UserId == input.UserId);
 
+            if (OwnerUserId != ownerUserId)
+            {
+                throw new DomainException($"Cant remove participant to Event because the current user is not the owner of this Event");
+            }
+
             if (p != null)
             {
                 removed = true;
 
                 _participants.Remove(p);
+
+                UpdatedAt = DateTime.UtcNow;
+            }
+
+            return removed;
+        }
+
+        public void AddActivity(ActivityInput input)
+        {
+            if (input is null)
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
+
+            if (_activities.Any(x => x.Title == input.Title))
+            {
+                throw new DomainException($"Activity with title {input.Title} already exists on Event {Title}");
+            }
+
+            _activities.Add(new Activity(input));
+
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public bool RemoveActivity(ActivityInput input)
+        {
+            var removed = false;
+
+            if (input is null)
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
+
+            var a = _activities.FirstOrDefault(x => x.Title == input.Title);
+
+            if(a.OwnerUserId != input.OwnerUserId)
+            {
+                throw new DomainException($"Cant remove Activity from this Event, because the current user is not the owner of this Event");
+            }
+
+            if (a != null)
+            {
+                removed = true;
+
+                _activities.Remove(a);
 
                 UpdatedAt = DateTime.UtcNow;
             }

@@ -1,6 +1,5 @@
 ﻿using Domain.Events;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 
 namespace Infrastructure.Repositories.Events
 {
@@ -27,6 +26,8 @@ namespace Infrastructure.Repositories.Events
         {
             return await dbContext.Events
                 .Include("_participants")
+                .Include("_activities")
+                .Include("_activities._results")
                 .Where(x => x.OwnerUserId == userId || EF.Property<List<Participant>>(x, "_participants").Any(v => v.UserId == userId))
                 .ToListAsync(cancellationToken);
         }
@@ -35,6 +36,8 @@ namespace Infrastructure.Repositories.Events
         {
             return await dbContext.Events
                 .Include("_participants")
+                .Include("_activities")
+                .Include("_activities._results")
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
@@ -42,6 +45,8 @@ namespace Infrastructure.Repositories.Events
         {
             return dbContext.Events
                 .Include("_participants")
+                .Include("_activities")
+                .Include("_activities._results")
                 .FirstOrDefaultAsync(x => x.Title == title, cancellationToken);    
         }
 

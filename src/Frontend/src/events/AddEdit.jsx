@@ -4,9 +4,12 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useSelector, useDispatch } from 'react-redux';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import { history } from '_helpers';
 import { eventsActions, alertActions } from '_store';
+import { createImmutableStateInvariantMiddleware } from '@reduxjs/toolkit';
 
 export { AddEdit };
 
@@ -15,11 +18,16 @@ function AddEdit() {
     const dispatch = useDispatch();
     const event = useSelector(x => x.users?.item);
 
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
+
     // form validation rules 
     const validationSchema = Yup.object().shape({
-        title: Yup.string()
-            .required('Title is required')
-    });
+        title: Yup.string().required('Title is required'),
+        // endDate: Yup.date().required('End Date is required'),
+      });
+
+    
     const formOptions = { resolver: yupResolver(validationSchema) };
 
     // get functions to build form with useForm() hook
@@ -31,23 +39,37 @@ function AddEdit() {
     }, []);
 
     async function onSubmit(data) {
+
+        if(startDate == undefined || startDate == null){
+            dispatch(alertActions.error('Your event needs an Start date'));
+
+            return;
+        }
+
+        if(endDate == undefined || endDate == null){
+            dispatch(alertActions.error('Your event needs an End date'));
+
+            return;
+        }
+    
         dispatch(alertActions.clear());
         try {
-            // create or update user based on id param
-            let message = "event added";
-
-                console.log(data)
-
-            await dispatch(eventsActions.create({ data })).unwrap();
-
-            history.navigate('/events');
-
-            dispatch(alertActions.success({ message, showAfterRedirect: true }));
-
+          let message = "event added";
+          await dispatch(
+            eventsActions.create({
+              data: {
+                title: data.title,
+                startsAt: startDate.toISOString(),
+                endsAt: endDate.toISOString()
+              },
+            })
+          ).unwrap();
+          history.navigate('/events');
+          dispatch(alertActions.success({ message, showAfterRedirect: true }));
         } catch (error) {
-            dispatch(alertActions.error(error));
+          dispatch(alertActions.error(error));
         }
-    }
+      }
 
     return (
         <>
@@ -55,12 +77,36 @@ function AddEdit() {
             {!(event?.loading || event?.error) &&
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="row">
-                        <div className="mb-3 col">
-                            <input placeholder='title' name="title" type="text" {...register('title')} className={`form-control ${errors.title ? 'is-invalid' : ''}`} />
+                    <div className="">
+                            <label>Title</label>
+                            <input name="title" type="text" {...register('title')} className={`form-control ${errors.title ? 'is-invalid' : ''}`} />
                             <div className="invalid-feedback">{errors.title?.message}</div>
+                            </div>
+                        <div className="mb-3 col">
+                            <label>Start Date</label>
+                            <DatePicker
+                                selected={startDate}
+                                onChange={date => setStartDate(date)}
+                                showTimeSelect
+                                name="startDate"
+                                dateFormat="MMMM d, yyyy h:mm aa"
+                                className={`form-control ${errors.startDate ? 'is-invalid' : ''}`}
+                            />
+                            <div className="invalid-feedback">{errors.startDate?.message}</div>
                         </div>
-                    </div>
-                    <div className="mb-3">
+                        <div className="mb-3 col">
+                            <label>End Date</label>
+                            <DatePicker
+                            selected={endDate}
+                            onChange={date => setEndDate(date)}
+                            showTimeSelect
+                            dateFormat="MMMM d, yyyy h:mm aa"
+                            className={`form-control ${errors.endDate ? 'is-invalid' : ''}`}
+                            />
+                            <div className="invalid-feedback">{errors.endDate?.message}</div>
+                        </div>
+                        </div>
+                        <div className="mb-3">
                         <button type="submit" disabled={isSubmitting} className="btn btn-primary me-2">
                             {isSubmitting && <span className="spinner-border spinner-border-sm me-1"></span>}
                             Create

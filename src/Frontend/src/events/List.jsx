@@ -16,39 +16,27 @@ function List() {
 
     return (
         <div>
-            <h1>events</h1>
+            <h1>Events</h1>
+            
+            {events?.value?.map(event =>
+                <div key={event.id} className="card mb-3">
+                    <div className="card-body">
+                        <h5 className="card-title">{event.title}</h5>
+                        <button onClick={() => dispatch(eventsActions.delete(event.id))} className="btn btn-sm btn-danger" disabled={event.isDeleting}>
+                            {event.isDeleting 
+                                ? <span className="spinner-border spinner-border-sm"></span>
+                                : <span>Delete</span>
+                            }
+                        </button>
+                    </div>
+                </div>
+            )}
+            {events?.loading &&
+                <div className="text-center">
+                    <span className="spinner-border spinner-border-lg align-center"></span>
+                </div>
+            }
             <Link to="add" className="btn btn-sm btn-success mb-2">Add event</Link>
-            <table className="table table-striped">
-                <thead>
-                    <tr>
-                        <th style={{ width: '30%' }}>event name</th>
-                        <th style={{ width: '10%' }}></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {events?.value?.map(event =>
-                        <tr key={event.id}>
-                            <td>{event.title}</td>
-                            <td style={{ whiteSpace: 'nowrap' }}>
-                                <button onClick={() => dispatch(eventsActions.delete(event.id))} className="btn btn-sm btn-danger" style={{ width: '60px' }} disabled={event.isDeleting}>
-                                    {event.isDeleting 
-                                        ? <span className="spinner-border spinner-border-sm"></span>
-                                        : <span>Delete</span>
-                                    }
-                                </button>
-                            </td>
-                        </tr>
-                    )}
-                    {events?.loading &&
-                        <tr>
-                            <td colSpan="4" className="text-center">
-                                <span className="spinner-border spinner-border-lg align-center"></span>
-                            </td>
-
-                        </tr>
-                    }
-                </tbody>
-            </table>
         </div>
     );
 }

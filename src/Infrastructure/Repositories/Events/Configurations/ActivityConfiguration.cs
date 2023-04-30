@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Repositories.Events.Configurations
 {
-    public class EventConfiguration : IEntityTypeConfiguration<Event>
+    public class ActivityConfiguration : IEntityTypeConfiguration<Activity>
     {
-        public void Configure(EntityTypeBuilder<Event> builder)
+        public void Configure(EntityTypeBuilder<Activity> builder)
         {
             builder.Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
             builder.Property(x => x.CreatedAt).IsRequired();
@@ -15,15 +15,10 @@ namespace Infrastructure.Repositories.Events.Configurations
 
             builder.Property(x => x.Title).HasMaxLength(255).IsRequired();
             builder.Property(x => x.OwnerUserId).IsRequired();
-            builder.Property(x => x.StartsAt).IsRequired();
-            builder.Property(x => x.EndsAt).IsRequired();
+            builder.Property(x => x.EventId).IsRequired();
 
-            builder.HasMany<Participant>("_participants").WithOne().HasForeignKey(x => x.EventId).OnDelete(DeleteBehavior.Cascade).IsRequired();
-            builder.HasMany<Activity>("_activities").WithOne().HasForeignKey(x => x.EventId).OnDelete(DeleteBehavior.Cascade).IsRequired();
-            
-            builder.Ignore(x => x.Participants);
-            builder.Ignore(x => x.Activities);
-            builder.Ignore(x => x.EventIsActive);
+            builder.HasMany<Result>("_results").WithOne().HasForeignKey(x => x.ActivityId).OnDelete(DeleteBehavior.Cascade).IsRequired();
+            builder.Ignore(x => x.Results);
 
             builder.HasKey(x => x.Id).IsClustered(true);
             builder.HasIndex(x => x.Title).IsClustered(false).IsUnique();

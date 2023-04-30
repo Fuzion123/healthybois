@@ -4,6 +4,7 @@ using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(EndureanceCupDbContext))]
-    partial class EndureanceCupDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230430160401_activities")]
+    partial class activities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,36 +41,17 @@ namespace WebApi.Migrations
                     b.Property<int>("OwnerUserId")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
-
                     b.HasIndex("EventId");
 
-                    b.HasIndex("OwnerUserId");
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("OwnerUserId"), false);
-
-                    b.HasIndex("Title")
-                        .IsUnique();
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("Title"), false);
-
-                    b.ToTable("Activities");
+                    b.ToTable("Activity");
                 });
 
             modelBuilder.Entity("Domain.Events.Event", b =>
@@ -178,12 +161,6 @@ namespace WebApi.Migrations
                     b.Property<int>("ParticipantId")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
                     b.Property<double>("Score")
                         .HasColumnType("float");
 
@@ -192,13 +169,9 @@ namespace WebApi.Migrations
 
                     b.HasKey("Id");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasIndex("ActivityId");
 
-                    b.HasIndex("ActivityId", "ParticipantId");
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("ActivityId", "ParticipantId"), false);
-
-                    b.ToTable("Results");
+                    b.ToTable("Result");
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>
@@ -259,7 +232,7 @@ namespace WebApi.Migrations
             modelBuilder.Entity("Domain.Events.Activity", b =>
                 {
                     b.HasOne("Domain.Events.Event", null)
-                        .WithMany("_activities")
+                        .WithMany("Activities")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -277,7 +250,7 @@ namespace WebApi.Migrations
             modelBuilder.Entity("Domain.Events.Result", b =>
                 {
                     b.HasOne("Domain.Events.Activity", null)
-                        .WithMany("_results")
+                        .WithMany("Results")
                         .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -285,12 +258,12 @@ namespace WebApi.Migrations
 
             modelBuilder.Entity("Domain.Events.Activity", b =>
                 {
-                    b.Navigation("_results");
+                    b.Navigation("Results");
                 });
 
             modelBuilder.Entity("Domain.Events.Event", b =>
                 {
-                    b.Navigation("_activities");
+                    b.Navigation("Activities");
 
                     b.Navigation("_participants");
                 });

@@ -8,8 +8,8 @@ using Service.Users.Dependencies;
 using WebApi.Middleware;
 using Service.Users;
 using Infrastructure;
-using Service.Cups;
 using Serilog;
+using Service.Events;
 
 namespace WebApi
 {

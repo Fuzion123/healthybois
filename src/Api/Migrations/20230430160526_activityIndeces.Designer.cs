@@ -4,6 +4,7 @@ using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(EndureanceCupDbContext))]
-    partial class EndureanceCupDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230430160526_activityIndeces")]
+    partial class activityIndeces
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,7 +261,7 @@ namespace WebApi.Migrations
             modelBuilder.Entity("Domain.Events.Activity", b =>
                 {
                     b.HasOne("Domain.Events.Event", null)
-                        .WithMany("_activities")
+                        .WithMany("Activities")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -290,7 +292,7 @@ namespace WebApi.Migrations
 
             modelBuilder.Entity("Domain.Events.Event", b =>
                 {
-                    b.Navigation("_activities");
+                    b.Navigation("Activities");
 
                     b.Navigation("_participants");
                 });

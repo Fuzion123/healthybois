@@ -1,6 +1,6 @@
 ﻿using Domain.Events.Input;
 using Microsoft.AspNetCore.Mvc;
-using Service.Cups;
+using Service.Events;
 using WebApi.Authorization;
 
 namespace WebApi.Controllers
@@ -54,7 +54,7 @@ namespace WebApi.Controllers
             return Ok(Events);
         }
 
-        [HttpPut("{EventId}/participants/add/{participantUserId}")]
+        [HttpPost("{EventId}/participants/add/{participantUserId}")]
         public async Task<IActionResult> AddParticipant(int EventId, int participantUserId, CancellationToken cancellationToken)
         {
             var input = new ParticipantInput()
@@ -67,7 +67,7 @@ namespace WebApi.Controllers
             return Ok(new { message = "Participant added successfully" });
         }
 
-        [HttpPut("{EventId}/participants/remove/{participantUserId}")]
+        [HttpDelete("{EventId}/participants/remove/{participantUserId}")]
         public async Task<IActionResult> RemoveParticipant(int EventId, int participantUserId, CancellationToken cancellationToken)
         {
             var input = new ParticipantInput()
@@ -78,6 +78,38 @@ namespace WebApi.Controllers
             await EventService.RemoveParticipant(EventId, input, CurrentUser.Id, cancellationToken);
 
             return Ok(new { message = "Participant removed successfully" });
+        }
+
+        [HttpPost("activities/add")]
+        public async Task<IActionResult> AddActivity(ActivityInput activityInput, CancellationToken cancellationToken)
+        {
+            await EventService.AddActivity(activityInput, cancellationToken);
+
+            return Ok(new { message = "Activity added successfully" });
+        }
+
+        [HttpDelete("activities/remove")]
+        public async Task<IActionResult> RemoveParticipant(ActivityInput input, CancellationToken cancellationToken)
+        {
+            await EventService.RemoveActivity(input, cancellationToken);
+
+            return Ok(new { message = "Activity removed successfully" });
+        }
+
+        [HttpPut("activities/results/addOrUpdate")]
+        public async Task<IActionResult> AddOrUpdateResult(ResultInput resultInput, CancellationToken cancellationToken)
+        {
+            await EventService.AddOrUpdateResult(resultInput, cancellationToken);
+
+            return Ok(new { message = "Result added/updated successfully" });
+        }
+
+        [HttpDelete("activities/results/remove")]
+        public async Task<IActionResult> RemoveResult(ResultRemoveInput input, CancellationToken cancellationToken)
+        {
+            await EventService.RemoveResult(input, cancellationToken);
+
+            return Ok(new { message = "Result removed successfully" });
         }
     }
 }
