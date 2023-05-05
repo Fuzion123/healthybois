@@ -109,7 +109,7 @@ namespace WebApi.Controllers
         {
             await EventService.RemoveResult(input, cancellationToken);
 
-            return Ok(new { message = "Result removed successfully" });
+            return Ok(new { message = "Result removed successfully!" });
         }
     }
 }
