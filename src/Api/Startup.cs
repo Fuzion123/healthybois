@@ -10,6 +10,10 @@ using Service.Users;
 using Infrastructure;
 using Serilog;
 using Service.Events;
+using Domain.Events;
+using Domain.Users;
+using Infrastructure.Repositories.Events;
+using Infrastructure.Repositories.Users;
 
 namespace WebApi
 {
@@ -61,6 +65,14 @@ namespace WebApi
             services.AddEFCoreRepositories();
             services.AddEFCoreConfigurations();
             services.AddHttpContextAccessor();
+
+            // caching
+            if (appSettings.UsingCachedRepositories)
+            {
+                services.AddMemoryCache();
+                services.AddSingleton<HashSet<string>>();
+                services.Decorate<IEventRepository, CachedEventRepository>();
+            }
 
             // swagger
             services.AddSwaggerGen(setup =>
