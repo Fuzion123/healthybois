@@ -58,8 +58,7 @@ namespace WebApi
                 .AddEnvironmentVariables();
 
             configBuilder
-                .AddJsonFile("appsettings.json", optional: false)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                .AddJsonFile("appsettings.json", optional: false);
 
             if (args.Any())
                 configBuilder.AddCommandLine(args);
