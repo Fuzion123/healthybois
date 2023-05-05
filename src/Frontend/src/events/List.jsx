@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { confirmAlert } from 'react-confirm-alert'; // Import
 
 import { eventsActions } from '_store';
 
@@ -14,6 +15,24 @@ function List() {
         dispatch(eventsActions.getReferenceAll());
     }, []);
 
+    const submit = (event) => {
+
+        confirmAlert({
+          title: 'Confirm to submit',
+          message: 'Are you sure to do this.',
+          buttons: [
+            {
+              label: 'Yes',
+              onClick: () => dispatch(eventsActions.delete(event.id))
+            },
+            {
+              label: 'No',
+              //onClick: () => alert('Click No')
+            }
+          ]
+        });
+      }
+
     return (
         <div>
             <h1>Events</h1>
@@ -22,7 +41,7 @@ function List() {
                 <div key={event.id} className="card mb-3">
                     <div className="card-body">
                         <h5 className="card-title">{event.title}</h5>
-                        <button onClick={() => dispatch(eventsActions.delete(event.id))} className="btn btn-sm btn-danger" disabled={event.isDeleting}>
+                        <button onClick={() => submit(event)} className="btn btn-sm btn-danger" disabled={event.isDeleting}>
                             {event.isDeleting 
                                 ? <span className="spinner-border spinner-border-sm"></span>
                                 : <span>Delete</span>
