@@ -59,7 +59,7 @@ namespace WebApi
 
             configBuilder
                 .AddJsonFile("appsettings.json", optional: false)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: false);
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
             if (args.Any())
                 configBuilder.AddCommandLine(args);
