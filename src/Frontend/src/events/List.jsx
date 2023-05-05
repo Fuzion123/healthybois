@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { eventsActions } from '_store';
 
@@ -18,18 +19,29 @@ function List() {
     const submit = (event) => {
 
         confirmAlert({
-          title: 'Confirm to submit',
-          message: 'Are you sure to do this.',
+          title: <span className="confirm-title">Confirm to delete</span>,
+          message: <span className="confirm-message">Are you sure?</span>,
           buttons: [
             {
               label: 'Yes',
+              className: 'confirm-button',
               onClick: () => dispatch(eventsActions.delete(event.id))
             },
             {
               label: 'No',
+              className: 'confirm-button',
               //onClick: () => alert('Click No')
             }
-          ]
+          ],
+          containerProps: { 
+            style: {
+              zIndex: 9999, 
+              position: 'absolute', 
+              top: '20px', 
+              left: '50%',
+              transform: 'translateX(-50%)' // center the dialog horizontally
+            }
+          }
         });
       }
 
@@ -56,6 +68,42 @@ function List() {
                 </div>
             }
             <Link to="add" className="btn btn-sm btn-success mb-2">Add event</Link>
+            <style>{`
+        #react-confirm-alert {
+         display: flex;
+         justify-content: center;
+         margin: 5px;
+        }
+
+        .react-confirm-alert-button-group {
+         display: flex;
+         justify-content: space-evenly;
+         margin: 8px;
+        }
+
+        .react-confirm-alert-body {
+         border-style: groove;
+         border-color: rgb(43, 42, 41);
+         border-radius: 15px;
+         padding: 18px;
+         width: 300px;
+        }
+
+        .confirm-title {
+         font-weight: bold;
+         color: #212529;
+         display: flex;
+         justify-content: center;
+         margin: 10px;
+        }
+
+        .confirm-message  {
+         color: #212529;
+         display: flex;
+         justify-content: center;
+        }
+
+      `}</style>
         </div>
     );
 }
