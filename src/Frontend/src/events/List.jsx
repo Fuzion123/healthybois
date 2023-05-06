@@ -103,6 +103,12 @@ function List() {
          justify-content: center;
         }
 
+        @media only screen and (min-width: 800px) {
+          .react-confirm-alert-body{
+            width: 400px;
+          }
+        }
+        
       `}</style>
         </div>
     );
