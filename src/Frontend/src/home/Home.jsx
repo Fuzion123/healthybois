@@ -10,6 +10,7 @@ function Home() {
         return (
             <div>
                 <h1>Hi {auth?.firstName}!</h1>
+                <img src={auth?.profilePic} alt="Profile Pic" /> {/* Add this */}
                 <p><Link to="/users">Manage Users</Link></p>
                 <p><Link to="/cups">Manage Cups</Link></p>
             </div>
@@ -19,6 +20,7 @@ function Home() {
     return (
         <div>
             <h1>Hi {auth?.firstName}!</h1>
+            <img src={auth?.profilePic} alt="Profile Pic" /> {/* Add this */}
             <p><Link to="/cups">Manage Cups</Link></p>
         </div>
     );

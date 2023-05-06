@@ -34,6 +34,10 @@ public class UserService : IUserService
         // authentication successful
         var response = _mapper.Map<AuthenticateResponse>(user);
 
+        // Fetch profile picture URL from the backend API and add it to the response
+        var profilePictureUrl = await GetProfilePictureUrl(user.Id, cancellationToken);
+        response.ProfilePicture = profilePictureUrl;
+
         response.Token = _jwtUtils.GenerateToken(user);
 
         return response;
@@ -80,7 +84,13 @@ public class UserService : IUserService
         if (!string.IsNullOrEmpty(model.Password))
             passwordHash = BCrypt.HashPassword(model.Password);
 
-        user.Update(model.FirstName, model.LastName, passwordHash);
+        // update profile picture if provided
+        if (model.ProfilePicture != null)
+        {
+        user.ProfilePicture = model.ProfilePicture;
+        }
+
+         user.Update(model.FirstName, model.LastName, passwordHash, model.ProfilePicture);
 
         await userRepository.SaveChangesAsync(cancellationToken);
     }

@@ -22,7 +22,10 @@ function Register() {
             .required('Username is required'),
         password: Yup.string()
             .required('Password is required')
-            .min(6, 'Password must be at least 6 characters')
+            .min(6, 'Password must be at least 6 characters'),
+            profilePicture: Yup.string()
+            .required('Profile picture URL is required')
+            .url('Invalid URL format'),
     });
     const formOptions = { resolver: yupResolver(validationSchema) };
 
@@ -48,6 +51,11 @@ function Register() {
             <h4 className="card-header">Register</h4>
             <div className="card-body">
                 <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="mb-3 col">
+                        <label className="form-label">Profile Picture URL</label>
+                        <input type="text" {...register('profilePicture')} className={`form-control ${errors.profilePicture ? 'is-invalid' : ''}`} />
+                        <div className="invalid-feedback">{errors.profilePicture?.message}</div>
+                    </div>
                     <div className="mb-3">
                         <label className="form-label">First Name</label>
                         <input name="firstName" type="text" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
