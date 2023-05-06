@@ -28,7 +28,12 @@ function AddEdit() {
             .transform(x => x === '' ? undefined : x)
             // password optional in edit mode
             .concat(id ? null : Yup.string().required('Password is required'))
-            .min(6, 'Password must be at least 6 characters')
+            .min(6, 'Password must be at least 6 characters'),
+        profilePicture: Yup.mixed().test('fileSize', 'Profile picture is required', (value) => {
+            return value && value[0] && value[0].size;
+            }).test('fileType', 'Unsupported file format', (value) => {
+                return value && value[0] && ['image/jpeg', 'image/png', 'image/gif'].includes(value[0].type);
+            }),
     });
     const formOptions = { resolver: yupResolver(validationSchema) };
 
@@ -75,6 +80,11 @@ function AddEdit() {
             {!(user?.loading || user?.error) &&
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="row">
+                        <div className="mb-3 col">
+                            <label className="form-label">Profile Picture</label>
+                            <input type="file" {...register('profilePicture')} className={`form-control ${errors.profilePicture ? 'is-invalid' : ''}`} />
+                            <div className="invalid-feedback">{errors.profilePicture?.message}</div>
+                        </div>
                         <div className="mb-3 col">
                             <label className="form-label">First Name</label>
                             <input name="firstName" type="text" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
