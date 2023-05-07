@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Detail } from './EventDetails';
 import { useSelector, useDispatch } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -44,13 +45,13 @@ function List() {
           }
         });
       }
-
+    
     return (
         <div>
             <h1>Events</h1>
             
             {events?.value?.map(event =>
-                <div key={event.id} className="card mb-3">
+            <Link to={`/events/${event.id}`}  key={event.id} className="card mb-3">
                     <div className="card-body">
                         <h5 className="card-title">{event.title}</h5>
                         <button onClick={() => submit(event)} className="btn btn-sm btn-danger" disabled={event.isDeleting}>
@@ -60,7 +61,7 @@ function List() {
                             }
                         </button>
                     </div>
-                </div>
+                    </Link>
             )}
             {events?.loading &&
                 <div className="text-center">
@@ -68,6 +69,7 @@ function List() {
                 </div>
             }
             <Link to="add" className="btn btn-sm btn-success mb-2">Add event</Link>
+ 
             <style>{`
         #react-confirm-alert {
          display: flex;
@@ -101,6 +103,11 @@ function List() {
          color: #212529;
          display: flex;
          justify-content: center;
+        }
+
+        a {
+          text-decoration: none;
+          color: #212529;
         }
 
         @media only screen and (min-width: 800px) {

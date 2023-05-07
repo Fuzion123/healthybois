@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-
 import { history } from '_helpers';
 import { Nav, Alert, PrivateRoute } from '_components';
 import { Home } from 'home';

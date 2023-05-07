@@ -23,14 +23,19 @@ function Register() {
         password: Yup.string()
             .required('Password is required')
             .min(6, 'Password must be at least 6 characters'),
-            profilePicture: Yup.string()
-            .required('Profile picture URL is required')
-            .url('Invalid URL format'),
+            profilePicture: Yup.mixed()
+            .required('Profile picture is required')
+            .test('fileSize', 'Profile picture is too large', (value) => {
+              return value && value[0] && value[0].size <= 2000000; // maximum file size of 2 MB
+            })
+            .test('fileType', 'Unsupported file format', (value) => {
+              return value && value[0] && ['image/jpeg', 'image/png', 'image/gif'].includes(value[0].type);
+            }),
     });
     const formOptions = { resolver: yupResolver(validationSchema) };
 
     // get functions to build form with useForm() hook
-    const { register, handleSubmit, formState } = useForm(formOptions);
+    const { register, handleSubmit, formState, setValue } = useForm(formOptions);
     const { errors, isSubmitting } = formState;
 
     async function onSubmit(data) {
@@ -52,8 +57,10 @@ function Register() {
             <div className="card-body">
                 <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-3 col">
-                        <label className="form-label">Profile Picture URL</label>
-                        <input type="text" {...register('profilePicture')} className={`form-control ${errors.profilePicture ? 'is-invalid' : ''}`} />
+                <label className="form-label">Profile Picture</label>
+                        <input type="file" onChange={(e) => {
+                            setValue('profilePicture', e.target.files[0]);
+                        }} className={`form-control ${errors.profilePicture ? 'is-invalid' : ''}`} />
                         <div className="invalid-feedback">{errors.profilePicture?.message}</div>
                     </div>
                     <div className="mb-3">
