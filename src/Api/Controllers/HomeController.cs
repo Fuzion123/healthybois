@@ -14,9 +14,9 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        public IActionResult Index()
         {
-            return Ok(Task.FromResult("Hello from Healthybois").Result);
+            return Ok("Hello from Healthybois");
         }
     }
 }
