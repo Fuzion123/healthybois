@@ -1,16 +1,22 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { eventsActions } from '_store';
 
-export { List };
+export default List;
 
 function List() {
     const events = useSelector(x => x.events.list);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    function handleCardClick(event) {
+      navigate(`/events/${event.id}`);
+    }
+  
 
     useEffect(() => {
         dispatch(eventsActions.getReferenceAll());
@@ -51,7 +57,7 @@ function List() {
             
             {events?.value?.map(event =>
               <div key={event.id} className="card mb-3">
-                    <div className="card-body">
+                    <div className="card-body" onClick={() => handleCardClick(event)}>
                         <h5 className="card-title">{event.title}</h5>
                         <button onClick={() => submit(event)} className="btn btn-sm btn-danger" disabled={event.isDeleting}>
                             {event.isDeleting 

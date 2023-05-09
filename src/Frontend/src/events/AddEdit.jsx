@@ -11,7 +11,7 @@ import { history } from '_helpers';
 import { eventsActions, alertActions } from '_store';
 import { createImmutableStateInvariantMiddleware } from '@reduxjs/toolkit';
 
-export { AddEdit };
+export default  AddEdit;
 
 function AddEdit() {
     const [title, setTitle] = useState();

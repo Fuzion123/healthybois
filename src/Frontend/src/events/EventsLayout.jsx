@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
-import { List } from './List';
-import { AddEdit } from './AddEdit';
-import { Detail } from './EventDetails';
+import List  from './List';
+import  AddEdit  from './AddEdit';
+import  Detail  from './EventDetails';
 
 export { EventsLayout };
 
