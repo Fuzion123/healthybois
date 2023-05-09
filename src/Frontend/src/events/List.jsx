@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Detail } from './EventDetails';
 import { useSelector, useDispatch } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -70,12 +69,18 @@ function List() {
                 </div>
             }
             <Link to="add" className="btn btn-sm btn-success mb-2">Add event</Link>
+
+      
  
             <style>{`
         #react-confirm-alert {
          display: flex;
          justify-content: center;
          margin: 5px;
+        }
+
+        .btn btn-sm btn-danger {
+          z-index: 999;
         }
 
         .react-confirm-alert-button-group {
