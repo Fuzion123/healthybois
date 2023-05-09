@@ -51,7 +51,7 @@ function List() {
             <h1>Events</h1>
             
             {events?.value?.map(event =>
-            <Link to={`/events/${event.id}`}  key={event.id} className="card mb-3">
+              <div key={event.id} className="card mb-3">
                     <div className="card-body">
                         <h5 className="card-title">{event.title}</h5>
                         <button onClick={() => submit(event)} className="btn btn-sm btn-danger" disabled={event.isDeleting}>
@@ -61,7 +61,8 @@ function List() {
                             }
                         </button>
                     </div>
-                    </Link>
+                    </div>
+                   
             )}
             {events?.loading &&
                 <div className="text-center">
