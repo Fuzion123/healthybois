@@ -27,12 +27,20 @@ function createExtraActions() {
     const baseUrl = `${process.env.REACT_APP_API_URL}/events`;
 
     return {
-        create: create(),
-        getReferenceAll: getReferenceAll(),
+        get: _get(),
+        create: _create(),
+        getReferenceAll: _getReferenceAll(),
         delete: _delete()
     };
 
-    function create() {
+    function _get() {
+        return createAsyncThunk(
+            `${name}/get`,
+            async (id) => await fetchWrapper.get(`${baseUrl}/${id}`)
+        );
+    }
+
+    function _create() {
         return createAsyncThunk(
             `${name}`,
             async (eventInput) => await fetchWrapper.post(`${baseUrl}`, eventInput.data)
@@ -48,7 +56,7 @@ function createExtraActions() {
         );
     }
 
-    function getReferenceAll() {
+    function _getReferenceAll() {
         return createAsyncThunk(
             `${name}/getReferenceAll`,
             async () => await fetchWrapper.get(baseUrl)
@@ -58,25 +66,26 @@ function createExtraActions() {
 
 function createExtraReducers() {
     return (builder) => {
-        getReferenceAll();
-        create();
+        _get();
+        _create();
+        _getReferenceAll();
         _delete();
 
-        function getReferenceAll() {
-            var { pending, fulfilled, rejected } = extraActions.getReferenceAll;
+        function _get() {
+            var { pending, fulfilled, rejected } = extraActions.get;
             builder
                 .addCase(pending, (state) => {
-                    state.list = { loading: true };
+                    state.item = { loading: true };
                 })
                 .addCase(fulfilled, (state, action) => {
-                    state.list = { value: action.payload };
+                    state.item = { value: action.payload };
                 })
                 .addCase(rejected, (state, action) => {
-                    state.list = { error: action.error };
-                });
+                    state.item = { error: action.error };
+                });            
         }
 
-        function create() {
+        function _create() {
             var { pending, fulfilled, rejected } = extraActions.create;
             builder
                 .addCase(pending, (state) => {
@@ -88,6 +97,20 @@ function createExtraReducers() {
                 .addCase(rejected, (state, action) => {
                     state.item = { error: action.error };
                 });            
+        }
+
+        function _getReferenceAll() {
+            var { pending, fulfilled, rejected } = extraActions.getReferenceAll;
+            builder
+                .addCase(pending, (state) => {
+                    state.list = { loading: true };
+                })
+                .addCase(fulfilled, (state, action) => {
+                    state.list = { value: action.payload };
+                })
+                .addCase(rejected, (state, action) => {
+                    state.list = { error: action.error };
+                });
         }
 
         function _delete() {
