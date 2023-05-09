@@ -9,7 +9,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import { history } from '_helpers';
 import { eventsActions, alertActions } from '_store';
-import { createImmutableStateInvariantMiddleware } from '@reduxjs/toolkit';
 
 export default  AddEdit;
 
@@ -40,13 +39,13 @@ function AddEdit() {
 
     async function onSubmit(data) {
 
-        if(startDate == undefined || startDate == null){
+        if(startDate === undefined || startDate === null){
             dispatch(alertActions.error('Your event needs an Start date'));
 
             return;
         }
 
-        if(endDate == undefined || endDate == null){
+        if(endDate === undefined || endDate === null){
             dispatch(alertActions.error('Your event needs an End date'));
 
             return;
