@@ -16,7 +16,7 @@ namespace WebApi.Controllers
         [HttpGet("")]
         public IActionResult Index()
         {
-            return Ok("Hello from Healthybois");
+            return Ok("Hello from Healthybois!");
         }
     }
 }
