@@ -109,7 +109,9 @@ return (
             <span>Delete</span>
           )}
         </button>
-        <button className="btn btn-sm btn-primary mx-2">Invite</button>
+        <button className="btn btn-sm btn-primary mx-2" onClick={() => {
+    window.location.href = 'mailto:example@example.com?subject=Invitation&body&body=Hey healthyboi, du er hermed inviteret til at joine mit event.';
+}}>Invite</button>
               <button className="btn btn-sm btn-success mx-2">Sign up</button>
       </div>
       </div>
