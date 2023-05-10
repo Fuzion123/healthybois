@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { confirmAlert } from 'react-confirm-alert'; // Import
+// import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { eventsActions } from '_store';
@@ -22,34 +22,34 @@ function List() {
         dispatch(eventsActions.getReferenceAll());
     }, []);
 
-    const submit = (event) => {
+    // const submit = (event) => {
 
-        confirmAlert({
-          title: <span className="confirm-title">Confirm to delete</span>,
-          message: <span className="confirm-message">Are you sure?</span>,
-          buttons: [
-            {
-              label: 'Yes',
-              className: 'confirm-button',
-              onClick: () => dispatch(eventsActions.delete(event.id))
-            },
-            {
-              label: 'No',
-              className: 'confirm-button',
-              //onClick: () => alert('Click No')
-            }
-          ],
-          containerProps: { 
-            style: {
-              zIndex: 9999, 
-              position: 'absolute', 
-              top: '20px', 
-              left: '50%',
-              transform: 'translateX(-50%)' // center the dialog horizontally
-            }
-          }
-        });
-      }
+    //     confirmAlert({
+    //       title: <span className="confirm-title">Confirm to delete</span>,
+    //       message: <span className="confirm-message">Are you sure?</span>,
+    //       buttons: [
+    //         {
+    //           label: 'Yes',
+    //           className: 'confirm-button',
+    //           onClick: () => dispatch(eventsActions.delete(event.id))
+    //         },
+    //         {
+    //           label: 'No',
+    //           className: 'confirm-button',
+    //           //onClick: () => alert('Click No')
+    //         }
+    //       ],
+    //       containerProps: { 
+    //         style: {
+    //           zIndex: 9999, 
+    //           position: 'absolute', 
+    //           top: '20px', 
+    //           left: '50%',
+    //           transform: 'translateX(-50%)' // center the dialog horizontally
+    //         }
+    //       }
+    //     });
+    //   }
     
     return (
         <div>
@@ -59,12 +59,12 @@ function List() {
               <div key={event.id} className="card mb-3">
                     <div className="card-body" onClick={() => handleCardClick(event)}>
                         <h5 className="card-title">{event.title}</h5>
-                        <button onClick={() => submit(event)} className="btn btn-sm btn-danger" disabled={event.isDeleting}>
+                        {/* <button onClick={() => submit(event)} className="btn btn-sm btn-danger" disabled={event.isDeleting}>
                             {event.isDeleting 
                                 ? <span className="spinner-border spinner-border-sm"></span>
                                 : <span>Delete</span>
                             }
-                        </button>
+                        </button> */}
                     </div>
                     </div>
                    
