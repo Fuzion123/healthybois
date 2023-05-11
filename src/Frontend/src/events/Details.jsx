@@ -110,7 +110,20 @@ return (
           )}
         </button>
         <button className="btn btn-sm btn-primary mx-2" onClick={() => {
-    window.location.href = 'mailto:example@example.com?subject=Invitation&body&body=Hey healthyboi, du er hermed inviteret til at joine mit event.';
+const eventName = event.value.title;
+const eventLink = window.location.href;
+const recipient = "healthyboi@example.com";
+const subject = "Invitation to join my event";
+const body = `
+  <p>Hey Healthyboi,</p>
+  <p>You are hereby invited to join my event: <strong>${eventName}</strong>.</p>
+  <p>Are you up for the challenge?</p>
+  <p><a href="${eventLink}">Join here</a></p>
+  <p>Best regards,</p>
+  <p>Your Host</p>
+`;
+
+window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }}>Invite</button>
               <button className="btn btn-sm btn-success mx-2">Sign up</button>
       </div>
