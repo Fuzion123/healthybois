@@ -5,6 +5,10 @@ import { Home } from 'home';
 import { AccountLayout } from './account';
 import { UsersLayout } from './users';
 import { EventsLayout } from './events';
+import {QueryClient, QueryClientProvider} from 'react-query';
+
+// Initialze the client
+const queryClient = new QueryClient();
 
 export { App };
 
@@ -15,22 +19,25 @@ function App() {
     history.location = useLocation();
 
     return (
-        <div className="app-container xs">
-            <Nav />
-            <Alert />
-            <div className="container pt-4 pb-4">
-                <Routes>
-                    {/* private */}
-                    <Route element={<PrivateRoute />}>
-                        <Route path="/" element={<Home />} />
-                        <Route path="users/*" element={<UsersLayout />} />
-                        <Route path="events/*" element={<EventsLayout />} />
-                    </Route>
-                    {/* public */}
-                    <Route path="account/*" element={<AccountLayout />} />
-                    <Route path="*" element={<Navigate to="/" />} />
-                </Routes>
+        <QueryClientProvider client={queryClient}>
+            <div className="app-container xs">
+                <Nav />
+                <Alert />
+                <div className="container pt-4 pb-4">
+                    <Routes>
+                        {/* private */}
+                        <Route element={<PrivateRoute />}>
+                            <Route path="/" element={<Home />} />
+                            <Route path="users/*" element={<UsersLayout />} />
+                            <Route path="events/*" element={<EventsLayout />} />
+                        </Route>
+                        {/* public */}
+                        <Route path="account/*" element={<AccountLayout />} />
+                        <Route path="*" element={<Navigate to="/" />} />
+                    </Routes>
+                </div>
             </div>
-        </div>
+        </QueryClientProvider>
+        
     );
 }

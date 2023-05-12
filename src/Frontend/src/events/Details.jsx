@@ -4,6 +4,9 @@ import { eventsActions } from '_store';
 import { useEffect } from 'react';
 // import { userActions } from '_store';
 import { confirmAlert } from 'react-confirm-alert';
+import {useQuery, useMutation, useQueryClient } from 'react-query';
+import { eventapi } from '_api';
+import { history } from '_helpers';
 
 
 
@@ -11,18 +14,19 @@ import { confirmAlert } from 'react-confirm-alert';
 export default  EventDetails;
 
 function EventDetails() {
+  const queryClient = useQueryClient()
   const { id } = useParams();
   const dispatch = useDispatch();
   const event = useSelector(z => z.events.item);
   // const users = useSelector(x => x.users.list);
 
-  useEffect(() => {
-    dispatch(eventsActions.get(id));
-  }, []);
-
 //   useEffect(() => {
-//     dispatch(userActions.getAll());
-// }, []);
+//     dispatch(eventsActions.get(id));
+//   }, []);
+
+// //   useEffect(() => {
+// //     dispatch(userActions.getAll());
+// // }, []);
 
   const formatDate = (date) => {
     return new Intl.DateTimeFormat('en-GB', {
@@ -36,9 +40,26 @@ function EventDetails() {
     }).format(new Date(date));
   }
 
- // Delete event moved here
+	// Using the hook
+	const {data, error, isLoading} = useQuery('getEvent', () => {
+    return eventapi.getById(id);
+  });
+
+  const mutation = useMutation(async (id) => {
+    await eventapi.deleteById(id)
+  }, {
+    onSuccess: () => {
+      history.navigate('/events');
+    }
+  });
+
+	if (error) return <div>Request Failed</div>;
+
+	if (isLoading) return <div>Loading...</div>;
 
 const submit = (event) => {
+
+  console.log(event)
 
   confirmAlert({
     title: <span className="confirm-title">Confirm to delete</span>,
@@ -47,7 +68,7 @@ const submit = (event) => {
       {
         label: 'Yes',
         className: 'confirm-button',
-        onClick: () => dispatch(eventsActions.delete(event.id))
+        onClick: () => mutation.mutate(event.id)
       },
       {
         label: 'No',
@@ -72,17 +93,17 @@ const submit = (event) => {
 
 return (
   <div>
-    {(event?.value) && (
+    {(data) && (
       <div>
-        <h1>{event.value.title}</h1>
+        <h1>{data.title}</h1>
         <div className="card">
           <div className="card-body">
             <img src='https://play-lh.googleusercontent.com/N6yBgv77P8b3T2gZu4ARO8kBjZ0nPMt1pKKip1ox4b-jw8lvqfC-pLcoBWVJwSsfnQ=s256-rw' alt='stock'></img>
             <section className="mt-3">
               <h4>Details:</h4>
               <p>Arranged by: </p>
-              <p>Starts at: {formatDate(event.value.startsAt)}</p>
-              <p>Ends at: {formatDate(event.value.endsAt)}</p>
+              <p>Starts at: {formatDate(data.startsAt)}</p>
+              <p>Ends at: {formatDate(data.endsAt)}</p>
             </section>
           </div>
         </div>
@@ -90,7 +111,7 @@ return (
           <div className="card-body">
             <h4>Participants:</h4>
             <ul className="list-group">
-              {event.value.participants.map((p, index) => (
+              {data.participants.map((p, index) => (
                 <li
                   key={p.userId}
                   className={`list-group-item ${index % 2 === 0 ? 'bg-light' : ''}`}
@@ -102,15 +123,11 @@ return (
           </div>
         </div>
         <div className="d-flex justify-content-between align-items-center mt-3">
-        <button onClick={() => submit(event)} className="btn btn-sm btn-danger mx-2" disabled={event.isDeleting}>
-          {event.isDeleting ? (
-            <span className="spinner-border spinner-border-sm"></span>
-          ) : (
-            <span>Delete</span>
-          )}
+        <button onClick={() => submit(data)} className="btn btn-sm btn-danger mx-2" disabled={data.isDeleting}>
+          <span>Delete</span>
         </button>
         <button className="btn btn-sm btn-primary mx-2" onClick={() => {
-const eventName = event.value.title;
+const eventName = data.title;
 const eventLink = window.location.href;
 const recipient = "healthyboi@example.com";
 const subject = "Invitation to join my event";
@@ -129,7 +146,7 @@ window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject
       </div>
       </div>
     )}
-    {event?.loading && (
+    {data?.loading && (
       <div className="text-center">
         <span className="spinner-border spinner-border-lg align-center"></span>
       </div>

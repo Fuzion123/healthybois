@@ -67,12 +67,12 @@ namespace WebApi
             services.AddHttpContextAccessor();
 
             // caching
-            if (appSettings.UsingCachedRepositories)
-            {
-                services.AddMemoryCache();
-                services.AddSingleton<HashSet<string>>();
-                services.Decorate<IEventRepository, CachedEventRepository>();
-            }
+            //if (appSettings.UsingCachedRepositories)
+            //{
+            //    services.AddMemoryCache();
+            //    services.AddSingleton<HashSet<string>>();
+            //    services.Decorate<IEventRepository, CachedEventRepository>();
+            //}
 
             // swagger
             services.AddSwaggerGen(setup =>
