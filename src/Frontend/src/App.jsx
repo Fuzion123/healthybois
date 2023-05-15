@@ -20,7 +20,7 @@ function App() {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <div className="app-container xs">
+            <div className="app-container xs bg-stone-50">
                 <Nav />
                 <Alert />
                 <div className="container pt-4 pb-4">
