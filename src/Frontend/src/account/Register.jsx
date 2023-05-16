@@ -96,10 +96,16 @@ function Register() {
                     </div>
                     
                     <div class="mt-2"></div>
-                    <button disabled={isSubmitting} className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-green-400">
-                        {isSubmitting && <span className="spinner-border spinner-border-sm me-1"></span>}
-                        Register
-                    </button>
+          <button disabled={isSubmitting} className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            {isSubmitting ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-1"></span>
+                <span className="font-medium">Processing...</span>
+              </>
+            ) : (
+              'Register'
+            )}
+          </button>
                     <Link to="../login" className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-red-400">Cancel</Link>
                 </form>
             </div>
