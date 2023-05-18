@@ -15,14 +15,14 @@ namespace Domain.Events
         {
         }
 
-        public Result(ResultInput input) : this()
+        public Result(int activityId, ResultInput input) : this()
         {
             if (input is null)
             {
                 throw new ArgumentNullException(nameof(input));
             }
 
-            ActivityId = input.ActivityId;
+            ActivityId = activityId;
             ParticipantId = input.ParticipantId;
             Score = input.Score;
             CreatedAt = DateTime.UtcNow;

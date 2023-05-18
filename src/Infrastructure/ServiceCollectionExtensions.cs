@@ -1,5 +1,6 @@
 ﻿using Domain.Events;
 using Domain.Users;
+using Infrastructure.Repositories;
 using Infrastructure.Repositories.Events;
 using Infrastructure.Repositories.Events.Configurations;
 using Infrastructure.Repositories.Users;
@@ -22,6 +23,13 @@ namespace Infrastructure
         {
             services.AddScoped<UserConfiguration>();
             services.AddScoped<EventConfiguration>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddEndureanceCupDbContext(this IServiceCollection services)
+        {
+            services.AddScoped<EndureanceCupDbContext>();
 
             return services;
         }

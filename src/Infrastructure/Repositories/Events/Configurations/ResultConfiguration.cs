@@ -18,7 +18,8 @@ namespace Infrastructure.Repositories.Events.Configurations
             builder.Property(x => x.Score).IsRequired();
 
             builder.HasKey(x => x.Id).IsClustered(true);
-            builder.HasIndex(x => new { x.ActivityId, x.ParticipantId }).IsClustered(false).IsUnique(false);
+            builder.HasIndex(x => new { x.ActivityId, x.ParticipantId }).IsClustered(false).IsUnique(true);
+            builder.HasIndex("ActivityId", "Id").IsClustered(false).IsUnique(true);
         }
     }
 }

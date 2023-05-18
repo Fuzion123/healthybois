@@ -65,6 +65,7 @@ namespace WebApi
             services.AddEFCoreRepositories();
             services.AddEFCoreConfigurations();
             services.AddHttpContextAccessor();
+            services.AddEndureanceCupDbContext();
 
             // caching
             //if (appSettings.UsingCachedRepositories)

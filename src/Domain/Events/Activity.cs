@@ -33,7 +33,24 @@ namespace Domain.Events
             UpdatedAt = CreatedAt;
         }
 
-        public void AddOrUpdateResult(ResultInput input)
+        public bool Update(ActivityUpdateInput activityInput)
+        {
+            if (activityInput is null)
+            {
+                throw new ArgumentNullException(nameof(activityInput));
+            }
+
+            if(Title != activityInput.Title)
+            {
+                Title = activityInput.Title;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool AddOrUpdateResult(ResultInput input)
         {
             var updated = false;
 
@@ -48,7 +65,7 @@ namespace Domain.Events
             }
             else
             {
-                _results.Add(new Result(input));
+                _results.Add(new Result(Id, input));
 
                 updated = true;
             }
@@ -57,13 +74,15 @@ namespace Domain.Events
             {
                 UpdatedAt = DateTime.UtcNow;
             }
+
+            return updated;
         }
 
-        public void RemoveResult(ResultRemoveInput input)
+        public bool RemoveResult(int resultId)
         {
             var updated = false;
 
-            var existing = _results.FirstOrDefault(x => x.Id == input.ResultId);
+            var existing = _results.FirstOrDefault(x => x.Id == resultId);
 
             if(existing != null)
             {
@@ -76,6 +95,8 @@ namespace Domain.Events
             {
                 UpdatedAt = DateTime.UtcNow;
             }
+
+            return updated;
         }
     }
 }

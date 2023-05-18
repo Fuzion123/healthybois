@@ -93,21 +93,16 @@ namespace Domain.Events
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public bool RemoveParticipant(ParticipantInput input, int ownerUserId)
+        public bool RemoveParticipant(int participantId, int ownerUserId)
         {
             var removed = false;
-
-            if (input is null)
-            {
-                throw new ArgumentNullException(nameof(input));
-            }
-
-            var p = _participants.FirstOrDefault(x => x.UserId == input.UserId);
 
             if (OwnerUserId != ownerUserId)
             {
                 throw new DomainException($"Cant remove participant to Event because the current user is not the owner of this Event");
             }
+
+            var p = _participants.FirstOrDefault(x => x.Id == participantId);
 
             if (p != null)
             {
@@ -138,18 +133,35 @@ namespace Domain.Events
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public bool RemoveActivity(ActivityInput input)
+        public bool UpdateActivity(ActivityUpdateInput input)
         {
-            var removed = false;
-
             if (input is null)
             {
                 throw new ArgumentNullException(nameof(input));
             }
 
-            var a = _activities.FirstOrDefault(x => x.Title == input.Title);
+            var activity = _activities.FirstOrDefault(x => x.Id == input.ActivityId);
 
-            if(a.OwnerUserId != input.OwnerUserId)
+            if (activity == null) 
+                throw new DomainException($"Activity with id {input.ActivityId} was not found on event with id {Id}");
+
+            if (activity.Update(input))
+            {
+                UpdatedAt = DateTime.UtcNow;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool RemoveActivity(int activityId, int userId)
+        {
+            var removed = false;
+
+            var a = _activities.FirstOrDefault(x => x.Id == activityId);
+
+            if(a.OwnerUserId != userId)
             {
                 throw new DomainException($"Cant remove Activity from this Event, because the current user is not the owner of this Event");
             }
@@ -164,6 +176,26 @@ namespace Domain.Events
             }
 
             return removed;
+        }
+
+        public bool AddOrUpdateActivityResult(int activityId, ResultInput resultInput)
+        {
+            var activity = _activities.FirstOrDefault(x => x.Id == activityId);
+
+            if (activity == null)
+                throw new DomainException($"Found no activity with id {activityId} on event with id {Id}.");
+
+            return activity.AddOrUpdateResult(resultInput);
+        }
+
+        public bool RemoveActivityResult(int activityId, int resultId)
+        {
+            var activity = _activities.FirstOrDefault(x => x.Id == activityId);
+
+            if (activity == null)
+                throw new DomainException($"Found no activity with id {activityId} on event with id {Id}.");
+
+            return activity.RemoveResult(resultId);
         }
     }
 }

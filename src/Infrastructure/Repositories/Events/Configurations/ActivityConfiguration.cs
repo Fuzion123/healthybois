@@ -22,6 +22,7 @@ namespace Infrastructure.Repositories.Events.Configurations
 
             builder.HasKey(x => x.Id).IsClustered(true);
             builder.HasIndex(x => x.Title).IsClustered(false).IsUnique();
+            builder.HasIndex("EventId", "Id").IsClustered(false).IsUnique();
             builder.HasIndex(x => x.OwnerUserId).IsClustered(false).IsUnique(false);
         }
     }
