@@ -3,6 +3,7 @@
 using AutoMapper;
 using global::AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Storage.Blob;
 using Service.Users;
 using Service.Users.Models;
 using WebApi.Authorization;

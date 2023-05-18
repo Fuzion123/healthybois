@@ -6,21 +6,27 @@ using Service.Users.Dependencies;
 using Service.Users.Models;
 using BCrypt.Net;
 using Service.Exceptions;
+using System.Buffers.Text;
+using System.Reflection;
+using Microsoft.AspNetCore.StaticFiles;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository userRepository;
     private IJwtUtils _jwtUtils;
     private readonly IMapper _mapper;
+    private readonly IJobStorage jobStorage;
 
     public UserService(
         IUserRepository userRepository,
         IJwtUtils jwtUtils,
-        IMapper mapper)
+        IMapper mapper,
+        IJobStorage jobStorage)
     {
         this.userRepository = userRepository;
         _jwtUtils = jwtUtils;
         _mapper = mapper;
+        this.jobStorage = jobStorage;
     }
 
     public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model, CancellationToken cancellationToken)
@@ -31,6 +37,8 @@ public class UserService : IUserService
         if (user == null || !BCrypt.Verify(model.Password, user.PasswordHash))
             throw new AppException("Username or password is incorrect");
 
+        var url = jobStorage.GetServiceSasUriForBlob(user.ProfilePictureId);
+
         // authentication successful
         var response = _mapper.Map<AuthenticateResponse>(user);
 
@@ -39,18 +47,58 @@ public class UserService : IUserService
         //response.ProfilePicture = profilePictureUrl;
 
         response.Token = _jwtUtils.GenerateToken(user);
+        response.ProfilePictureUrl = url;
 
         return response;
     }
 
-    public async Task<List<User>> GetAll(CancellationToken cancellationToken)
+    public async Task<List<UserDto>> GetAll(CancellationToken cancellationToken)
     {
-        return await userRepository.GetAll(cancellationToken);
+        var users = await userRepository.GetAll(cancellationToken);
+
+        return users.Select(x =>
+        {
+            var url = jobStorage.GetServiceSasUriForBlob(x.ProfilePictureId);
+
+            return new UserDto()
+            {
+                CreatedAt = x.CreatedAt,
+                FirstName = x.FirstName,
+                Id = x.Id,
+                LastName = x.LastName,
+                PasswordHash = x.PasswordHash,
+                Role = x.Role,
+                UpdatedAt = x.UpdatedAt,
+                UserName = x.UserName,
+                ProfileUrl = url
+            };
+
+        }).ToList();
     }
 
-    public async Task<User> GetById(int id, CancellationToken cancellationToken)
+    public async Task<UserDto> GetById(int id, CancellationToken cancellationToken)
     {
-        return await userRepository.GetById(id, cancellationToken);
+        var user = await userRepository.GetById(id, cancellationToken);
+
+        if(user != null)
+        {
+            var url = jobStorage.GetServiceSasUriForBlob(user.ProfilePictureId);
+
+            return new UserDto()
+            {
+                CreatedAt = user.CreatedAt,
+                FirstName = user.FirstName,
+                Id = user.Id,
+                LastName = user.LastName,
+                PasswordHash = user.PasswordHash,
+                Role = user.Role,
+                UpdatedAt = user.UpdatedAt,
+                UserName = user.UserName,
+                ProfileUrl = url
+            };
+        }
+
+        return null;
     }
 
     public async Task Register(RegisterRequest model, CancellationToken cancellationToken)
@@ -62,12 +110,38 @@ public class UserService : IUserService
         // hash password
         var passwordHash = BCrypt.HashPassword(model.Password);
 
-        var user = new User(model.FirstName, model.LastName, model.Username, passwordHash);
+        // image
+        string profilePictureId = default;
+
+        if (model.ProfilePicture != null)
+        {
+            profilePictureId = await StoreProfileImage(model.ProfilePicture, cancellationToken);
+        }
+
+        var user = new User(model.FirstName, model.LastName, model.Username, passwordHash, profilePictureId);
 
         // save user
         userRepository.Add(user);
 
         await userRepository.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task<string> StoreProfileImage(ProfilePicture profilePicture, CancellationToken cancellationToken)
+    {
+        if(!new FileExtensionContentTypeProvider().TryGetContentType(profilePicture.Name, out var contentType))
+        {
+            throw new AppException($"Uploaded profile picture '{profilePicture.Name}' mimetype is not supported");
+        }
+
+        var fileName = $"{DateTime.Now.Ticks}-{profilePicture.Name}";
+
+        var base64MetaInformation = $"data:{contentType};base64,";
+
+        var rawBase64 = profilePicture.Base64.Replace(base64MetaInformation, "");
+
+        await jobStorage.UploadBase64Stream(fileName, rawBase64, cancellationToken);
+
+        return fileName;
     }
 
     public async Task Update(int id, UpdateRequest model, CancellationToken cancellationToken)
@@ -90,7 +164,7 @@ public class UserService : IUserService
         //    user.ProfilePicture = model.ProfilePicture;
         //}
 
-         user.Update(model.FirstName, model.LastName, passwordHash);
+         user.Update(model.FirstName, model.LastName, passwordHash, null);
 
         await userRepository.SaveChangesAsync(cancellationToken);
     }

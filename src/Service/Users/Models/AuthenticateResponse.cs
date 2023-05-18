@@ -9,7 +9,7 @@ public class AuthenticateResponse
     public string LastName { get; set; }
     public string Username { get; set; }
     public string Token { get; set; }
-    //public string ProfilePicture { get; set; }
+    public Uri ProfilePictureUrl { get; set; }
     public Role Role { get; set; }
     public bool IsAdmin => Role == Role.Admin;
 }

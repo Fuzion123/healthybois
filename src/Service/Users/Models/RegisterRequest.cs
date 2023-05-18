@@ -17,5 +17,12 @@ public class RegisterRequest
     public string Password { get; set; }
 
     [Required]
-    public string ProfilePicture { get; set; }
+    public ProfilePicture ProfilePicture { get; set; }
+}
+
+public class ProfilePicture
+{
+    public string Name { get; set; }
+    public string Type { get; set; }
+    public string Base64 { get; set; }
 }

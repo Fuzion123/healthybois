@@ -1,47 +1,17 @@
 import { useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { eventsActions } from '_store';
-import { useEffect } from 'react';
-// import { userActions } from '_store';
 import { confirmAlert } from 'react-confirm-alert';
-import {useQuery, useMutation, useQueryClient } from 'react-query';
+import {useQuery, useMutation } from 'react-query';
 import { eventapi } from '_api';
-import { history } from '_helpers';
-
-
+import { history, date } from '_helpers';
 
 
 export default  EventDetails;
 
 function EventDetails() {
-  const queryClient = useQueryClient()
   const { id } = useParams();
-  const dispatch = useDispatch();
-  const event = useSelector(z => z.events.item);
-  // const users = useSelector(x => x.users.list);
 
-//   useEffect(() => {
-//     dispatch(eventsActions.get(id));
-//   }, []);
-
-// //   useEffect(() => {
-// //     dispatch(userActions.getAll());
-// // }, []);
-
-  const formatDate = (date) => {
-    return new Intl.DateTimeFormat('en-GB', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: false,
-      timeZone: 'Europe/Berlin'
-    }).format(new Date(date));
-  }
-
-	// Using the hook
-	const {data, error, isLoading} = useQuery('getEvent', () => {
+	// query
+	const {data, error, isLoading} = useQuery('getById', () => {
     return eventapi.getById(id);
   });
 
@@ -58,9 +28,6 @@ function EventDetails() {
 	if (isLoading) return <div>Loading...</div>;
 
 const submit = (event) => {
-
-  console.log(event)
-
   confirmAlert({
     title: <span className="confirm-title">Confirm to delete</span>,
     message: <span className="confirm-message">Are you sure?</span>,
@@ -88,9 +55,6 @@ const submit = (event) => {
   });
 }
 
-
-
-
 return (
   <div>
     {(data) && (
@@ -102,8 +66,8 @@ return (
             <section className="mt-3">
               <h4>Details:</h4>
               <p>Arranged by: </p>
-              <p>Starts at: {formatDate(data.startsAt)}</p>
-              <p>Ends at: {formatDate(data.endsAt)}</p>
+              <p>Starts at: {date.formatDate(data.startsAt)}</p>
+              <p>Ends at: {date.formatDate(data.endsAt)}</p>
             </section>
           </div>
         </div>

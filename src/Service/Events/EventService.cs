@@ -2,11 +2,8 @@
 using Domain.Events;
 using Domain.Events.Input;
 using Domain.Users;
-using Microsoft.Data.SqlClient.DataClassification;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Service.Events.Models;
 using Service.Exceptions;
-using System.Diagnostics;
 
 namespace Service.Events
 {

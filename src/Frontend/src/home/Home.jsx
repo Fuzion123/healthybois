@@ -11,9 +11,9 @@ function Home() {
         return (
             <div>
                 <h1>Hii {auth?.firstName}!</h1>
-                <img src={auth?.profilePicture} alt="Profile Pic" /> {/* Add this */}
+                <img src={auth?.profilePictureUrl} alt="Profile Pic" /> {/* Add this */}
                 <p><Link to="/users">Manage Users</Link></p>
-                <p><Link to="/events">Manage Cups</Link></p>
+                <p><Link to="/events">Manage Events</Link></p>
             </div>
         );
     }
@@ -21,8 +21,8 @@ function Home() {
     return (
         <div>
             <h1>Hii {auth?.firstName}!</h1>
-            <img src={auth?.profilePicture} alt="Profile Pic" /> {}
-            <p><Link to="/events">Manage Cups</Link></p>
+            <img src={auth?.profilePictureUrl} alt="Profile Pic" /> {}
+            <p><Link to="/events">Manage Events</Link></p>
         </div>
     );
 }

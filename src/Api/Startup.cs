@@ -8,12 +8,9 @@ using Service.Users.Dependencies;
 using WebApi.Middleware;
 using Service.Users;
 using Infrastructure;
-using Serilog;
 using Service.Events;
-using Domain.Events;
-using Domain.Users;
-using Infrastructure.Repositories.Events;
-using Infrastructure.Repositories.Users;
+using Infrastructure.JobStorage;
+
 
 namespace WebApi
 {
@@ -48,6 +45,9 @@ namespace WebApi
                     sql.EnableRetryOnFailure(3);
                 });
             });
+
+            
+            services.AddBlobJobStorage(appSettings.ConnectionStrings.AzureStorageAccount);
 
             services.AddCors();
             services.AddControllers();

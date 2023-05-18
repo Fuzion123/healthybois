@@ -1,4 +1,4 @@
-using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 
 namespace Domain.Users;
 
@@ -11,13 +11,14 @@ public class User
     public string PasswordHash { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
-    public Role Role { get; set; }
+    public Role Role { get; private set; }
+    public string ProfilePictureId { get; private set; }
 
     private User()
     {
     }
 
-    public User(string firstName, string lastName, string userName, string passwordHash) : base()
+    public User(string firstName, string lastName, string userName, string passwordHash, string profilePictureId) : base()
     {
         if (string.IsNullOrEmpty(firstName))
         {
@@ -46,9 +47,10 @@ public class User
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = CreatedAt;
         Role = Role.User;
+        ProfilePictureId = profilePictureId;
     }
 
-    public bool Update(string firstName, string lastName, string passwordHash)
+    public bool Update(string firstName, string lastName, string passwordHash, string profilePictureId)
     {
         var updated = false;
 
@@ -83,11 +85,30 @@ public class User
             updated = true;
         }
 
+        if(ProfilePictureId != profilePictureId)
+        {
+            updated = true;
+
+            ProfilePictureId = profilePictureId;
+        }
+
         if (updated)
         {
             UpdatedAt = DateTime.UtcNow;
         }
 
         return updated;
+    }
+
+    public void SetOrUpdateProfilePciture(string profilePictureId)
+    {
+        ProfilePictureId = ProfilePictureId;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void DeleteProfilePicture()
+    {
+        ProfilePictureId = null;
+        UpdatedAt = DateTime.UtcNow;
     }
 }
