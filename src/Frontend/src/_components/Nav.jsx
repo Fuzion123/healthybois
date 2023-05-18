@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation} from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
@@ -8,21 +8,18 @@ import { authActions } from '_store';
 
 export { Nav };
 
-// const navigation = [
-//     { name: 'Dashboard', href: '#', current: true },
-//     { name: 'Team', href: '#', current: false },
-//     { name: 'Projects', href: '#', current: false },
-//     { name: 'Calendar', href: '#', current: false },
-//   ]
-
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
+
+
 
 function Nav() {
     const auth = useSelector(x => x.auth.value);
     const dispatch = useDispatch();
     const logout = () => dispatch(authActions.logout());
+
+    const { pathname } = useLocation();
 
     // only show nav when logged in
     if (!auth)
@@ -48,6 +45,7 @@ function Nav() {
                     <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                         <div className="relative flex h-16 items-center justify-between">
                             <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+
                                 {/* Mobile menu button*/}
                                 <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                                     <span className="sr-only">Open main menu</span>
@@ -150,27 +148,30 @@ function Nav() {
                         <div className="space-y-1 px-2 pb-3 pt-2">
 
                             <Disclosure.Button className="">
-                                <NavLink
-                                    to="/"
-                                    onClick={close} // Call close function on click
-                                    className={`block rounded-md px-3 py-2 text-base font-medium ${open ? 'text-gray-300 hover:bg-gray-700 hover:text-white' : 'bg-gray-900 text-white'
-                                        }`}
-                                >
-                                    Home
-                                </NavLink>
-                                <NavLink
-                                    to="/users"
-                                    onClick={close} // Call close function on click
-                                    className={`block rounded-md px-3 py-2 text-base font-medium ${open ? 'text-gray-300 hover:bg-gray-700 hover:text-white' : 'bg-gray-900 text-white'
-                                        }`}
-                                >
-                                    Users
-                                </NavLink>
-                                <NavLink
-                                    to="/events"
-                                    onClick={close} // Call close function on click
-                                    className={`block rounded-md px-3 py-2 text-base font-medium ${open ? 'text-gray-300 hover:bg-gray-700 hover:text-white' : 'bg-gray-900 text-white'
-                                        }`}
+                            <NavLink
+                  to="/"
+                  onClick={close} 
+                  className={`block rounded-md px-3 py-2 text-base font-medium ${
+                    pathname === '/' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  }`}
+                >
+                  Home
+                </NavLink>
+                <NavLink
+                  to="/users"
+                  onClick={close} 
+                  className={`block rounded-md px-3 py-2 text-base font-medium ${
+                    pathname === '/users' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  }`}
+                >
+                  Users
+                </NavLink>
+                <NavLink
+                  to="/events"
+                  onClick={close} 
+                  className={`block rounded-md px-3 py-2 text-base font-medium ${
+                    pathname === '/events' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  }`}
                                 >
                                     Events
                                 </NavLink>
