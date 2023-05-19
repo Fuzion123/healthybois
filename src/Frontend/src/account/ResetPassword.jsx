@@ -23,7 +23,7 @@ function ResetPassword() {
 
     // get functions to build form with useForm() hook
     const { register, handleSubmit, formState } = useForm(formOptions);
-    const { errors, isSubmitting } = formState;
+    const { errors } = formState;
 
     const mutation = useMutation(async (data) => {
 
@@ -84,8 +84,8 @@ function ResetPassword() {
                             </div>
                             </div>
                         <div>
-                        <button disabled={isSubmitting} className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            {isSubmitting ? (
+                        <button disabled={mutation.isLoading} className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            {mutation.isLoading ? (
                                 <>
                                     <svg className="mr-3 h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
