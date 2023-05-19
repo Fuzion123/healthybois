@@ -1,11 +1,10 @@
 ﻿namespace WebApi.Controllers;
 
-using AutoMapper;
-using global::AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Storage.Blob;
+using Service.Email;
 using Service.Users;
 using Service.Users.Models;
+using System.Runtime.InteropServices;
 using WebApi.Authorization;
 
 [Authorize]
@@ -14,10 +13,12 @@ using WebApi.Authorization;
 public class UsersController : ControllerBase
 {
     private IUserService _userService;
+    private readonly IRecoverCodeService recoverCodeService;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, IRecoverCodeService recoverCodeService)
     {
         _userService = userService;
+        this.recoverCodeService = recoverCodeService;
     }
 
     [AllowAnonymous]
@@ -36,6 +37,19 @@ public class UsersController : ControllerBase
         await _userService.Register(model, cancellationToken);
 
         return Ok(new { message = "Registration successful" });
+    }
+
+    [AllowAnonymous]
+    [HttpPost("resetpassword/{code}")]
+    public async Task<IActionResult> Register(string code, [FromBody] ResetPasswordRequest model, CancellationToken cancellationToken)
+    {
+        var recoverCode = await recoverCodeService.GetRecoverCode(code, cancellationToken);
+
+        await _userService.ResetPassword(recoverCode.Email, model, cancellationToken);
+
+        await recoverCodeService.RemoveRecoverCode(code, cancellationToken);
+
+        return Ok(new { message = "Reset was successful" });
     }
 
     [AllowAdminOnlyAttribute]

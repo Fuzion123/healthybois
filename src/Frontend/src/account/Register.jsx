@@ -25,6 +25,9 @@ function Register() {
             .required('First Name is required'),
         lastName: Yup.string()
             .required('Last Name is required'),
+        email: Yup.string()
+            .email()
+            .required('Email is required'),
         username: Yup.string()
             .required('Username is required'),
         password: Yup.string()
@@ -54,6 +57,7 @@ function Register() {
             var request = {
               firstName: data.firstName,
               lastName: data.lastName,
+              email: data.email,
               username: data.username,
               password: data.password,
               profilePicture: {
@@ -100,6 +104,13 @@ function Register() {
             <div className="mt-2">
               <input name="lastName" type="text" {...register('lastName')} className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.lastName ? 'is-invalid' : ''}`} />
               <div className="invalid-feedback">{errors.lastName?.message}</div>
+            </div>
+          </div>
+          <div>
+            <label className="block text-md font-medium leading-6 text-gray-900">Email</label>
+            <div className="mt-2">
+              <input name="email" type="text" {...register('email')} className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.email ? 'is-invalid' : ''}`} />
+              <div className="invalid-feedback">{errors.email?.message}</div>
             </div>
           </div>
 

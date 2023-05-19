@@ -66,6 +66,7 @@ namespace WebApi
             services.AddEFCoreConfigurations();
             services.AddHttpContextAccessor();
             services.AddEndureanceCupDbContext();
+            services.AddAzureEmailService(appSettings.AzureEmailSettings);
 
             // caching
             //if (appSettings.UsingCachedRepositories)

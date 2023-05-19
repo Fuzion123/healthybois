@@ -19,7 +19,12 @@ namespace Infrastructure.Repositories.Users
 
         public async Task<bool> Exists(string userName, CancellationToken cancellationToken)
         {
-            return await dbContext.Users.AnyAsync(x => x.UserName == userName, cancellationToken);
+            return await dbContext.Users.AnyAsync(x => x.UserName == userName || x.Email == userName, cancellationToken);
+        }
+
+        public async Task<bool> Exists(string userName, string email, CancellationToken cancellationToken)
+        {
+            return await dbContext.Users.AnyAsync(x => x.UserName == userName || x.UserName == email || x.Email == email || x.Email == userName, cancellationToken);
         }
 
         public async Task<bool> Exists(int userId, CancellationToken cancellationToken)
@@ -39,7 +44,7 @@ namespace Infrastructure.Repositories.Users
 
         public async Task<User> GetByUserName(string userName, CancellationToken cancellation)
         {
-            return await dbContext.Users.FirstOrDefaultAsync(x => x.UserName == userName, cancellation);    
+            return await dbContext.Users.FirstOrDefaultAsync(x => x.UserName == userName || x.Email == userName, cancellation);
         }
 
         public void Remove(User user)

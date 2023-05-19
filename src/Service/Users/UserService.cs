@@ -6,9 +6,8 @@ using Service.Users.Dependencies;
 using Service.Users.Models;
 using BCrypt.Net;
 using Service.Exceptions;
-using System.Buffers.Text;
-using System.Reflection;
 using Microsoft.AspNetCore.StaticFiles;
+using System.Reflection;
 
 public class UserService : IUserService
 {
@@ -42,10 +41,6 @@ public class UserService : IUserService
         // authentication successful
         var response = _mapper.Map<AuthenticateResponse>(user);
 
-        // Fetch profile picture URL from the backend API and add it to the response
-        //var profilePictureUrl = await GetProfilePictureUrl(user.Id, cancellationToken);
-        //response.ProfilePicture = profilePictureUrl;
-
         response.Token = _jwtUtils.GenerateToken(user);
         response.ProfilePictureUrl = url;
 
@@ -70,6 +65,7 @@ public class UserService : IUserService
                 Role = x.Role,
                 UpdatedAt = x.UpdatedAt,
                 UserName = x.UserName,
+                Email = x.Email,
                 ProfileUrl = url
             };
 
@@ -94,6 +90,7 @@ public class UserService : IUserService
                 Role = user.Role,
                 UpdatedAt = user.UpdatedAt,
                 UserName = user.UserName,
+                Email = user.Email,
                 ProfileUrl = url
             };
         }
@@ -104,8 +101,8 @@ public class UserService : IUserService
     public async Task Register(RegisterRequest model, CancellationToken cancellationToken)
     {
         // validate
-        if (await userRepository.Exists(model.Username, cancellationToken))
-            throw new AppException("Username '" + model.Username + "' is already taken");
+        if (await userRepository.Exists(model.Username, model.Email, cancellationToken))
+            throw new AppException("Username or email is already taken");
 
         // hash password
         var passwordHash = BCrypt.HashPassword(model.Password);
@@ -118,7 +115,7 @@ public class UserService : IUserService
             profilePictureId = await StoreProfileImage(model.ProfilePicture, cancellationToken);
         }
 
-        var user = new User(model.FirstName, model.LastName, model.Username, passwordHash, profilePictureId);
+        var user = new User(model.FirstName, model.LastName, model.Email, model.Username, passwordHash, profilePictureId);
 
         // save user
         userRepository.Add(user);
@@ -158,12 +155,6 @@ public class UserService : IUserService
         if (!string.IsNullOrEmpty(model.Password))
             passwordHash = BCrypt.HashPassword(model.Password);
 
-        //// update profile picture if provided
-        //if (model.ProfilePicture != null)
-        //{
-        //    user.ProfilePicture = model.ProfilePicture;
-        //}
-
          user.Update(model.FirstName, model.LastName, passwordHash, null);
 
         await userRepository.SaveChangesAsync(cancellationToken);
@@ -176,5 +167,36 @@ public class UserService : IUserService
         userRepository.Remove(user);
 
         await userRepository.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task ResetPassword(string email,ResetPasswordRequest request, CancellationToken cancellationToken)
+    {
+        var user = await userRepository.GetByUserName(email, cancellationToken);
+
+        if (user == null) 
+        {
+            throw new AppException("No user found for recover email, cant reset password. Try to resubmit a restore password request for you email");
+        }
+
+        // hash password
+        var passwordHash = GetNewPasswordHash(request.OldPassword, user.PasswordHash, request.NewPassword);
+
+        user.UpdatePassword(passwordHash);
+
+        await userRepository.SaveChangesAsync(cancellationToken);
+    }
+
+    private string GetNewPasswordHash(string oldPassword, string currentHash, string newPassword)
+    {
+        try
+        {
+            var passwordHash = BCrypt.ValidateAndReplacePassword(oldPassword, currentHash, newPassword);
+
+            return passwordHash;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Old password is not correct.");
+        }
     }
 }

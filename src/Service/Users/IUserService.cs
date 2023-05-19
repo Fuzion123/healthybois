@@ -1,6 +1,5 @@
 ﻿namespace Service.Users;
 
-using Domain.Users;
 using Service.Users.Models;
 
 public interface IUserService
@@ -11,4 +10,5 @@ public interface IUserService
     Task Register(RegisterRequest model, CancellationToken cancellationToken);
     Task Update(int id, UpdateRequest model, CancellationToken cancellationToken);
     Task Delete(int id, CancellationToken cancellationToken);
+    Task ResetPassword(string email, ResetPasswordRequest request, CancellationToken cancellationToken);
 }

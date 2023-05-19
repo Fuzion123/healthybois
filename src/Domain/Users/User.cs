@@ -1,4 +1,4 @@
-using System.Runtime.CompilerServices;
+using Domain.Exceptions;
 
 namespace Domain.Users;
 
@@ -7,6 +7,7 @@ public class User
     public int Id { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
+    public string Email { get; private set; }
     public string UserName { get; private set; }
     public string PasswordHash { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -18,7 +19,7 @@ public class User
     {
     }
 
-    public User(string firstName, string lastName, string userName, string passwordHash, string profilePictureId) : base()
+    public User(string firstName, string lastName, string email, string userName, string passwordHash, string profilePictureId) : base()
     {
         if (string.IsNullOrEmpty(firstName))
         {
@@ -48,7 +49,8 @@ public class User
         UpdatedAt = CreatedAt;
         Role = Role.User;
         ProfilePictureId = profilePictureId;
-    }
+        Email = email;
+     }
 
     public bool Update(string firstName, string lastName, string passwordHash, string profilePictureId)
     {
@@ -109,6 +111,22 @@ public class User
     public void DeleteProfilePicture()
     {
         ProfilePictureId = null;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdatePassword(string passwordHash)
+    {
+        if (string.IsNullOrEmpty(passwordHash))
+        {
+            throw new ArgumentException($"'{nameof(passwordHash)}' cannot be null or empty.", nameof(passwordHash));
+        }
+
+        if(PasswordHash == passwordHash) 
+        {
+            throw new DomainException("New password can't be the same as the old password. Please enter a different password.");
+        }
+
+        PasswordHash = passwordHash;
         UpdatedAt = DateTime.UtcNow;
     }
 }

@@ -32,24 +32,17 @@ namespace Novicell.Shopify.CustomerConnector.Infrastructure.JobStorage.Blob
             return containerClient;
         }
 
-        public async Task<Guid> Add<T>(T data, CancellationToken cancellationToken) where T : class
+        public async Task Add<T>(string bloblReference, T data, CancellationToken cancellationToken) where T : class
         {
-            var id = Guid.NewGuid();
-            var bloblReference = id.ToString();
-
             var blobContainerClient = await GetBlobContainer(cancellationToken).ConfigureAwait(false);
 
             var blob = blobContainerClient.GetBlockBlobReference(bloblReference);
 
             await blob.UploadTextAsync(JsonSerializer.Serialize(data), Encoding.UTF8, default, default, default, cancellationToken);
-
-            return id;
         }
 
-        public async Task Delete(Guid id, CancellationToken cancellationToken)
+        public async Task Delete(string bloblReference, CancellationToken cancellationToken)
         {
-            var bloblReference = id.ToString();
-
             var blobContainerClient = await GetBlobContainer(cancellationToken).ConfigureAwait(false);
 
             var blob = blobContainerClient.GetBlockBlobReference(bloblReference);
@@ -57,10 +50,8 @@ namespace Novicell.Shopify.CustomerConnector.Infrastructure.JobStorage.Blob
             await blob.DeleteIfExistsAsync(cancellationToken);
         }
 
-        public async Task<T> Get<T>(Guid id, CancellationToken cancellationToken) where T : class
+        public async Task<T> Get<T>(string bloblReference, CancellationToken cancellationToken) where T : class
         {
-            var bloblReference = id.ToString();
-
             var blobContainerClient = await GetBlobContainer(cancellationToken).ConfigureAwait(false);
 
             var blob = blobContainerClient.GetBlockBlobReference(bloblReference);
@@ -127,6 +118,15 @@ namespace Novicell.Shopify.CustomerConnector.Infrastructure.JobStorage.Blob
             {
                 return null;
             }
+        }
+
+        public async Task<bool> Exists(string blobName, CancellationToken cancellationToken)
+        {
+            var blobContainerClient = await GetBlobContainer(cancellationToken).ConfigureAwait(false);
+
+            var blob = blobContainerClient.GetBlockBlobReference(blobName);
+
+            return await blob.ExistsAsync(cancellationToken);
         }
     }
 }

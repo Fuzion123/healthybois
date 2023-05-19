@@ -37,7 +37,7 @@ function Login() {
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                         
-                            <label className="block text-md font-medium leading-6 text-gray-900">Username</label>
+                            <label className="block text-md font-medium leading-6 text-gray-900">Username / email</label>
                             <div className="mt-2">
                             <input name="username" type="text" {...register('username')} className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.username ? 'is-invalid' : ''}`} />
                             <div className="invalid-feedback">{errors.username?.message}
@@ -49,7 +49,7 @@ function Login() {
                             <div className="flex items-center justify-between">
                             <label className="block text-md font-medium leading-6 text-gray-900">Password</label>
                             <div className="text-sm">
-                            <a href="/" className="font-semibold text-gray-900 hover:text-indigo-500">Forgot password?</a>  
+                            <Link to="../forgotpassword" className="font-semibold text-gray-900 hover:text-indigo-500">Forgot password?</Link>
                             </div>
                             </div>
                             <div className="mt-2">
