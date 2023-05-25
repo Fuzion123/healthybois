@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
+import { motion } from "framer-motion"
 
 import { authActions } from '_store';
 
@@ -30,8 +31,19 @@ function Login() {
         
   <div className="flex min-h-full flex-col justify-center px-10 py-14 lg:px-8">
    <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-   <img alt='healthybois-logo' className="mx-auto h-60 w-60 filter drop-shadow-2xl" src={process.env.PUBLIC_URL + '/logo.png'} />
+    <motion.div animate={{
+        rotate: [0, 720],
+        scale: [1, 2, 1], 
+        filter: ["none", "brightness(2)", "none"],
+      }}
+      transition={{
+        duration: 1, 
+        ease: "easeInOut", 
+      }}>
+   <img alt='healthybois-logo' className="mx-auto h-20 w-20 filter drop-shadow-2xl" src={process.env.PUBLIC_URL + '/logo.png'} />
+   </motion.div>
                 <h4 className="mt-10 text-center text-3xl font-bold leading-9 tracking-tight text-gray-900">Login</h4>
+               
                 </div>
                 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
