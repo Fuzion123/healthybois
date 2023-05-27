@@ -4,6 +4,8 @@ import {useQuery, useMutation } from 'react-query';
 import { eventapi } from '_api';
 import { history, date } from '_helpers';
 
+import ActivityList from './activities/ActivityList'
+import { Link } from 'react-router-dom';
 
 export default  EventDetails;
 
@@ -93,6 +95,12 @@ return (
 
                 </p>
                 <p className="text-gray-600">Host</p>
+              </div>
+            </div>
+            <div className="relative mt-8 flex items-center gap-x-4">
+              <div className="text-sm leading-6">
+              <Link to={`/events/${id}/addActivity`} className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-green-400">Add Activity</Link>
+              <ActivityList activities={data.activities} />
               </div>
             </div>
           </article>
