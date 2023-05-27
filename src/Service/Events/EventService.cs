@@ -410,7 +410,7 @@ namespace Service.Events
 
         public async Task<List<ResultDto>> GetAllResults(int eventId, int activityId, CancellationToken cancellationToken)
         {
-            var results = await eventRepository.GetAllResults(eventId, activityId, cancellationToken);
+            var results = await eventRepository.GetAllResultsForActivity(eventId, activityId, cancellationToken);
 
             return results.Select(x => new ResultDto()
             {
@@ -421,6 +421,50 @@ namespace Service.Events
                CreatedAt = x.CreatedAt,
                ActivityId = x.ActivityId    
             }).ToList();
+        }
+
+        public async Task<ScoreboardSummaryDto> GetScoreboardSummary(int eventId, int currentUserId, CancellationToken cancellationToken)
+        {
+            var @event = await eventRepository.GetById(eventId, cancellationToken);
+
+            if (@event == null)
+                return null;
+
+            if (@event.OwnerUserId != currentUserId && !@event.Participants.Any(x => x.UserId == currentUserId))
+                throw new AppException($"Current user does not have access to the event.");
+
+            var ids = @event.Participants.Select(x => x.UserId).ToArray();
+
+            var users = await userRepository.GetByIds(ids, cancellationToken);
+
+            var usersById = users.ToDictionary(x => x.Id);
+
+            var results = await eventRepository.GetAllResultsForEvent(eventId, cancellationToken);
+
+            var totalScoreByUserId = results
+                .GroupBy(x => x.ParticipantId)
+                .ToDictionary(x => x.Key, value => value.Sum(u => u.Score));
+
+            return new ScoreboardSummaryDto()
+            {
+                EventId = eventId,
+                Results = @event.Participants.Select(x =>
+                {
+                    double score = 0;
+
+                    if (totalScoreByUserId.ContainsKey(x.Id))
+                    {
+                        score = totalScoreByUserId[x.Id];
+                    }
+
+                    return new ScoreboardSummaryResultDto()
+                    {
+                        Participant = eventMapper.MapParticipant(usersById[x.UserId]),
+                        TotalScoreSum = score
+                    };
+
+                }).ToList()
+            };
         }
     }
 }

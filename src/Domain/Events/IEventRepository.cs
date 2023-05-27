@@ -15,6 +15,7 @@
         public Task<List<Participant>> GetAllParticipants(int eventId, CancellationToken cancellationToken);
         public Task<Result> GetResultById(int eventId, int activityId, int resultId, CancellationToken cancellationToken);
         public Task<Result> GetResultByParticipantId(int eventId, int activityId, int participantId, CancellationToken cancellationToken);
-        public Task<List<Result>> GetAllResults(int eventId, int activityId, CancellationToken cancellationToken);
+        public Task<List<Result>> GetAllResultsForEvent(int eventId, CancellationToken cancellationToken);
+        public Task<List<Result>> GetAllResultsForActivity(int eventId, int activityId, CancellationToken cancellationToken);
     }
 }

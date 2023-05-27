@@ -203,6 +203,11 @@ namespace Domain.Events
             if (activity == null)
                 throw new DomainException($"Found no activity with id {activityId} on event with id {Id}.");
 
+            if(!_participants.Any(x => x.Id == resultInput.ParticipantId))
+            {
+                throw new DomainException($"No Participant found on the event with that id");
+            }
+
             return activity.AddOrUpdateResult(resultInput);
         }
 

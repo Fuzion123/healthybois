@@ -2,7 +2,6 @@
 using Domain.Exceptions;
 using Domain.Users;
 using Service.Events.Models;
-using System.Threading;
 
 namespace Service.Events.Mappers
 {
@@ -34,53 +33,64 @@ namespace Service.Events.Mappers
                 Description = @event.Description,
                 StartsAt = @event.StartsAt,
                 EventPictureUrl = pictureService.GetPicture(@event.EventPictureId),
-                EventOwner = new EventOwnerDto
-                {
-                    Email = owner.Email,
-                    FirstName = owner.FirstName,
-                    LastName = owner.LastName,
-                    Id = @event.Id,
-                    ProfilePictureUrl = pictureService.GetPicture(owner.ProfilePictureId)
-                },
-                Activities = @event.Activities.Select(x =>
-                {
-                    return new ActivityDto()
-                    {
-                        Id = x.Id,
-                        Title = x.Title,
-                        CreatedAt = x.CreatedAt,
-                        EventId = x.EventId,
-                        OwnerUserId = x.OwnerUserId,
-                        UpdatedAt = x.UpdatedAt,
-                        Results = x.Results.Select(y =>
-                        {
-                            return new ResultDto()
-                            {
-                                Id = y.Id,
-                                Score = y.Score,
-                                ActivityId = y.ActivityId,
-                                CreatedAt = y.CreatedAt,
-                                UpdatedAt = y.UpdatedAt,
-                                ParticipantId = y.ParticipantId
-                            };
-                        }).ToList(),
-                    };
-                }).ToList(),
-                Participants = participants.Select(x =>
-                {
-                    return new ParticipantDto()
-                    {
-                        Email = x.Email,
-                        FirstName = x.FirstName,
-                        LastName = x.LastName,
-                        Id = x.Id,
-                        ProfilePictureUrl = pictureService.GetPicture(x.ProfilePictureId)
-                    };
-                }).ToList()
+                EventOwner = MapEventOwner(@event.Id, owner),
+                Activities = @event.Activities.Select(x => MapActivity(x)).ToList(),
+                Participants = participants.Select(x => MapParticipant(x)).ToList()
             };
         }
 
-        public EventListingDto Map(Event @event)
+        public EventOwnerDto MapEventOwner(int eventId, User owner)
+        {
+            return new EventOwnerDto
+            {
+                Email = owner.Email,
+                FirstName = owner.FirstName,
+                LastName = owner.LastName,
+                Id = eventId,
+                ProfilePictureUrl = pictureService.GetPicture(owner.ProfilePictureId)
+            };
+        }
+
+        public ActivityDto MapActivity(Activity activity)
+        {
+            return new ActivityDto()
+            {
+                Id = activity.Id,
+                Title = activity.Title,
+                CreatedAt = activity.CreatedAt,
+                EventId = activity.EventId,
+                OwnerUserId = activity.OwnerUserId,
+                UpdatedAt = activity.UpdatedAt,
+                Results = activity.Results.Select(y => MapResult(y)).ToList(),
+            };
+        }
+
+        public ResultDto MapResult(Result result)
+        {
+            return new ResultDto()
+            {
+                Id = result.Id,
+                Score = result.Score,
+                ActivityId = result.ActivityId,
+                CreatedAt = result.CreatedAt,
+                UpdatedAt = result.UpdatedAt,
+                ParticipantId = result.ParticipantId
+            };
+        }
+
+        public ParticipantDto MapParticipant(User user)
+        {
+            return new ParticipantDto()
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Id = user.Id,
+                ProfilePictureUrl = pictureService.GetPicture(user.ProfilePictureId)
+            };
+        }
+
+        public EventListingDto MapEventListing(Event @event)
         {
             if (@event == null) throw new ArgumentNullException(nameof(@event));
 

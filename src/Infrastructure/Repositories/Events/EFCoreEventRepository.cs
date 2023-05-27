@@ -59,11 +59,21 @@ namespace Infrastructure.Repositories.Events
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<Result>> GetAllResults(int eventId, int activityId, CancellationToken cancellationToken)
+        public async Task<List<Result>> GetAllResultsForActivity(int eventId, int activityId, CancellationToken cancellationToken)
         {
             return await dbContext.Activities
                 .Include("_results")
                 .Where(x => x.EventId == eventId && x.Id == activityId)
+                .SelectMany(x => EF.Property<List<Result>>(x, "_results"))
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<Result>> GetAllResultsForEvent(int eventId, CancellationToken cancellationToken)
+        {
+            return await dbContext.Activities
+                .Include("_results")
+                .Where(x => x.EventId == eventId)
                 .SelectMany(x => EF.Property<List<Result>>(x, "_results"))
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
