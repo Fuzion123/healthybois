@@ -7,13 +7,14 @@ namespace Domain.Events
     {
         public int Id { get; private set; }
         public string Title { get; private set; }
+        public string Description { get; private set; }
         public int OwnerUserId { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
         public DateTime StartsAt { get; private set; }
         public DateTime EndsAt { get; private set; }
+        public string EventPictureId { get; private set; }
         public bool EventIsActive => DateTime.UtcNow >= StartsAt && DateTime.UtcNow >= EndsAt;
-
         private readonly List<Participant> _participants;
         public IReadOnlyList<Participant> Participants => _participants.AsReadOnly();
 
@@ -26,7 +27,7 @@ namespace Domain.Events
             _activities = new List<Activity>();
         }
 
-        public Event(int EventOwner, EventInput input) : this()
+        public Event(int EventOwner, EventInput input, string pictureId) : this()
         {
             if (input is null)
             {
@@ -44,12 +45,14 @@ namespace Domain.Events
             }
 
             Title = input.Title;
+            Description = input.Description;
             StartsAt = input.StartsAt;
             EndsAt = input.EndsAt;
             OwnerUserId = EventOwner;
             AddParticipant(new ParticipantInput() { UserId = OwnerUserId }); // add the owner as the first participant as default. (can be removed after again).
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = CreatedAt;
+            EventPictureId = pictureId;
         }
 
         public bool Update(EventInput input)
@@ -64,6 +67,13 @@ namespace Domain.Events
             if (Title != input.Title)
             {
                 Title = input.Title;
+
+                updated = true;
+            }
+
+            if (Description != input.Description)
+            {
+                Description = input.Description;
 
                 updated = true;
             }
@@ -204,6 +214,18 @@ namespace Domain.Events
                 throw new DomainException($"Found no activity with id {activityId} on event with id {Id}.");
 
             return activity.RemoveResult(resultId);
+        }
+
+        public bool SetOrUpdatePicture(string eventPictureId)
+        {
+            if(EventPictureId != eventPictureId)
+            {
+                EventPictureId = eventPictureId;
+                UpdatedAt = DateTime.UtcNow;
+                return true;
+            }
+
+            return false;
         }
     }
 }

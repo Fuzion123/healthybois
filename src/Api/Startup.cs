@@ -10,7 +10,8 @@ using Service.Users;
 using Infrastructure;
 using Service.Events;
 using Infrastructure.JobStorage;
-
+using Service;
+using Service.Events.Mappers;
 
 namespace WebApi
 {
@@ -67,6 +68,8 @@ namespace WebApi
             services.AddHttpContextAccessor();
             services.AddEndureanceCupDbContext();
             services.AddAzureEmailService(appSettings.AzureEmailSettings);
+            services.AddTransient<PictureService>();
+            services.AddTransient<EventMapper>();
 
             // caching
             //if (appSettings.UsingCachedRepositories)

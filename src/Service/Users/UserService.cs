@@ -14,18 +14,18 @@ public class UserService : IUserService
     private readonly IUserRepository userRepository;
     private IJwtUtils _jwtUtils;
     private readonly IMapper _mapper;
-    private readonly IJobStorage jobStorage;
+    private readonly PictureService pictureService;
 
     public UserService(
         IUserRepository userRepository,
         IJwtUtils jwtUtils,
         IMapper mapper,
-        IJobStorage jobStorage)
+        PictureService pictureService)
     {
         this.userRepository = userRepository;
         _jwtUtils = jwtUtils;
         _mapper = mapper;
-        this.jobStorage = jobStorage;
+        this.pictureService = pictureService;
     }
 
     public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model, CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ public class UserService : IUserService
         if (user == null || !BCrypt.Verify(model.Password, user.PasswordHash))
             throw new AppException("Username or password is incorrect");
 
-        var url = jobStorage.GetServiceSasUriForBlob(user.ProfilePictureId);
+        var url = pictureService.GetPicture(user.ProfilePictureId);
 
         // authentication successful
         var response = _mapper.Map<AuthenticateResponse>(user);
@@ -53,7 +53,7 @@ public class UserService : IUserService
 
         return users.Select(x =>
         {
-            var url = jobStorage.GetServiceSasUriForBlob(x.ProfilePictureId);
+            var url = pictureService.GetPicture(x.ProfilePictureId);
 
             return new UserDto()
             {
@@ -78,7 +78,7 @@ public class UserService : IUserService
 
         if(user != null)
         {
-            var url = jobStorage.GetServiceSasUriForBlob(user.ProfilePictureId);
+            var url = pictureService.GetPicture(user.ProfilePictureId);
 
             return new UserDto()
             {
@@ -112,7 +112,7 @@ public class UserService : IUserService
 
         if (model.ProfilePicture != null)
         {
-            profilePictureId = await StoreProfileImage(model.ProfilePicture, cancellationToken);
+            profilePictureId = await pictureService.AddPicture(model.ProfilePicture, cancellationToken);
         }
 
         var user = new User(model.FirstName, model.LastName, model.Email, model.Username, passwordHash, profilePictureId);
@@ -121,24 +121,6 @@ public class UserService : IUserService
         userRepository.Add(user);
 
         await userRepository.SaveChangesAsync(cancellationToken);
-    }
-
-    private async Task<string> StoreProfileImage(ProfilePicture profilePicture, CancellationToken cancellationToken)
-    {
-        if(!new FileExtensionContentTypeProvider().TryGetContentType(profilePicture.Name, out var contentType))
-        {
-            throw new AppException($"Uploaded profile picture '{profilePicture.Name}' mimetype is not supported");
-        }
-
-        var fileName = $"{DateTime.Now.Ticks}-{profilePicture.Name}";
-
-        var base64MetaInformation = $"data:{contentType};base64,";
-
-        var rawBase64 = profilePicture.Base64.Replace(base64MetaInformation, "");
-
-        await jobStorage.UploadBase64Stream(fileName, rawBase64, cancellationToken);
-
-        return fileName;
     }
 
     public async Task Update(int id, UpdateRequest model, CancellationToken cancellationToken)

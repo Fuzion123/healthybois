@@ -1,5 +1,6 @@
 namespace Service.Users.Models;
 
+using Domain.Pictures.Inputs;
 using System.ComponentModel.DataAnnotations;
 
 public class RegisterRequest
@@ -20,12 +21,5 @@ public class RegisterRequest
     public string Password { get; set; }
 
     [Required]
-    public ProfilePicture ProfilePicture { get; set; }
-}
-
-public class ProfilePicture
-{
-    public string Name { get; set; }
-    public string Type { get; set; }
-    public string Base64 { get; set; }
+    public PictureInput ProfilePicture { get; set; }
 }

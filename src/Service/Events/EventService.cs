@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Domain.Events;
 using Domain.Events.Input;
+using Domain.Pictures.Inputs;
 using Domain.Users;
+using Microsoft.Extensions.Logging;
+using Service.Events.Mappers;
 using Service.Events.Models;
 using Service.Exceptions;
 
@@ -12,15 +15,23 @@ namespace Service.Events
         private readonly IEventRepository eventRepository;
         private readonly IUserRepository userRepository;
         private readonly IMapper mapper;
+        private readonly PictureService pictureService;
+        private readonly EventMapper eventMapper;
 
-        public EventService(IEventRepository EventRepository, IUserRepository userRepository, IMapper mapper)
+        public EventService(IEventRepository EventRepository,
+                            IUserRepository userRepository,
+                            IMapper mapper,
+                            PictureService pictureService,
+                            EventMapper eventMapper)
         {
             this.eventRepository = EventRepository;
             this.userRepository = userRepository;
             this.mapper = mapper;
+            this.pictureService = pictureService;
+            this.eventMapper = eventMapper;
         }
 
-        public async Task<EventDto> Create(int EventOwner, EventInput EventInput, CancellationToken cancellationToken)
+        public async Task<EventDetailDto> Create(int EventOwner, EventInput EventInput, CancellationToken cancellationToken)
         {
             if (EventInput == null) throw new AppException("EventInput was null");
 
@@ -29,23 +40,91 @@ namespace Service.Events
             if (await eventRepository.Exists(EventInput.Title, cancellationToken))
                 throw new AppException($"Event with title {EventInput.Title} already exists");
 
-            var Event = new Event(EventOwner, EventInput);
+            // image
+            string eventPictureId = default;
+
+            if (EventInput.Picture != null)
+            {
+                eventPictureId = await pictureService.AddPicture(EventInput.Picture, cancellationToken);
+            }
+
+            var Event = new Event(EventOwner, EventInput, eventPictureId);
 
             eventRepository.Add(Event);
 
             await eventRepository.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<EventDto>(Event);
+            return await eventMapper.Map(Event, cancellationToken);
         }
 
-        public async Task<List<EventDto>> GetAllEventsReferencedByUser(int userId, CancellationToken cancellationToken)
+        public async Task<EventDetailDto> Update(int eventId, int eventOwnerId, EventInput EventInput, CancellationToken cancellationToken)
+        {
+            var @event = await eventRepository.GetById(eventId, cancellationToken);
+
+            if (@event == null)
+                throw new AppException($"No event found for event id {eventId}");
+
+            if (@event.OwnerUserId != eventOwnerId)
+            {
+                throw new AppException($"Cant update the event because the current user is not the owner of Event");
+            }
+
+            // image
+            string eventPictureId = default;
+
+            if (EventInput.Picture != null)
+            {
+                eventPictureId = await pictureService.AddPicture(EventInput.Picture, cancellationToken);
+            }
+
+            var updated = @event.Update(EventInput);
+
+            updated |= @event.SetOrUpdatePicture(eventPictureId);
+
+            if (updated)
+            {
+                await eventRepository.SaveChangesAsync(cancellationToken);
+            }
+
+            return await eventMapper.Map(@event, cancellationToken);
+        }
+
+        public async Task<EventDetailDto> SetOrUpdateEventPicture(int eventId, int eventOwnerId, PictureInput picture, CancellationToken cancellationToken)
+        {
+            var @event = await eventRepository.GetById(eventId, cancellationToken);
+
+            if (@event == null)
+                throw new AppException($"No event found for event id {eventId}");
+
+            if (@event.OwnerUserId != eventOwnerId)
+            {
+                throw new AppException($"Cant update the event because the current user is not the owner of Event");
+            }
+
+            // image
+            string eventPictureId = default;
+
+            if (picture != null)
+            {
+                eventPictureId = await pictureService.AddPicture(picture, cancellationToken);
+            }
+
+            if (@event.SetOrUpdatePicture(eventPictureId))
+            {
+                await eventRepository.SaveChangesAsync(cancellationToken);
+            }
+
+            return await eventMapper.Map(@event, cancellationToken);
+        }
+
+        public async Task<List<EventDetailDto>> GetAllEventsReferencedByUser(int userId, CancellationToken cancellationToken)
         {
             var Events = await eventRepository.GetAllReferencedEvents(userId, cancellationToken);
 
-            return Events.Select(x => mapper.Map<EventDto>(x)).ToList();
+            return Events.Select(async x => await eventMapper.Map(x, cancellationToken)).Select(x => x.Result).ToList();
         }
 
-        public async Task<EventDto> GetByTitle(string title, CancellationToken cancellationToken)
+        public async Task<EventDetailDto> GetByTitle(string title, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(title))
             {
@@ -54,10 +133,10 @@ namespace Service.Events
 
             var Event = await eventRepository.GetByTitle(title, cancellationToken);
 
-            return mapper.Map<EventDto>(Event);
+            return await eventMapper.Map(Event, cancellationToken);
         }
 
-        public async Task<EventDto> GetById(int EventId, int userId, CancellationToken cancellationToken)
+        public async Task<EventDetailDto> GetById(int EventId, int userId, CancellationToken cancellationToken)
         {
             var Event = await eventRepository.GetById(EventId, cancellationToken);
 
@@ -65,7 +144,7 @@ namespace Service.Events
                 return null;
 
             if (Event.OwnerUserId == userId || Event.Participants.Any(x => x.UserId == userId))
-                return mapper.Map<EventDto>(Event);
+                return await eventMapper.Map(Event, cancellationToken);
 
             throw new AppException($"Current user does not have access to Event with id {EventId}");
         }
@@ -108,7 +187,7 @@ namespace Service.Events
             return mapper.Map<ParticipantDto>(participant);
         }
 
-        public async Task<EventDto> RemoveParticipant(int eventId, int participantId, int ownerUserId, CancellationToken cancellationToken)
+        public async Task<EventDetailDto> RemoveParticipant(int eventId, int participantId, int ownerUserId, CancellationToken cancellationToken)
         {
             var @event = await eventRepository.GetById(eventId, cancellationToken);
 
@@ -117,7 +196,7 @@ namespace Service.Events
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
 
-            return mapper.Map<EventDto>(@event);
+            return mapper.Map<EventDetailDto>(@event);
         }
 
         public async Task<ActivityDto> AddActivity(ActivityInput input, CancellationToken cancellationToken)
@@ -153,7 +232,7 @@ namespace Service.Events
             return mapper.Map<ActivityDto>(activity);
         }
 
-        public async Task<EventDto> RemoveActivity(int eventId, int activityId, int userId, CancellationToken cancellationToken)
+        public async Task<EventDetailDto> RemoveActivity(int eventId, int activityId, int userId, CancellationToken cancellationToken)
         {
             var Event = await eventRepository.GetById(eventId, cancellationToken);
 
@@ -162,7 +241,7 @@ namespace Service.Events
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
 
-            return mapper.Map<EventDto>(Event);
+            return mapper.Map<EventDetailDto>(Event);
         }
 
         public async Task<ActivityDto> AddOrUpdateResult(int eventId, int activityId, ResultInput input, CancellationToken cancellationToken)
@@ -182,7 +261,7 @@ namespace Service.Events
             return mapper.Map<ActivityDto>(activity);
         }
 
-        public async Task<EventDto> RemoveResult(int eventId, int activityId, int resultId, CancellationToken cancellationToken)
+        public async Task<EventDetailDto> RemoveResult(int eventId, int activityId, int resultId, CancellationToken cancellationToken)
         {
             var @event = await eventRepository.GetById(eventId, cancellationToken);
 
@@ -194,7 +273,7 @@ namespace Service.Events
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
 
-            return mapper.Map<EventDto>(@event);
+            return await eventMapper.Map(@event, cancellationToken);
         }
 
         public async Task<List<ActivityDto>> GetAllActivities(int eventId, CancellationToken cancellationToken)
@@ -254,12 +333,23 @@ namespace Service.Events
         public async Task<ParticipantDto> GetParticipantById(int eventId, int participantId, CancellationToken cancellationToken)
         {
             var participant = await eventRepository.GetParticipantById(eventId, participantId, cancellationToken);
-
+            
             if (participant != null)
-                return new ParticipantDto()
+            {
+                var user = await userRepository.GetById(participant.UserId, cancellationToken); 
+
+                if(user != null)
                 {
-                    UserId = participant.UserId
-                };
+                    return new ParticipantDto()
+                    {
+                        Email = user.Email,
+                        FirstName = user.FirstName,
+                        Id = user.Id,
+                        LastName = user.LastName,
+                        ProfilePictureUrl = pictureService.GetPicture(user.ProfilePictureId)
+                    };
+                }
+            }
 
             return null;
         }
@@ -268,9 +358,17 @@ namespace Service.Events
         {
             var participants = await eventRepository.GetAllParticipants(eventId, cancellationToken);
 
-            return participants.Select(x => new ParticipantDto()
+            var ids = participants.Select(x => x.Id).ToArray();
+
+            var users = await userRepository.GetByIds(ids, cancellationToken);
+
+            return users.Select(x => new ParticipantDto()
             {
-                UserId = x.UserId,
+                Email= x.Email,
+                FirstName = x.FirstName,
+                Id = x.Id,
+                LastName = x.LastName,
+                ProfilePictureUrl = pictureService.GetPicture(x.ProfilePictureId)
             }).ToList();
         }
 

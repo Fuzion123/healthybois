@@ -1,6 +1,7 @@
-﻿namespace Service.Events.Models
+﻿
+namespace Service.Events.Models
 {
-    public class ParticipantDto
+    public class EventOwnerDto
     {
         public int Id { get; set; }
         public Uri ProfilePictureUrl { get; set; }

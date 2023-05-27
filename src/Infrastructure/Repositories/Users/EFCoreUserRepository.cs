@@ -42,6 +42,11 @@ namespace Infrastructure.Repositories.Users
             return await dbContext.Users.FirstOrDefaultAsync(x => x.Id == id, cancellation);
         }
 
+        public async Task<List<User>> GetByIds(int[] userIds, CancellationToken cancellationToken)
+        {
+            return await dbContext.Users.Where(x => userIds.Contains(x.Id)).ToListAsync();
+        }
+
         public async Task<User> GetByUserName(string userName, CancellationToken cancellation)
         {
             return await dbContext.Users.FirstOrDefaultAsync(x => x.UserName == userName || x.Email == userName, cancellation);
