@@ -12,6 +12,13 @@ import { eventsActions, alertActions } from '_store';
 
 export default  AddEdit;
 
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  });
+
 function AddEdit() {
     const [title, setTitle] = useState();
     const dispatch = useDispatch();
@@ -30,7 +37,7 @@ function AddEdit() {
     const formOptions = { resolver: yupResolver(validationSchema) };
 
     // get functions to build form with useForm() hook
-    const { register, handleSubmit, reset, formState } = useForm(formOptions);
+    const { register, handleSubmit, reset, formState, setValue } = useForm(formOptions);
     const { errors, isSubmitting } = formState;
 
     useEffect(() => {
@@ -50,16 +57,25 @@ function AddEdit() {
 
             return;
         }
+
+        console.log(data)
+       
     
         dispatch(alertActions.clear());
         try {
+        var imageAsBase64 = await toBase64(data.picture);
           let message = "event added";
           await dispatch(
             eventsActions.create({
               data: {
                 title: data.title,
                 startsAt: startDate.toISOString(),
-                endsAt: endDate.toISOString()
+                endsAt: endDate.toISOString(),
+                description: data.description,
+                picture: {
+                    name: data.picture.name,
+                    base64: imageAsBase64
+                  },
               },
             })
           ).unwrap();
@@ -72,14 +88,34 @@ function AddEdit() {
 
     return (
         <>
-            <h1>{title}</h1>
+            <h1 className="mb-8 text-4xl font-bold flex justify-center items-center">{title}</h1>
             {!(event?.loading || event?.error) &&
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="row">
-                    <div className="">
+                    <div className="mb-8">
                             <label>Title</label>
                             <input name="title" type="text" {...register('title')} className={`form-control ${errors.title ? 'is-invalid' : ''}`} />
                             <div className="invalid-feedback">{errors.title?.message}</div>
+                            </div>
+                            <div className="mb-4">
+                            <div className="relative">
+                            <label className='mb-3'>Event picture</label>
+                            <label htmlFor="fileInput" className=" flex items-center justify-center w-8 h-8 bg-yellow-500 text-white rounded-full cursor-pointer">
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+    <path
+      fillRule="evenodd"
+      d="M10 3a1 1 0 0 1 1 1v4h4a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H6a1 1 0 0 1 0-2h4V4a1 1 0 0 1 1-1z"
+      clipRule="evenodd"
+    />
+  </svg>
+</label>
+  <input id="fileInput" name="picture" type="file" onChange={(e) => setValue('picture', e.target.files[0])} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+</div>
+<div className="text-green-500 mt-2">{errors.picture?.message}</div> </div>                             
+                          <div className="mb-4">
+                            <label>Description</label>
+                            <input name="description" type="text" {...register('description')} className={`form-control ${errors.description ? 'is-invalid' : ''}`} />
+                            <div className="invalid-feedback">{errors.description?.message}</div>
                             </div>
                         <div className="mb-3 col">
                             <label>Start Date</label>

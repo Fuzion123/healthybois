@@ -61,7 +61,6 @@ function Register() {
               username: data.username,
               password: data.password,
               profilePicture: {
-                type: data.profilePicture.type,
                 name: data.profilePicture.name,
                 base64: imageAsBase64
               },
@@ -86,11 +85,19 @@ function Register() {
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm space-y-6">
           <div className="mt-2">
-            <label className="block text-md font-medium leading-6 text-gray-900">Profile Picture</label>
-            <div className="mt-2">
-              <input type="file" onChange={(e) => setValue('profilePicture', e.target.files[0])} className={` ${errors.profilePicture ? 'is-invalid' : ''}`} />
-              <div className="invalid-feedback">{errors.profilePicture?.message}</div>
-            </div>
+            <label className="mb-3 block text-md font-medium leading-6 text-gray-900">Profile Picture</label>
+            <div className="relative">
+                            <label htmlFor="fileInput" className=" flex items-center justify-center w-8 h-8 bg-yellow-500 text-white rounded-full cursor-pointer">
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+    <path
+      fillRule="evenodd"
+      d="M10 3a1 1 0 0 1 1 1v4h4a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H6a1 1 0 0 1 0-2h4V4a1 1 0 0 1 1-1z"
+      clipRule="evenodd"
+    />
+  </svg>
+</label>
+  <input id="fileInput" name="profilePicture" type="file" onChange={(e) => setValue('profilePicture', e.target.files[0])} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+</div>
           </div>
           <div>
             <label className="block text-md font-medium leading-6 text-gray-900">First Name</label>
