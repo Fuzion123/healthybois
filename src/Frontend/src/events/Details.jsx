@@ -66,8 +66,8 @@ return (
     {(data) && (
     <div className="bg-white py-24 sm:py-32">
     <div className="mx-auto max-w-7xl px-6 lg:px-8">
-    <img src= {data.eventPictureUrl} alt='stock'></img>
-      <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+    <img className='w-70 h-70 md:w-90 md:h-90' src= {data.eventPictureUrl} alt='EventImage'></img>
+      <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
           <article key="event details"className="flex max-w-xl flex-col items-start justify-between">
             <div className="flex items-center gap-x-4 text-xs">
               <time dateTime={data.startsAt} className="text-gray-500">
@@ -82,7 +82,7 @@ return (
                   <span className="absolute inset-0" />
                 {data.title}
               </h1>
-              <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">{data.description}</p>
+              <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-600">{data.description}</p>
             </div>
             <div className="relative mt-8 flex items-center gap-x-4">
               <img src={data.eventOwner.profilePictureUrl} alt="Profile Pic" className="h-10 w-10 rounded-full bg-gray-50" />
@@ -92,7 +92,7 @@ return (
                     {data.eventOwner.firstName}
 
                 </p>
-                <p className="text-gray-600">host</p>
+                <p className="text-gray-600">Host</p>
               </div>
             </div>
           </article>
