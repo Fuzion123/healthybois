@@ -178,15 +178,20 @@ public class UserService : IUserService
             throw new AppException("No user found for recover email, cant reset password. Try to resubmit a restore password request for you email");
         }
 
+        if(request.NewPassword != request.NewPasswordConfirm)
+        {
+            throw new AppException("The new password and the confirmation of the new password does not match each other.");
+        }
+
         // hash password
-        var passwordHash = GetNewPasswordHash(request.OldPassword, user.PasswordHash, request.NewPassword);
+        var passwordHash = BCrypt.HashPassword(request.NewPassword);
 
         user.UpdatePassword(passwordHash);
 
         await userRepository.SaveChangesAsync(cancellationToken);
     }
 
-    private string GetNewPasswordHash(string oldPassword, string currentHash, string newPassword)
+    private string ChangePassword(string oldPassword, string currentHash, string newPassword)
     {
         try
         {
@@ -194,7 +199,7 @@ public class UserService : IUserService
 
             return passwordHash;
         }
-        catch (Exception ex)
+        catch
         {
             throw new Exception("Old password is not correct.");
         }

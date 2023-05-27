@@ -16,8 +16,10 @@ function ResetPassword() {
 
     // form validation rules 
     const validationSchema = Yup.object().shape({
-        oldpassword: Yup.string().required('required'),
-        newpassword: Yup.string().required('required')
+        newpassword: Yup.string().required('required'),
+        newpasswordconfirm: Yup.string()
+        .required('required')
+        .oneOf([Yup.ref('newpassword'), null], 'Passwords must match')
     });
     const formOptions = { resolver: yupResolver(validationSchema) };
 
@@ -49,11 +51,11 @@ function ResetPassword() {
           },
       });
 
-    function onSubmit({ oldpassword, newpassword }) {
+    function onSubmit({ newpasswordconfirm, newpassword }) {
 
         var data = {
             newPassword: newpassword,
-            oldPassword: oldpassword
+            newpasswordconfirm: newpasswordconfirm
         }
 
         return mutation.mutate(data);
@@ -70,17 +72,17 @@ function ResetPassword() {
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                         
-                            <label className="block text-md font-medium leading-6 text-gray-900">Old password</label>
-                            <div className="mt-2">
-                            <input name="oldpassword" type="password" {...register('oldpassword')} className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.oldpassword ? 'is-invalid' : ''}`} />
-                            <div className="invalid-feedback">{errors.oldpassword?.message}
-                            </div>
-                            </div>
-
                             <label className="block text-md font-medium leading-6 text-gray-900">New password</label>
                             <div className="mt-2">
                             <input name="newpassword" type="password" {...register('newpassword')} className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.newpassword ? 'is-invalid' : ''}`} />
                             <div className="invalid-feedback">{errors.newpassword?.message}
+                            </div>
+                            </div>
+
+                            <label className="block text-md font-medium leading-6 text-gray-900">Confirm new password</label>
+                            <div className="mt-2">
+                            <input name="newpasswordconfirm" type="password" {...register('newpasswordconfirm')} className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.newpasswordconfirm ? 'is-invalid' : ''}`} />
+                            <div className="invalid-feedback">{errors.newpasswordconfirm?.message}
                             </div>
                             </div>
                         <div>
