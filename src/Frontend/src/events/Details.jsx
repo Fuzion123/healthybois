@@ -68,7 +68,7 @@ return (
     {(data) && (
     <div className="bg-white py-24 sm:py-32">
     <div className="mx-auto max-w-7xl px-6 lg:px-8">
-    <img className='w-70 h-70 md:w-90 md:h-90' src= {data.eventPictureUrl} alt='EventImage'></img>
+    <img className='w-70 h-70 md:w-70 md:h-70' src= {data.eventPictureUrl} alt='EventImage'></img>
       <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
           <article key="event details"className="flex max-w-xl flex-col items-start justify-between">
             <div className="flex items-center gap-x-4 text-xs">
