@@ -112,6 +112,7 @@ function AddEdit() {
                             </div>
                             <div className="mb-4">
                             <div className="relative">
+                            <label className='mb-3'>Event picture</label>
         <label htmlFor="fileInput" className="flex items-center justify-center w-8 h-8 bg-yellow-500 text-white rounded-full cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
             <path
