@@ -2,9 +2,9 @@ import { history } from '_helpers';
 
 
 
-export default Back_button;
+export default BackButton;
 
-function Back_button() {
+function BackButton() {
   
     return (
         <>
