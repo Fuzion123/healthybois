@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { eventsActions } from '_store';
+import { date } from '_helpers';
 
 export default List;
 
@@ -22,113 +23,34 @@ function List() {
         dispatch(eventsActions.getReferenceAll());
     }, []);
 
-    // const submit = (event) => {
-
-    //     confirmAlert({
-    //       title: <span className="confirm-title">Confirm to delete</span>,
-    //       message: <span className="confirm-message">Are you sure?</span>,
-    //       buttons: [
-    //         {
-    //           label: 'Yes',
-    //           className: 'confirm-button',
-    //           onClick: () => dispatch(eventsActions.delete(event.id))
-    //         },
-    //         {
-    //           label: 'No',
-    //           className: 'confirm-button',
-    //           //onClick: () => alert('Click No')
-    //         }
-    //       ],
-    //       containerProps: { 
-    //         style: {
-    //           zIndex: 9999, 
-    //           position: 'absolute', 
-    //           top: '20px', 
-    //           left: '50%',
-    //           transform: 'translateX(-50%)' // center the dialog horizontally
-    //         }
-    //       }
-    //     });
-    //   }
-    
     return (
         <div>
-            <h1>Events</h1>
+            <div className="grid grid-cols-2 gap-2">
+            <h1 className="text-2xl font-bold justify-self-start">Events</h1>
+            <Link to="add" className="flex justify-self-end rounded-md bg-green-400 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500">Add event</Link>
+            </div>
             
+            <div className="grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-10 lg:grid-cols-3">
             {events?.value?.map(event =>
-              <div key={event.id} className="card mb-3">
-                    <div className="card-body" onClick={() => handleCardClick(event)}>
-                        <h5 className="card-title">{event.title}</h5>
-                        {/* <button onClick={() => submit(event)} className="btn btn-sm btn-danger" disabled={event.isDeleting}>
-                            {event.isDeleting 
-                                ? <span className="spinner-border spinner-border-sm"></span>
-                                : <span>Delete</span>
-                            }
-                        </button> */}
+              <div key={event.id} className="flex flex-col my-8 shadow-md rounded-lg hover:cursor-pointer">
+                    <div className="" onClick={() => handleCardClick(event)}>
+                        <img className="object-cover w-full h-52 md:h-72 rounded-t-lg" src='https://play-lh.googleusercontent.com/N6yBgv77P8b3T2gZu4ARO8kBjZ0nPMt1pKKip1ox4b-jw8lvqfC-pLcoBWVJwSsfnQ=s256-rw' alt='stock'></img>
+                        <h5 className="text-1xl font-bold px-3 py-3">{event.title}</h5>
+                        <p className="text-1xl px-3 pb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        <div class="flex flex-wrap justify-between px-3 pb-3 text-xs">
+                          <span>Starts at: {date.formatDate(event.startsAt)}</span>
+                        </div>
                     </div>
-                    </div>
+              </div>
                    
             )}
+            </div>
             {events?.loading &&
                 <div className="text-center">
                     <span className="spinner-border spinner-border-lg align-center"></span>
                 </div>
             }
-            <Link to="add" className="btn btn-sm btn-success mb-2">Add event</Link>
-
-      
- 
-            <style>{`
-        #react-confirm-alert {
-         display: flex;
-         justify-content: center;
-         margin: 5px;
-        }
-
-        .btn btn-sm btn-danger {
-          z-index: 999;
-        }
-
-        .react-confirm-alert-button-group {
-         display: flex;
-         justify-content: space-evenly;
-         margin: 8px;
-        }
-
-        .react-confirm-alert-body {
-         border-style: groove;
-         border-color: rgb(43, 42, 41);
-         border-radius: 15px;
-         padding: 18px;
-         width: 300px;
-        }
-
-        .confirm-title {
-         font-weight: bold;
-         color: #212529;
-         display: flex;
-         justify-content: center;
-         margin: 10px;
-        }
-
-        .confirm-message  {
-         color: #212529;
-         display: flex;
-         justify-content: center;
-        }
-
-        a {
-          text-decoration: none;
-          color: #212529;
-        }
-
-        @media only screen and (min-width: 800px) {
-          .react-confirm-alert-body{
-            width: 400px;
-          }
-        }
-        
-      `}</style>
+            
         </div>
     );
 }

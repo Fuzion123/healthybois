@@ -3,6 +3,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import {useQuery, useMutation } from 'react-query';
 import { eventapi } from '_api';
 import { history, date } from '_helpers';
+import  Back_button  from '../_components/Back_button';
 
 
 export default  EventDetails;
@@ -57,6 +58,7 @@ const submit = (event) => {
 
 return (
   <div>
+    {<Back_button />}
     {(data) && (
       <div>
         <h1>{data.title}</h1>
