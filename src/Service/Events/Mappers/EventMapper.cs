@@ -18,9 +18,14 @@ namespace Service.Events.Mappers
 
         public async Task<EventDetailDto> Map(Event @event, CancellationToken cancellationToken)
         {
-            if(@event == null) throw new ArgumentNullException(nameof(@event));
+            if (@event == null)
+                return null;
 
-            var participants = await userRepository.GetByIds(@event.Participants.Select(x => x.UserId).ToArray(), cancellationToken);
+            var ids = @event.Participants.Select(x => x.UserId).ToArray();
+
+            var participantIdByUserId = @event.Participants.ToDictionary(k => k.UserId, v => v.Id);
+
+            var participants = await userRepository.GetByIds(ids, cancellationToken);
 
             var owner = participants.FirstOrDefault(x => x.Id == @event.OwnerUserId) ?? throw new DomainException("No owner found on event");
 
@@ -35,12 +40,20 @@ namespace Service.Events.Mappers
                 EventPictureUrl = pictureService.GetPicture(@event.EventPictureId),
                 EventOwner = MapEventOwner(@event.Id, owner),
                 Activities = @event.Activities.Select(x => MapActivity(x)).ToList(),
-                Participants = participants.Select(x => MapParticipant(x)).ToList()
+                Participants = participants.Select(x =>
+                {
+                    var id = participantIdByUserId[x.Id];
+
+                    return MapParticipantFromUser(id, x);
+                }).ToList()
             };
         }
 
         public EventOwnerDto MapEventOwner(int eventId, User owner)
         {
+            if (owner == null)
+                return null;
+
             return new EventOwnerDto
             {
                 Email = owner.Email,
@@ -53,6 +66,9 @@ namespace Service.Events.Mappers
 
         public ActivityDto MapActivity(Activity activity)
         {
+            if (activity == null)
+                return null;
+
             return new ActivityDto()
             {
                 Id = activity.Id,
@@ -67,6 +83,9 @@ namespace Service.Events.Mappers
 
         public ResultDto MapResult(Result result)
         {
+            if (result == null)
+                return null;
+
             return new ResultDto()
             {
                 Id = result.Id,
@@ -78,21 +97,26 @@ namespace Service.Events.Mappers
             };
         }
 
-        public ParticipantDto MapParticipant(User user)
+        public UserParticipantDto MapParticipantFromUser(int particiopantId, User user)
         {
-            return new ParticipantDto()
+            if (user == null)
+                return null;
+
+            return new UserParticipantDto()
             {
+                Id = particiopantId,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Id = user.Id,
+                UserId = user.Id,
                 ProfilePictureUrl = pictureService.GetPicture(user.ProfilePictureId)
             };
         }
 
         public EventListingDto MapEventListing(Event @event)
         {
-            if (@event == null) throw new ArgumentNullException(nameof(@event));
+            if (@event == null)
+                return null;
 
             return new EventListingDto()
             {

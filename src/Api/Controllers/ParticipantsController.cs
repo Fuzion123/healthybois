@@ -20,7 +20,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("{eventId}")]
-        [Produces(typeof(ParticipantDto))]
+        [Produces(typeof(UserParticipantDto))]
         public async Task<IActionResult> AddParticipant(int eventId, [FromBody] CreateParticipantRequest request, CancellationToken cancellationToken)
         {
             var input = new ParticipantInput()
@@ -34,7 +34,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{eventId}")]
-        [Produces(typeof(List<ParticipantDto>))]
+        [Produces(typeof(List<UserParticipantDto>))]
         public async Task<IActionResult> GetAll(int eventId, CancellationToken cancellationToken)
         {
             var participants = await eventService.GetAllParticipants(eventId, cancellationToken).ConfigureAwait(false);
@@ -43,7 +43,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{eventId}/{participantId}")]
-        [Produces(typeof(ParticipantDto))]
+        [Produces(typeof(UserParticipantDto))]
         public async Task<IActionResult> GetById(int eventId, int participantId, CancellationToken cancellationToken)
         {
             var participant = await eventService.GetParticipantById(eventId, participantId, cancellationToken);

@@ -11,7 +11,7 @@ namespace Service.Events.Models
         public bool EventIsActive { get; set; }
         public Uri EventPictureUrl { get; set; }
         public EventOwnerDto EventOwner { get; set; }
-        public List<ParticipantDto> Participants { get; set; }
+        public List<UserParticipantDto> Participants { get; set; }
         public List<ActivityDto> Activities { get; set; }
     }
 }

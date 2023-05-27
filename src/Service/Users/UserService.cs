@@ -1,30 +1,24 @@
 namespace Service.Users;
 
-using AutoMapper;
 using Domain.Users;
 using Service.Users.Dependencies;
 using Service.Users.Models;
 using BCrypt.Net;
 using Service.Exceptions;
-using Microsoft.AspNetCore.StaticFiles;
-using System.Reflection;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository userRepository;
-    private IJwtUtils _jwtUtils;
-    private readonly IMapper _mapper;
+    private IJwtUtils jwtUtils;
     private readonly PictureService pictureService;
 
     public UserService(
         IUserRepository userRepository,
         IJwtUtils jwtUtils,
-        IMapper mapper,
         PictureService pictureService)
     {
         this.userRepository = userRepository;
-        _jwtUtils = jwtUtils;
-        _mapper = mapper;
+        this.jwtUtils = jwtUtils;
         this.pictureService = pictureService;
     }
 
@@ -36,15 +30,17 @@ public class UserService : IUserService
         if (user == null || !BCrypt.Verify(model.Password, user.PasswordHash))
             throw new AppException("Username or password is incorrect");
 
-        var url = pictureService.GetPicture(user.ProfilePictureId);
-
-        // authentication successful
-        var response = _mapper.Map<AuthenticateResponse>(user);
-
-        response.Token = _jwtUtils.GenerateToken(user);
-        response.ProfilePictureUrl = url;
-
-        return response;
+        return new AuthenticateResponse()
+        {
+            Email = user.Email,
+            FirstName = user.FirstName,
+            Id = user.Id,
+            LastName = user.LastName,
+            ProfilePictureUrl = pictureService.GetPicture(user.ProfilePictureId),
+            Role = user.Role,
+            Token = jwtUtils.GenerateToken(user),
+            Username = user.UserName
+        };
     }
 
     public async Task<List<UserDto>> GetAll(CancellationToken cancellationToken)
