@@ -1,6 +1,5 @@
-import { useQuery, useMutation } from 'react-query';
+import { useQuery } from 'react-query';
 import { Scoreboardapi } from '_api';
-import React, { Component } from 'react';
 import ApexCharts from 'apexcharts'
 
 export default ScoreboardSummary;
@@ -49,9 +48,9 @@ function ScoreboardSummary(props) {
 		
 	});
 
-	function renderChart(){
+	// function renderChart(){
 		
-	}
+	// }
 
 	if (error) return <div>Request Failed</div>; 
 
@@ -70,7 +69,7 @@ function ScoreboardSummary(props) {
 				>
 					<p>Name: {result.participant.firstName}</p>
 					<p>Total Score: {result.totalScoreSum}</p>
-					<img className="h-10 w-10" src={result.participant.profilePictureUrl}></img>
+					<img alt="profile" className="h-10 w-10" src={result.participant.profilePictureUrl}></img>
 					<div id={`chart-${eventId}`}></div>
 					{(chartConfigured) &&
 						<div>ready</div>

@@ -44,7 +44,7 @@ function List() {
                         <p className="text-1xl px-3 pb-3">{event.description}</p>
                         <div className="flex flex-wrap justify-between px-3 pb-3 text-xs">
                             <span>Starts at: {date.formatDate(event.startsAt)}</span>
-                            {event.eventIsActive == true &&
+                            {event.eventIsActive === true &&
                             <span className='bg-green-600 font-semibold text-white py-1 px-2'>Active</span>
                             }
                         </div>
