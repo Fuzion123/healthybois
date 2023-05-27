@@ -6,6 +6,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { eventsActions } from '_store';
 import { date } from '_helpers';
+import  ScoreboardSummary  from '../Scoreboard/ScoreboardSummary';
 
 export default List;
 
@@ -23,6 +24,8 @@ function List() {
         dispatch(eventsActions.getReferenceAll());
     }, []);
 
+    
+
     return (
         <div>
             <div className="grid grid-cols-2 gap-2">
@@ -34,15 +37,21 @@ function List() {
             {events?.value?.map(event =>
               <div key={event.id} className="flex flex-col my-8 shadow-md rounded-lg hover:cursor-pointer">
                     <div className="" onClick={() => handleCardClick(event)}>
-                        <img className="object-cover w-full h-52 md:h-72 rounded-t-lg" src='https://play-lh.googleusercontent.com/N6yBgv77P8b3T2gZu4ARO8kBjZ0nPMt1pKKip1ox4b-jw8lvqfC-pLcoBWVJwSsfnQ=s256-rw' alt='stock'></img>
+                        <img className="object-cover w-full h-52 md:h-72 rounded-t-lg" src={event.eventPictureUrl} alt='stock'></img>
+                        <ScoreboardSummary eventId={event.id}/>                                                         
+                       
                         <h5 className="text-1xl font-bold px-3 py-3">{event.title}</h5>
-                        <p className="text-1xl px-3 pb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                        <div class="flex flex-wrap justify-between px-3 pb-3 text-xs">
-                          <span>Starts at: {date.formatDate(event.startsAt)}</span>
+                        <p className="text-1xl px-3 pb-3">{event.description}</p>
+                        <div className="flex flex-wrap justify-between px-3 pb-3 text-xs">
+                            <span>Starts at: {date.formatDate(event.startsAt)}</span>
+                            {event.eventIsActive == true &&
+                            <span className='bg-green-600 font-semibold text-white py-1 px-2'>Active</span>
+                            }
                         </div>
                     </div>
+
               </div>
-                   
+
             )}
             </div>
             {events?.loading &&
