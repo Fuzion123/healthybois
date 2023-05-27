@@ -59,6 +59,8 @@ function AddEdit() {
         }
 
         console.log(data)
+
+        
        
     
         dispatch(alertActions.clear());
@@ -85,7 +87,18 @@ function AddEdit() {
           dispatch(alertActions.error(error));
         }
       }
-
+      const [selectedFileName, setSelectedFileName] = useState('');
+  
+      const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setValue('picture', file);
+        
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setSelectedFileName(file.name);
+        };
+        reader.readAsDataURL(file);
+      };
     return (
         <>
             <h1 className="mb-8 text-4xl font-bold flex justify-center items-center">{title}</h1>
@@ -99,19 +112,27 @@ function AddEdit() {
                             </div>
                             <div className="mb-4">
                             <div className="relative">
-                            <label className='mb-3'>Event picture</label>
-                            <label htmlFor="fileInput" className=" flex items-center justify-center w-8 h-8 bg-yellow-500 text-white rounded-full cursor-pointer">
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-    <path
-      fillRule="evenodd"
-      d="M10 3a1 1 0 0 1 1 1v4h4a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H6a1 1 0 0 1 0-2h4V4a1 1 0 0 1 1-1z"
-      clipRule="evenodd"
-    />
-  </svg>
-</label>
-  <input id="fileInput" name="picture" type="file" onChange={(e) => setValue('picture', e.target.files[0])} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-</div>
-<div className="text-green-500 mt-2">{errors.picture?.message}</div> </div>                             
+        <label htmlFor="fileInput" className="flex items-center justify-center w-8 h-8 bg-yellow-500 text-white rounded-full cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fillRule="evenodd"
+              d="M10 3a1 1 0 0 1 1 1v4h4a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H6a1 1 0 0 1 0-2h4V4a1 1 0 0 1 1-1z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </label>
+        <input
+          id="fileInput"
+          name="picture"
+          type="file"
+          onChange={handleFileChange}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        />
+      </div>
+      <div className="text-green-500 mt-2">
+        {selectedFileName && <p>Selected File: {selectedFileName}</p>}
+        {errors.picture?.message}
+      </div> </div>                             
                           <div className="mb-4">
                             <label>Description</label>
                             <input name="description" type="text" {...register('description')} className={`form-control ${errors.description ? 'is-invalid' : ''}`} />

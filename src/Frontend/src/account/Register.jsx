@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
+import { useState } from 'react';
 
 import { history } from '_helpers';
 import { userActions, alertActions } from '_store';
@@ -76,6 +77,18 @@ function Register() {
             dispatch(alertActions.error(error));
         }
     }
+    const [selectedFileName, setSelectedFileName] = useState('');
+  
+    const handleFileChange = (e) => {
+      const file = e.target.files[0];
+      setValue('picture', file);
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedFileName(file.name);
+      };
+      reader.readAsDataURL(file);
+    };
 
     return (
        
@@ -87,17 +100,27 @@ function Register() {
           <div className="mt-2">
             <label className="mb-3 block text-md font-medium leading-6 text-gray-900">Profile Picture</label>
             <div className="relative">
-                            <label htmlFor="fileInput" className=" flex items-center justify-center w-8 h-8 bg-yellow-500 text-white rounded-full cursor-pointer">
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-    <path
-      fillRule="evenodd"
-      d="M10 3a1 1 0 0 1 1 1v4h4a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H6a1 1 0 0 1 0-2h4V4a1 1 0 0 1 1-1z"
-      clipRule="evenodd"
-    />
-  </svg>
-</label>
-  <input id="fileInput" name="profilePicture" type="file" onChange={(e) => setValue('profilePicture', e.target.files[0])} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-</div>
+        <label htmlFor="fileInput" className="flex items-center justify-center w-8 h-8 bg-yellow-500 text-white rounded-full cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fillRule="evenodd"
+              d="M10 3a1 1 0 0 1 1 1v4h4a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H6a1 1 0 0 1 0-2h4V4a1 1 0 0 1 1-1z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </label>
+        <input
+          id="fileInput"
+          name="picture"
+          type="file"
+          onChange={handleFileChange}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        />
+      </div>
+      <div className="text-green-500 mt-2">
+        {selectedFileName && <p>Selected File: {selectedFileName}</p>}
+        {errors.picture?.message}
+      </div>
           </div>
           <div>
             <label className="block text-md font-medium leading-6 text-gray-900">First Name</label>
