@@ -54,7 +54,7 @@ function ForgotPassword() {
                             </div>
                             </div>
                         <div>
-                        <button disabled={mutation.isLoading} className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <button disabled={mutation.isLoading} className="mb-4 flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             {mutation.isLoading ? (
                                 <>
                                     <svg className="mr-3 h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@ function ForgotPassword() {
                                 'Send reset code'
                             )}
                         </button>
-                        <Link to="../login" className="font-semibold text-gray-900 hover:text-indigo-500">back</Link>
+                        <Link to="../login" className="flex w-full justify-center rounded-md bg-red-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Back</Link>
                         </div>
                         </form>
                 </div>
