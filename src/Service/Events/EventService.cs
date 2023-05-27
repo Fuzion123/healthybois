@@ -87,7 +87,7 @@ namespace Service.Events
             await eventRepository.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<EventDto> AddParticipant(int eventId, ParticipantInput input, int ownerUserId, CancellationToken cancellationToken)
+        public async Task<ParticipantDto> AddParticipant(int eventId, ParticipantInput input, int ownerUserId, CancellationToken cancellationToken)
         {
             var exist = await userRepository.Exists(input.UserId, cancellationToken);
 
@@ -101,11 +101,11 @@ namespace Service.Events
                 throw new AppException($"Cant add participant to Event because the current user is not the owner of this Event");
             }
 
-            @event.AddParticipant(input);
+            var participant = @event.AddParticipant(input);
 
             await eventRepository.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<EventDto>(@event);
+            return mapper.Map<ParticipantDto>(participant);
         }
 
         public async Task<EventDto> RemoveParticipant(int eventId, int participantId, int ownerUserId, CancellationToken cancellationToken)
@@ -120,7 +120,7 @@ namespace Service.Events
             return mapper.Map<EventDto>(@event);
         }
 
-        public async Task<EventDto> AddActivity(ActivityInput input, CancellationToken cancellationToken)
+        public async Task<ActivityDto> AddActivity(ActivityInput input, CancellationToken cancellationToken)
         {
             var exist = await userRepository.Exists(input.OwnerUserId, cancellationToken);
 
@@ -129,14 +129,14 @@ namespace Service.Events
 
             var Event = await eventRepository.GetById(input.EventId, cancellationToken);
 
-            Event.AddActivity(input);
+            var activity = Event.AddActivity(input);
 
             await eventRepository.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<EventDto>(Event);
+            return mapper.Map<ActivityDto>(activity);
         }
 
-        public async Task<EventDto> UpdateActivity(int eventId, ActivityUpdateInput input, CancellationToken cancellationToken)
+        public async Task<ActivityDto> UpdateActivity(int eventId, ActivityUpdateInput input, CancellationToken cancellationToken)
         {
             var Event = await eventRepository.GetById(eventId, cancellationToken);
 
@@ -145,7 +145,12 @@ namespace Service.Events
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
 
-            return mapper.Map<EventDto>(Event);
+            var activity = Event.Activities.Where(x => x.Id == input.ActivityId);
+
+            if (activity == null)
+                return null;
+
+            return mapper.Map<ActivityDto>(activity);
         }
 
         public async Task<EventDto> RemoveActivity(int eventId, int activityId, int userId, CancellationToken cancellationToken)
@@ -160,7 +165,7 @@ namespace Service.Events
             return mapper.Map<EventDto>(Event);
         }
 
-        public async Task<EventDto> AddOrUpdateResult(int eventId, int activityId, ResultInput input, CancellationToken cancellationToken)
+        public async Task<ActivityDto> AddOrUpdateResult(int eventId, int activityId, ResultInput input, CancellationToken cancellationToken)
         {
             var @event = await eventRepository.GetById(eventId, cancellationToken);
 
@@ -172,7 +177,9 @@ namespace Service.Events
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
 
-            return mapper.Map<EventDto>(@event);
+            var activity = @event.Activities.Where(x => x.Id == activityId);
+
+            return mapper.Map<ActivityDto>(activity);
         }
 
         public async Task<EventDto> RemoveResult(int eventId, int activityId, int resultId, CancellationToken cancellationToken)

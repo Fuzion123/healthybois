@@ -37,10 +37,10 @@ namespace WebApi.Controllers
             return Ok();
         }
 
-        [HttpPost("invite")]
-        public async Task<IActionResult> Invite(string email, CancellationToken cancellationToken)
-        {
-            return Ok("Email has been sent to you");
-        }
+        //[HttpPost("invite")]
+        //public Task<IActionResult> Invite(string email, CancellationToken cancellationToken)
+        //{
+        //    return Ok("Email has been sent to you");
+        //}
     }
 }

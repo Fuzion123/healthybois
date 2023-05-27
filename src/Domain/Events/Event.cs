@@ -76,7 +76,7 @@ namespace Domain.Events
             return updated;
         }
 
-        public void AddParticipant(ParticipantInput input)
+        public Participant AddParticipant(ParticipantInput input)
         {
             if (input is null)
             {
@@ -88,9 +88,13 @@ namespace Domain.Events
                 throw new DomainException($"User with id {input.UserId} already exists as participant on Event {Title}");
             }
 
-            _participants.Add(new Participant(Id, input));
+            var participant = new Participant(Id, input);
+
+            _participants.Add(participant);
 
             UpdatedAt = DateTime.UtcNow;
+
+            return participant;
         }
 
         public bool RemoveParticipant(int participantId, int ownerUserId)
@@ -116,7 +120,7 @@ namespace Domain.Events
             return removed;
         }
 
-        public void AddActivity(ActivityInput input)
+        public Activity AddActivity(ActivityInput input)
         {
             if (input is null)
             {
@@ -128,9 +132,13 @@ namespace Domain.Events
                 throw new DomainException($"Activity with title {input.Title} already exists on Event {Title}");
             }
 
-            _activities.Add(new Activity(input));
+            var activity = new Activity(input);
+
+            _activities.Add(activity);
 
             UpdatedAt = DateTime.UtcNow;
+
+            return activity;
         }
 
         public bool UpdateActivity(ActivityUpdateInput input)

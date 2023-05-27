@@ -1,6 +1,7 @@
 ﻿using Domain.Events.Input;
 using Microsoft.AspNetCore.Mvc;
 using Service.Events;
+using Service.Events.Models;
 using WebApi.Authorization;
 using WebApi.Models.Participants;
 
@@ -19,6 +20,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("{eventId}")]
+        [Produces(typeof(ParticipantDto))]
         public async Task<IActionResult> AddParticipant(int eventId, [FromBody] CreateParticipantRequest request, CancellationToken cancellationToken)
         {
             var input = new ParticipantInput()
@@ -26,12 +28,13 @@ namespace WebApi.Controllers
                 UserId = request.ParticipantUserId,
             };
 
-            await eventService.AddParticipant(eventId, input, CurrentUser.Id, cancellationToken);
+            var participant = await eventService.AddParticipant(eventId, input, CurrentUser.Id, cancellationToken);
 
-            return Ok(new { message = "Participant added successfully" });
+            return Ok(participant);
         }
 
         [HttpGet("{eventId}")]
+        [Produces(typeof(List<ParticipantDto>))]
         public async Task<IActionResult> GetAll(int eventId, CancellationToken cancellationToken)
         {
             var participants = await eventService.GetAllParticipants(eventId, cancellationToken).ConfigureAwait(false);
@@ -40,6 +43,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{eventId}/{participantId}")]
+        [Produces(typeof(ParticipantDto))]
         public async Task<IActionResult> GetById(int eventId, int participantId, CancellationToken cancellationToken)
         {
             var participant = await eventService.GetParticipantById(eventId, participantId, cancellationToken);
@@ -56,7 +60,7 @@ namespace WebApi.Controllers
         {
             await eventService.RemoveParticipant(eventId, participantId, CurrentUser.Id, cancellationToken);
 
-            return Ok(new { message = "Participant removed successfully" });
+            return Ok();
         }
     }
 }
