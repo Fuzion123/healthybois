@@ -5,7 +5,6 @@ export default ActivityList;
 
 function ActivityList(props) {
 
-  const { activityId } = useParams();
   const { id } = useParams();
 
     if(!props || !props.activities || props.activities.length === 0){
@@ -16,18 +15,16 @@ function ActivityList(props) {
     return (
         <div>
             <h1>Activities</h1>
-            <Link to={`/events/${id}/${activityId}`} >
               <ul  className="list-group">
                   {props.activities.map((p, index) => (
                     <li
                       key={p.id}
                       className={`list-group-item ${index % 2 === 0 ? 'bg-light' : ''}`}
                     >
-                      <p>{p.title}</p>
+                      <Link to={`/events/${id}/${p.id}`} >{p.title}</Link>
                     </li>
                   ))}
                 </ul>
-            </Link>
         </div>
     );
 }

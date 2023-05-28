@@ -12,6 +12,6 @@ namespace Service.Events.Models
         public Uri EventPictureUrl { get; set; }
         public EventOwnerDto EventOwner { get; set; }
         public List<UserParticipantDto> Participants { get; set; }
-        public List<ActivityDto> Activities { get; set; }
+        public List<ActivityListingDto> Activities { get; set; }
     }
 }

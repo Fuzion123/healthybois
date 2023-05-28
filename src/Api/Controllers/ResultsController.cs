@@ -19,7 +19,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{eventId}/{activityId}")]
-        [Produces(typeof(ActivityDto))]
+        [Produces(typeof(ActivityListingDto))]
         public async Task<IActionResult> AddOrUpdateResult(int eventId, int activityId, ResultInput resultInput, CancellationToken cancellationToken)
         {
             var activity = await eventService.AddOrUpdateResult(eventId, activityId, resultInput, cancellationToken);

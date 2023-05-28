@@ -64,12 +64,12 @@ namespace Service.Events.Mappers
             };
         }
 
-        public ActivityDto MapActivity(Activity activity)
+        public ActivityListingDto MapActivity(Activity activity)
         {
             if (activity == null)
                 return null;
 
-            return new ActivityDto()
+            return new ActivityListingDto()
             {
                 Id = activity.Id,
                 Title = activity.Title,
@@ -77,11 +77,11 @@ namespace Service.Events.Mappers
                 EventId = activity.EventId,
                 OwnerUserId = activity.OwnerUserId,
                 UpdatedAt = activity.UpdatedAt,
-                Results = activity.Results.Select(y => MapResult(y)).ToList(),
+                Results = activity.Results.Select(y => MapResult(activity.EventId, y)).ToList(),
             };
         }
 
-        public ResultDto MapResult(Result result)
+        public ResultDto MapResult(int eventId, Result result)
         {
             if (result == null)
                 return null;
@@ -90,6 +90,7 @@ namespace Service.Events.Mappers
             {
                 Id = result.Id,
                 Score = result.Score,
+                EventId = eventId,
                 ActivityId = result.ActivityId,
                 CreatedAt = result.CreatedAt,
                 UpdatedAt = result.UpdatedAt,
@@ -110,6 +111,15 @@ namespace Service.Events.Mappers
                 LastName = user.LastName,
                 UserId = user.Id,
                 ProfilePictureUrl = pictureService.GetPicture(user.ProfilePictureId)
+            };
+        }
+
+        public ActivityDetailsParticipant MapActivityDetailsParticipant(int eventId, int particiopantId, User user, Result result)
+        {
+            return new ActivityDetailsParticipant()
+            {
+                Participant = MapParticipantFromUser(particiopantId, user),
+                Result = MapResult(eventId, result)
             };
         }
 

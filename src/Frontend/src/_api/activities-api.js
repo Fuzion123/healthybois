@@ -2,8 +2,8 @@ import { fetchWrapper } from '_helpers';
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/activities`;
 
-const getById = async (id) => {
-    return await fetchWrapper.get(`${baseUrl}/${id}`);
+const getById = async (eventId, activityId) => {
+    return await fetchWrapper.get(`${baseUrl}/${eventId}/${activityId}`);
 };
 
 const create = async (id, data) => {
@@ -14,8 +14,8 @@ const update = async (eventId, activityId, data) => {
     return await fetchWrapper.put(`${baseUrl}/${eventId}/${activityId}`, data);
 };
 
-const getAllForEvent = async (eventId, activityId) => {
-    return await fetchWrapper.get(`${baseUrl}/${eventId}/${activityId}`);
+const getAllForEvent = async (eventId) => {
+    return await fetchWrapper.get(`${baseUrl}/${eventId}`);
 };
 
 const deleteById = async (id) => {

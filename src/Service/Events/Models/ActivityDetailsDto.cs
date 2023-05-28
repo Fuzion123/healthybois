@@ -1,13 +1,7 @@
-﻿using Domain.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Service.Events.Models
 {
-    public class ActivityDto
+    public class ActivityDetailsDto
     {
         public int Id { get; set; }
         public int EventId { get; set; }
@@ -15,6 +9,6 @@ namespace Service.Events.Models
         public string Title { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public List<ResultDto> Results { get; set; }
+        public List<ActivityDetailsParticipant> Participants { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{eventId}")]
-        [Produces(typeof(List<ActivityDto>))]
+        [Produces(typeof(List<ActivityListingDto>))]
         public async Task<IActionResult> GetAll(int eventId, CancellationToken cancellationToken)
         {
             var activities = await eventService.GetAllActivities(eventId, cancellationToken).ConfigureAwait(false);
@@ -32,7 +32,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{eventId}/{activityId}")]
-        [Produces(typeof(ActivityDto))]
+        [Produces(typeof(ActivityListingDto))]
         public async Task<IActionResult> GetById(int eventId, int activityId, CancellationToken cancellationToken)
         {
             var activity = await eventService.GetActivityById(eventId, activityId, cancellationToken);
@@ -44,7 +44,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("{eventId}")]
-        [Produces(typeof(ActivityDto))]
+        [Produces(typeof(ActivityListingDto))]
         public async Task<IActionResult> Create(int eventId, [FromBody] CreateActivityRequest activityInput, CancellationToken cancellationToken)
         {
             if (activityInput is null)
@@ -65,7 +65,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{eventId}/{activityId}")]
-        [Produces(typeof(ActivityDto))]
+        [Produces(typeof(ActivityListingDto))]
         public async Task<IActionResult> Update(int eventId, int activityId, [FromBody] UpdateActivityRequest request, CancellationToken cancellationToken)
         {
             if (request is null)
