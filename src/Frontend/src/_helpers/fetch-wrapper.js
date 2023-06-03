@@ -40,8 +40,10 @@ function authToken() {
 }
 
 async function handleResponse(response) {
-    const isJson = response.headers?.get('content-type')?.includes('application/json');
-    const data = isJson ? await response.json() : null;
+
+    const data = await response.json();
+    // const isJson = response.headers?.get('content-type')?.includes('application/json');
+    // const data = isJson ? await response.json() : null;
 
     // check for error response
     if (!response.ok) {

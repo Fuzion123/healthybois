@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import React from 'react';
 import { eventapi } from '../_api'
 import {useQuery } from 'react-query';
+import { Messages } from '_components';
 
 export { Home };
 
@@ -26,6 +27,8 @@ function Home() {
       </header>
 
       {/* Sections */}
+        <Messages></Messages>
+
 
         <h1 className='text-3xl'>Events</h1>
         <div>
