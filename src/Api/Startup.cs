@@ -55,15 +55,20 @@ namespace WebApi
             {
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
-
-                    builder.WithOrigins("https://happy-field-0e3c42103.3.azurestaticapps.net")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
+                    if (webHostEnvironment.IsProduction())
+                    {
+                        builder.WithOrigins("https://happy-field-0e3c42103.3.azurestaticapps.net")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    }
+                    else
+                    {
+                        builder.WithOrigins("http://localhost:3000")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    }
                 });
             });
 
