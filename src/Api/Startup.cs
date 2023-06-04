@@ -12,6 +12,7 @@ using Service.Events;
 using Infrastructure.JobStorage;
 using Service;
 using Service.Events.Mappers;
+using WebApi.SignalR;
 
 namespace WebApi
 {
@@ -50,7 +51,22 @@ namespace WebApi
             
             services.AddBlobJobStorage(appSettings.ConnectionStrings.AzureStorageAccount);
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+
+                    builder.WithOrigins("https://happy-field-0e3c42103.3.azurestaticapps.net")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+                });
+            });
+
             services.AddControllers();
 
             // configure automapper with all automapper profiles from this assembly
@@ -70,6 +86,8 @@ namespace WebApi
             services.AddAzureEmailService(appSettings.AzureEmailSettings);
             services.AddTransient<PictureService>();
             services.AddTransient<EventMapper>();
+            services.AddSignalR();
+
 
             // caching
             //if (appSettings.UsingCachedRepositories)
@@ -125,10 +143,6 @@ namespace WebApi
             // configure HTTP request pipeline
             {
                 // global cors policy
-                app.UseCors(x => x
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
 
                 //app.UseHttpsRedirection();
                 //app.UseStaticFiles();
@@ -148,11 +162,14 @@ namespace WebApi
 
                 app.UseRouting();
 
+                app.UseCors();
+
                 app.UseAuthorization();
 
                 app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
+                    endpoints.MapHub<ChatHub>("/chat");
                 });
             }
         }

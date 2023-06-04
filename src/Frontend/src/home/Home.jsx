@@ -6,7 +6,7 @@ import { Messages } from '_components';
 
 export { Home };
 
-function Home() {
+function Home(props) {
 
   const auth = useSelector(x => x.auth.value);
 
@@ -27,7 +27,7 @@ function Home() {
       </header>
 
       {/* Sections */}
-        <Messages></Messages>
+        <Messages connection={props.connection} messages = { props.messages }></Messages>
 
 
         <h1 className='text-3xl'>Events</h1>
