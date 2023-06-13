@@ -57,8 +57,8 @@ function Home(props) {
                   .map((p, i) => (
                     <div key={i} onClick={() => handleCardClick(p)}>
                     <img className="object-cover w-50 h-50 md:h-20 rounded-t-lg" src={p.eventPictureUrl} alt="stock" />
-                    <p>{p.title}</p>
-                    <p>{p.eventOwner.firstName}</p>
+                    <p className='font-semibold'>{p.title}</p>
+                    <img alt="profile" className="h-10 w-10" src={p.eventOwner.profilePictureUrl}></img>
                   </div>
           ))}</p>
             </div>
