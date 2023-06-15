@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { eventapi } from '../_api'
+import { participantsapi } from '_api';
 import {useQuery } from 'react-query';
 import { Messages } from '_components';
 import { eventsActions } from '_store';
@@ -23,9 +24,12 @@ function Home(props) {
   const auth = useSelector(x => x.auth.value);
 
   // query
+
   const {data, error, isLoading} = useQuery('getAllEvents', () => {
     return eventapi.getAll();
   });
+
+  
 
   if (error) return <div>Request Failed</div>;
 
@@ -86,7 +90,7 @@ function Home(props) {
               <h3 className="text-md font-bold mb-2">Connect with others</h3>
               <p className="text-gray-600">Join the vibrant message board community and connect with fellow competitors. Share strategies, exchange tips, and engage in meaningful discussions to enhance your competitive journey.</p>
             </div>
-            <div className="bg-cyan-50 p-8 shadow-md rounded-lg">
+            <div className="bg-cyan-50 p-2 shadow-md rounded-lg">
               <p className="text-gray-600"><Messages connection={props.connection} messages = { props.messages }></Messages></p>
             </div>
           </div>
