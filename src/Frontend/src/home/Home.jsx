@@ -2,7 +2,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { eventapi } from '../_api'
-import { participantsapi } from '_api';
 import {useQuery } from 'react-query';
 import { Messages } from '_components';
 import { eventsActions } from '_store';
