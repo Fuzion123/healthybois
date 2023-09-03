@@ -6,6 +6,11 @@ const resetpassword = async (code, data) => {
     return await fetchWrapper.post(`${baseUrl}/resetpassword/${code}`, data);
 };
 
+const searchUsers = async (term) => {
+    return await fetchWrapper.get(`${baseUrl}/search/${term}`);
+};
+
 export const userapi = {
-    resetpassword: resetpassword
+    resetpassword: resetpassword,
+    searchUsers: searchUsers
 };

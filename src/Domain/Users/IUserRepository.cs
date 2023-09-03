@@ -13,5 +13,6 @@ namespace Domain.Users
         public void Add(User user);
         public void Remove(User user);
         public Task SaveChangesAsync(CancellationToken cancellationToken);
+        public Task<List<User>> Search(string term, CancellationToken cancellationToken);
     }
 }

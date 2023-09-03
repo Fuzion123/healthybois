@@ -1,6 +1,7 @@
 ﻿namespace Service.Users;
 
 using Service.Users.Models;
+using WebApi.Models.Users;
 
 public interface IUserService
 {
@@ -11,4 +12,5 @@ public interface IUserService
     Task Update(int id, UpdateRequest model, CancellationToken cancellationToken);
     Task Delete(int id, CancellationToken cancellationToken);
     Task ResetPassword(string email, ResetPasswordRequest request, CancellationToken cancellationToken);
+    Task<List<UserSearchResponseDto>> Search(string term, CancellationToken cancellationToken);
 }

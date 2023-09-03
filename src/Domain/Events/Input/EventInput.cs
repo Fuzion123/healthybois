@@ -9,5 +9,6 @@ namespace Domain.Events.Input
         public DateTime StartsAt { get; set; }
         public DateTime EndsAt { get; set; }
         public PictureInput Picture { get; set; }
+        public List<ParticipantInput> Participants { get; set; } = new List<ParticipantInput>();
     }
 }

@@ -1,17 +1,17 @@
-using Microsoft.EntityFrameworkCore;
-using WebApi.Authorization;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using WebApi.Settings;
-using Infrastructure.Repositories;
-using Service.Users.Dependencies;
-using WebApi.Middleware;
-using Service.Users;
 using Infrastructure;
-using Service.Events;
 using Infrastructure.JobStorage;
+using Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Service;
+using Service.Events;
 using Service.Events.Mappers;
+using Service.Users;
+using Service.Users.Dependencies;
+using WebApi.Authorization;
+using WebApi.Middleware;
+using WebApi.Settings;
 using WebApi.SignalR;
 
 namespace WebApi
@@ -48,7 +48,7 @@ namespace WebApi
                 });
             });
 
-            
+
             services.AddBlobJobStorage(appSettings.ConnectionStrings.AzureStorageAccount);
 
             services.AddCors(options =>

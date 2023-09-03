@@ -2,7 +2,6 @@
 using Domain.Events.Input;
 using Domain.Pictures.Inputs;
 using Domain.Users;
-using Microsoft.Extensions.Logging;
 using Service.Events.Mappers;
 using Service.Events.Models;
 using Service.Exceptions;
@@ -187,7 +186,7 @@ namespace Service.Events
         {
             var @event = await eventRepository.GetById(eventId, cancellationToken);
 
-            if(@event.RemoveParticipant(participantId, ownerUserId))
+            if (@event.RemoveParticipant(participantId, ownerUserId))
             {
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
@@ -232,7 +231,7 @@ namespace Service.Events
         {
             var @event = await eventRepository.GetById(eventId, cancellationToken);
 
-            if(@event.RemoveActivity(activityId, userId))
+            if (@event.RemoveActivity(activityId, userId))
             {
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
@@ -247,7 +246,7 @@ namespace Service.Events
             if (@event == null)
                 throw new AppException($"Found no event with id {eventId}.");
 
-            if(@event.AddOrUpdateActivityResult(activityId, input))
+            if (@event.AddOrUpdateActivityResult(activityId, input))
             {
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
@@ -264,7 +263,7 @@ namespace Service.Events
             if (@event == null)
                 throw new AppException($"Found no event with id {eventId}.");
 
-            if(@event.RemoveActivityResult(activityId, resultId))
+            if (@event.RemoveActivityResult(activityId, resultId))
             {
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
@@ -288,7 +287,7 @@ namespace Service.Events
                     Title = activity.Title,
                     Results = activity.Results.Select(x => mapper.MapResult(eventId, x)).ToList()
                 };
-            }).ToList(); 
+            }).ToList();
         }
 
         public async Task<ActivityDetailsDto> GetActivityById(int eventId, int activityId, CancellationToken cancellationToken)
@@ -304,7 +303,7 @@ namespace Service.Events
             {
                 var participants = new List<ActivityDetailsParticipant>();
 
-                foreach (var user in users) 
+                foreach (var user in users)
                 {
                     var participantId = participantIdsByUserId[user.Id];
                     var result = resultByParticipantId.ContainsKey(participantId) ? resultByParticipantId[participantId] : null;
@@ -331,12 +330,12 @@ namespace Service.Events
         public async Task<UserParticipantDto> GetParticipantById(int eventId, int participantId, CancellationToken cancellationToken)
         {
             var participant = await eventRepository.GetParticipantById(eventId, participantId, cancellationToken);
-            
+
             if (participant != null)
             {
-                var user = await userRepository.GetById(participant.UserId, cancellationToken); 
+                var user = await userRepository.GetById(participant.UserId, cancellationToken);
 
-                if(user != null)
+                if (user != null)
                 {
                     return new UserParticipantDto()
                     {
@@ -362,7 +361,7 @@ namespace Service.Events
 
             return users.Select(x => new UserParticipantDto()
             {
-                Email= x.Email,
+                Email = x.Email,
                 FirstName = x.FirstName,
                 UserId = x.Id,
                 LastName = x.LastName,

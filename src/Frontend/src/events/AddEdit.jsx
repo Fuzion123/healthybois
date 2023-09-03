@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import { useSelector, useDispatch } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import { userapi } from "_api";
 import { history } from '_helpers';
 import { eventsActions, alertActions } from '_store';
 
@@ -44,6 +44,70 @@ function AddEdit() {
         setTitle('Add event');
     }, []);
 
+    const [query, setQuery] = useState("");
+    const [usersSearchResult, SetUsersSearchResult] = useState([]);
+    const [participants, SetParticipants] = useState([]);
+    
+    useEffect(() => {
+
+      async function searchUsers(term) {
+
+        if(!term || term === null)
+          return;
+
+        let response = await userapi.searchUsers(term);
+        
+        var resultingSearchList = [];
+
+        response.forEach(user => {
+          
+          var userAlreadyAdded = false;
+
+          participants.forEach(p => {
+            if(p.userId === user.userId){
+              userAlreadyAdded = true;
+              return;
+            }
+          })
+          
+          resultingSearchList.push(
+            {
+              userId: user.userId,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              profilePictureUri: user.profilePictureUri,
+              addedAlready: userAlreadyAdded  
+            });
+          
+        });
+
+        SetUsersSearchResult(resultingSearchList)
+      };
+
+      const timeOutId = setTimeout(() => {
+        
+        searchUsers(query);
+        
+      }, 500);
+      return () => clearTimeout(timeOutId);
+    }, [query]);
+
+
+    function addParticipants(user){
+      SetUsersSearchResult([]);
+      // document.getElementById('user-search-dropdown').classList.add('hidden');
+      document.getElementById('search-user-dropdown').value = ''
+
+      setQuery('');
+
+      if(user.addedAlready){
+        SetParticipants(participants.filter(item => item.userId !== user.userId));
+      }
+      else{
+        SetParticipants(participants => [...participants, user]);
+      }
+    }
+
     async function onSubmit(data) {
 
         if(startDate === undefined || startDate === null){
@@ -58,15 +122,23 @@ function AddEdit() {
             return;
         }
 
-        console.log(data)
+        if(data.picture === undefined || data.picture === null){
+            dispatch(alertActions.error('Please choose an event picture'));
+            return;
+        }
 
-        
-       
-    
         dispatch(alertActions.clear());
+
         try {
-        var imageAsBase64 = await toBase64(data.picture);
-          let message = "event added";
+
+          var imageAsBase64 = await toBase64(data.picture);
+
+          var users = participants.map(p => {
+            return {userId: p.userId}
+          });
+
+          const message = "event created";
+
           await dispatch(
             eventsActions.create({
               data: {
@@ -78,6 +150,7 @@ function AddEdit() {
                     name: data.picture.name,
                     base64: imageAsBase64
                   },
+                participants: users
               },
             })
           ).unwrap();
@@ -161,6 +234,46 @@ function AddEdit() {
                             className={`form-control ${errors.endDate ? 'is-invalid' : ''}`}
                             />
                             <div className="invalid-feedback">{errors.endDate?.message}</div>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <h2>Add participants</h2>
+                          <div className="flex">                          
+                            <div className="relative w-full">
+                                <input onChange={event => setQuery(event.target.value)} type="search" id="search-user-dropdown" className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="insert name" />
+                                <button disabled className="absolute top-0 right-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                    </svg>
+                                    <span className="sr-only">Search</span>
+                                </button>
+                            </div>
+                          </div>
+                          {(usersSearchResult && usersSearchResult.length > 0) && 
+                            <div id="user-search-dropdown" className="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                              <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button">
+                              {usersSearchResult.map((p, index) => (
+                                <li key={index}>
+                                  <div className='flex flex-row'>
+                                    <button onClick={() => addParticipants(p)} type="button" className="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{p.firstName} {p.lastName} {p.addedAlready ? ' - added already' : ''}</button>
+                                  </div>
+                                </li>
+                              ))}
+                              </ul>
+                          </div>
+                          }
+                          <div className="mb-4">
+                          {(participants && participants.length > 0) && 
+                            <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button">
+                            {participants.map((p, index) => (
+                              <li key={index}>
+                                <div>{p.firstName} {p.lastName}</div>
+                              </li>
+                            ))}
+                            </ul>
+                          }
+                          </div>
+                          
                         </div>
                         </div>
                         <div className="mb-3">

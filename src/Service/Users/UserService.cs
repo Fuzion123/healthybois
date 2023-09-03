@@ -1,10 +1,11 @@
 namespace Service.Users;
 
+using BCrypt.Net;
 using Domain.Users;
+using Service.Exceptions;
 using Service.Users.Dependencies;
 using Service.Users.Models;
-using BCrypt.Net;
-using Service.Exceptions;
+using WebApi.Models.Users;
 
 public class UserService : IUserService
 {
@@ -72,7 +73,7 @@ public class UserService : IUserService
     {
         var user = await userRepository.GetById(id, cancellationToken);
 
-        if(user != null)
+        if (user != null)
         {
             var url = pictureService.GetPicture(user.ProfilePictureId);
 
@@ -133,7 +134,7 @@ public class UserService : IUserService
         if (!string.IsNullOrEmpty(model.Password))
             passwordHash = BCrypt.HashPassword(model.Password);
 
-         user.Update(model.FirstName, model.LastName, passwordHash, null);
+        user.Update(model.FirstName, model.LastName, passwordHash, null);
 
         await userRepository.SaveChangesAsync(cancellationToken);
     }
@@ -147,16 +148,16 @@ public class UserService : IUserService
         await userRepository.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task ResetPassword(string email,ResetPasswordRequest request, CancellationToken cancellationToken)
+    public async Task ResetPassword(string email, ResetPasswordRequest request, CancellationToken cancellationToken)
     {
         var user = await userRepository.GetByUserName(email, cancellationToken);
 
-        if (user == null) 
+        if (user == null)
         {
             throw new AppException("No user found for recover email, cant reset password. Try to resubmit a restore password request for you email");
         }
 
-        if(request.NewPassword != request.NewPasswordConfirm)
+        if (request.NewPassword != request.NewPasswordConfirm)
         {
             throw new AppException("The new password and the confirmation of the new password does not match each other.");
         }
@@ -181,5 +182,18 @@ public class UserService : IUserService
         {
             throw new Exception("Old password is not correct.");
         }
+    }
+
+    public async Task<List<UserSearchResponseDto>> Search(string term, CancellationToken cancellationToken)
+    {
+        var users = await userRepository.Search(term, cancellationToken);
+
+        return users.Select(x => new UserSearchResponseDto()
+        {
+            FirstName = x.FirstName,
+            LastName = x.LastName,
+            UserId = x.Id,
+            ProfilePictureUri = pictureService.GetPicture(x.ProfilePictureId)
+        }).ToList();
     }
 }

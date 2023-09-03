@@ -39,7 +39,7 @@ namespace Domain.Events
                 throw new ArgumentException($"'{nameof(input.Title)}' cannot be null or empty.", nameof(input.Title));
             }
 
-            if(input.EndsAt <= input.StartsAt)
+            if (input.EndsAt <= input.StartsAt)
             {
                 throw new DomainException("End date needs to be after start date");
             }
@@ -49,7 +49,17 @@ namespace Domain.Events
             StartsAt = input.StartsAt;
             EndsAt = input.EndsAt;
             OwnerUserId = EventOwner;
-            AddParticipant(new ParticipantInput() { UserId = OwnerUserId }); // add the owner as the first participant as default. (can be removed after again).
+
+            input.Participants.Add(new ParticipantInput() { UserId = OwnerUserId }); // add the owner as the first participant as default. (can be removed after again).
+
+            if (input.Participants.Count > 0)
+            {
+                foreach (var p in input.Participants.GroupBy(x => x.UserId).Select(i => i.First()))
+                {
+                    AddParticipant(new ParticipantInput() { UserId = p.UserId });
+                }
+            }
+
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = CreatedAt;
             EventPictureId = pictureId;
@@ -74,6 +84,26 @@ namespace Domain.Events
             if (Description != input.Description)
             {
                 Description = input.Description;
+
+                updated = true;
+            }
+
+            var inputParticipantUserIds = input.Participants.Select(x => x.UserId).ToArray();
+            var existingParticipantUserIds = Participants.Select(x => x.UserId).ToList();
+
+            var newParticipants = input.Participants.Where(x => !existingParticipantUserIds.Contains(x.UserId));
+            var removes = existingParticipantUserIds.Where(x => !inputParticipantUserIds.Contains(x));
+
+            if (removes.Any())
+            {
+                updated = true;
+            }
+
+            _participants.RemoveAll(x => removes.Contains(x.UserId));
+
+            foreach (var add in newParticipants)
+            {
+                AddParticipant(add);
 
                 updated = true;
             }
@@ -160,7 +190,7 @@ namespace Domain.Events
 
             var activity = _activities.FirstOrDefault(x => x.Id == input.ActivityId);
 
-            if (activity == null) 
+            if (activity == null)
                 throw new DomainException($"Activity with id {input.ActivityId} was not found on event with id {Id}");
 
             if (activity.Update(input))
@@ -179,7 +209,7 @@ namespace Domain.Events
 
             var a = _activities.FirstOrDefault(x => x.Id == activityId);
 
-            if(a.OwnerUserId != userId)
+            if (a.OwnerUserId != userId)
             {
                 throw new DomainException($"Cant remove Activity from this Event, because the current user is not the owner of this Event");
             }
@@ -203,7 +233,7 @@ namespace Domain.Events
             if (activity == null)
                 throw new DomainException($"Found no activity with id {activityId} on event with id {Id}.");
 
-            if(!_participants.Any(x => x.Id == resultInput.ParticipantId))
+            if (!_participants.Any(x => x.Id == resultInput.ParticipantId))
             {
                 throw new DomainException($"No Participant found on the event with that id");
             }
@@ -223,7 +253,7 @@ namespace Domain.Events
 
         public bool SetOrUpdatePicture(string eventPictureId)
         {
-            if(EventPictureId != eventPictureId)
+            if (EventPictureId != eventPictureId)
             {
                 EventPictureId = eventPictureId;
                 UpdatedAt = DateTime.UtcNow;

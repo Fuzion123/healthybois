@@ -61,5 +61,14 @@ namespace Infrastructure.Repositories.Users
         {
             await dbContext.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task<List<User>> Search(string term, CancellationToken cancellationToken)
+        {
+            var users = await dbContext.Users
+                .Where(x => EF.Functions.Like(x.FirstName, $"%{term}%") || EF.Functions.Like(x.LastName, $"%{term}%"))
+                .ToListAsync(cancellationToken);
+
+            return users;
+        }
     }
 }

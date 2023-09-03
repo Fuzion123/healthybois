@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Service.Email;
 using Service.Users;
 using Service.Users.Models;
-using System.Runtime.InteropServices;
 using WebApi.Authorization;
+using WebApi.Models.Users;
 
 [Authorize]
 [ApiController]
@@ -82,5 +82,16 @@ public class UsersController : ControllerBase
     {
         await _userService.Delete(id, cancellationToken);
         return Ok(new { message = "User deleted successfully" });
+    }
+
+    [HttpGet("search/{term}")]
+    public async Task<IActionResult> Search(string term, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrEmpty(term))
+        {
+            return Ok(new List<UserSearchResponseDto>());
+        }
+
+        return Ok(await _userService.Search(term, cancellationToken));
     }
 }
