@@ -39,7 +39,7 @@ function Home(props) {
     <div className="min-h-screen">
       {/* Header */}
       <header className="text-center py-4 px-8">
-        <h1 className="text-2xl font-bold">Welcome {auth?.firstName}!</h1>
+        <h1 className="text-2xl font-bold">Welcome {auth?.firstName}</h1>
       </header>
 
       {/* Sections */}
