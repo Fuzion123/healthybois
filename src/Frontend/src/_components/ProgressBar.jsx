@@ -4,7 +4,7 @@ function ProgressBar({ progress }) {
   const [width, setWidth] = useState(0);
 
   useEffect(() => {
-    // Update the progress bar width based on the progress prop
+   
     setWidth(progress);
   }, [progress]);
 

@@ -4,7 +4,7 @@ import {useQuery, useMutation } from 'react-query';
 import { eventapi } from '_api';
 import { history, date } from '_helpers';
 import ProgressBar from '_components/ProgressBar';
-
+import ParticipantBar from '_components/ParticipantBar';
 import ActivityList from './activities/ActivityList'
 import { Link } from 'react-router-dom';
 
@@ -23,6 +23,12 @@ function EventDetails() {
     }
   }
   );
+
+  const profiles = [
+    { profilePictureUrl: data.participants.profilePictureUrl },
+    { profilePictureUrl: 'profile2.jpg' },
+    { profilePictureUrl: 'profile3.jpg' },
+  ];
 
   const mutation = useMutation(async (id) => {
     await eventapi.deleteById(id)
@@ -81,17 +87,19 @@ return (
         <p>Scoreboard</p>
       </div>
       <div className='my-3'>
-        <p>Participants</p>
+      <ParticipantBar profiles={profiles} />
       </div>
       <div>
-          <Link to={`/events/${id}/addActivity`} className="my-3 btn btn-sm mx-2 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-green-400">Add Activity</Link>
-          
+        
+      <div className='my-2'>
           <ActivityList activities={data.activities} />
+          </div>
         </div>
         <div>
           <button onClick={() => submit(data)} className="my-3 btn btn-sm btn-danger mx-2" disabled={data.isDeleting}>
             <span>Delete</span>
           </button>
+          <Link to={`/events/${id}/addActivity`} className="my-3 btn btn-sm mx-2 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-green-400">Add Activity</Link>
         </div></> 
      
 )
