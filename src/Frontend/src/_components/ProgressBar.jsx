@@ -2,19 +2,27 @@ import React, { useState, useEffect } from 'react';
 
 function ProgressBar({ progress }) {
   const [width, setWidth] = useState(0);
+  const [complete, setComplete] = useState(false);
 
   useEffect(() => {
-   
     setWidth(progress);
+    setComplete(progress === 100);
   }, [progress]);
 
   return (
     <div className="relative pt-1">
       <div className="flex mb-2 items-center justify-between">
         <div>
-          <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-teal-600 bg-teal-200">
-            In Progress
-          </span>
+          
+          {complete ?  
+            <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-teal-600 bg-teal-200">
+              Done
+            </span> : 
+            <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-yellow-600 bg-yellow-200">
+              In Progress
+            </span>
+          }
+          
         </div>
         <div className="text-right">
           <span className="text-xs font-semibold inline-block text-teal-600">

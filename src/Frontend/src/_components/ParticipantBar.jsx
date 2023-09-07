@@ -4,7 +4,9 @@ import React from 'react';
 function ParticipantBar({ profiles }) {
   return (
     <>
-    <div className='my-2'><p>Participants</p></div>
+    <div className='my-2'><p></p></div>
+    <h2 className="text-2xl font-bold dark:text-white">Participants</h2>
+    <br></br>
     <div className="flex items-center space-x-4">
       {profiles.map((profile, index) => (
         <div

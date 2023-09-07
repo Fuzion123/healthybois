@@ -9,8 +9,7 @@ export { EventsLayout };
 
 function EventsLayout() {
   return (
-    <div className="p-4">
-      <div className="container">
+    <div className="container">
         <Routes>
           <Route index element={<List />} />
           <Route path="add" element={<AddEdit />} />
@@ -20,6 +19,5 @@ function EventsLayout() {
           <Route path="/:id/:activityId" element={<ActivityDetails />} />
         </Routes>
       </div>
-    </div>
   );
 }

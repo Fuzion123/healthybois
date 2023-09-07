@@ -10,6 +10,7 @@ namespace Service.Events.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? CompletedOn { get; set; }
+        public bool Completed => CompletedOn != null;
         public List<ResultDto> Results { get; set; }
     }
 }

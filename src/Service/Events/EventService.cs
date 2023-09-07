@@ -227,6 +227,38 @@ namespace Service.Events
             return mapper.MapActivity(activity);
         }
 
+        public async Task<ActivityListingDto> MarkComplete(int eventId, int activityId, CancellationToken cancellationToken)
+        {
+            var Event = await eventRepository.GetById(eventId, cancellationToken);
+
+            var activity = Event.Activities.FirstOrDefault(x => x.Id == activityId);
+
+            if (activity == null)
+                return null;
+
+            activity.SetCompleted(DateTime.UtcNow);
+
+            await eventRepository.SaveChangesAsync(cancellationToken);
+
+            return mapper.MapActivity(activity);
+        }
+
+        public async Task<ActivityListingDto> MarkUnComplete(int eventId, int activityId, CancellationToken cancellationToken)
+        {
+            var Event = await eventRepository.GetById(eventId, cancellationToken);
+
+            var activity = Event.Activities.FirstOrDefault(x => x.Id == activityId);
+
+            if (activity == null)
+                return null;
+
+            activity.SetUnCompleted();
+
+            await eventRepository.SaveChangesAsync(cancellationToken);
+
+            return mapper.MapActivity(activity);
+        }
+
         public async Task<EventDetailDto> RemoveActivity(int eventId, int activityId, int userId, CancellationToken cancellationToken)
         {
             var @event = await eventRepository.GetById(eventId, cancellationToken);
@@ -320,7 +352,8 @@ namespace Service.Events
                     Id = activity.Id,
                     OwnerUserId = activity.OwnerUserId,
                     Title = activity.Title,
-                    Participants = participants.OrderByDescending(x => x.Result?.Score).ToList(),
+                    CompletedOn = activity.CompletedOn,
+                    Participants = participants.OrderBy(x => x.Participant.FirstName).ToList(),
                 };
             }
 

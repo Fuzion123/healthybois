@@ -22,10 +22,20 @@ const deleteById = async (id) => {
     return await fetchWrapper.delete(`${baseUrl}/${id}`);
 };
 
+const markDone = async (eventId, activityId) => {
+    return await fetchWrapper.post(`${baseUrl}/${eventId}/${activityId}/complete`);
+};
+
+const markUnDone = async (eventId, activityId) => {
+    return await fetchWrapper.post(`${baseUrl}/${eventId}/${activityId}/uncomplete`);
+};
+
 export const activityapi = {
     getById: getById,
     create: create,
     update: update,
     getAllForEvent: getAllForEvent,
-    deleteById: deleteById
+    deleteById: deleteById,
+    markDone: markDone,
+    markUnDone: markUnDone
 };

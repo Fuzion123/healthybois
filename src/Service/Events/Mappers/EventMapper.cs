@@ -33,7 +33,7 @@ namespace Service.Events.Mappers
 
             var activityCompleted = @event.Activities.Where(x => x.CompletedOn != null).Count();
 
-            var progress = activityCount == 0 ? 0 : (decimal)activityCount / (decimal)activityCompleted;
+            var progress = activityCount == 0 ? 0 : ((decimal)activityCompleted / (decimal)activityCount) * 100;
 
             return new EventDetailDto()
             {
@@ -46,13 +46,13 @@ namespace Service.Events.Mappers
                 EventPictureUrl = pictureService.GetPicture(@event.EventPictureId),
                 EventOwner = MapEventOwner(@event.Id, owner),
                 Activities = @event.Activities.Select(x => MapActivity(x)).ToList(),
-                Progress = progress,
+                Progress = Math.Round(progress, 0), //returns 2.00 progress,
                 Participants = participants.Select(x =>
-                {
-                    var id = participantIdByUserId[x.Id];
+                    {
+                        var id = participantIdByUserId[x.Id];
 
-                    return MapParticipantFromUser(id, x);
-                }).ToList()
+                        return MapParticipantFromUser(id, x);
+                    }).ToList()
             };
         }
 

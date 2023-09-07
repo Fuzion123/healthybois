@@ -105,5 +105,10 @@ namespace Domain.Events
         {
             CompletedOn = dateTime;
         }
+
+        public void SetUnCompleted()
+        {
+            CompletedOn = null;
+        }
     }
 }

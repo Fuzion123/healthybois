@@ -37,7 +37,7 @@ namespace WebApi.Controllers
         {
             var activity = await eventService.GetActivityById(eventId, activityId, cancellationToken);
 
-            if(activity != null)
+            if (activity != null)
                 return Ok(activity);
 
             return NotFound();
@@ -93,6 +93,24 @@ namespace WebApi.Controllers
             await eventService.RemoveActivity(eventId, activityId, currentUserId, cancellationToken);
 
             return Ok();
+        }
+
+        [HttpPost("{eventId}/{activityId}/complete")]
+        [Produces(typeof(ActivityListingDto))]
+        public async Task<IActionResult> MarkComplete(int eventId, int activityId, CancellationToken cancellationToken)
+        {
+            var activity = await eventService.MarkComplete(eventId, activityId, cancellationToken);
+
+            return Ok(activity);
+        }
+
+        [HttpPost("{eventId}/{activityId}/uncomplete")]
+        [Produces(typeof(ActivityListingDto))]
+        public async Task<IActionResult> MarkUnComplete(int eventId, int activityId, CancellationToken cancellationToken)
+        {
+            var activity = await eventService.MarkUnComplete(eventId, activityId, cancellationToken);
+
+            return Ok(activity);
         }
     }
 }
