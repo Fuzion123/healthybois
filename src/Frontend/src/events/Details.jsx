@@ -86,7 +86,7 @@ return (
         <p>Scoreboard</p>
       </div>
       <div className='my-3'>
-      <ParticipantBar profiles={profiles} />
+      <ParticipantBar profiles={data.participants} />
       </div>
       <div>
         
