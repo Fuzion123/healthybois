@@ -17,7 +17,7 @@ function ActivityList(props) {
 
     return (
         <div>
-            <h3 className="text-2xl font-bold dark:text-white">Activities</h3>
+            <h3 className="text-2xl font-bold">Activities</h3>
             <br/>
               <ul  className="list-group">
                   {props.activities.map((p, index) => (

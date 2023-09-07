@@ -40,7 +40,7 @@ function ScoreBoard({event}) {
                             className="object-cover w-full h-full"
                         />
                         </div>
-                        <div><h1 class="text-2xl font-bold">{p.points}</h1></div>
+                        <div><h1 className="text-2xl font-bold">{p.points}</h1></div>
                     </li>
                   ))}
             </div>

@@ -18,8 +18,8 @@ const getAllForEvent = async (eventId) => {
     return await fetchWrapper.get(`${baseUrl}/${eventId}`);
 };
 
-const deleteById = async (id) => {
-    return await fetchWrapper.delete(`${baseUrl}/${id}`);
+const deleteById = async (eventId, activityId) => {
+    return await fetchWrapper.delete(`${baseUrl}/${eventId}/${activityId}`);
 };
 
 const markDone = async (eventId, activityId) => {

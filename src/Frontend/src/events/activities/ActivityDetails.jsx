@@ -1,5 +1,5 @@
 import { activityapi } from "_api";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient, useMutation } from "react-query";
 import { useParams } from "react-router-dom";
 import ActivityResult from "./ActivityResult";
 import { history } from '_helpers';
@@ -23,6 +23,14 @@ function ActivityDetails() {
   }
   );
 
+  const mutation = useMutation(async () => {
+    await activityapi.deleteById(id, activityId)
+  }, {
+    onSuccess: () => {
+      history.navigate(`/events/${id}`);
+    }
+  });
+
   async function toggleComplete(val){
     if(val === true){
       await activityapi.markUnDone(id, activityId);
@@ -39,6 +47,11 @@ function ActivityDetails() {
     queryClient.invalidateQueries({ queryKey: [`/activityapi.getById/${id}/${activityId}`] })
     
     history.navigate(`/events/${id}`);
+  }
+
+  async function deleteActivity(){
+    mutation.mutate();
+    
   }
 
   if (error) return <div>Request Failed</div>;
@@ -69,8 +82,8 @@ function ActivityDetails() {
             )
           })}
         </div>
-        <button onClick={() => goBack()} className="my-3 btn btn-sm mx-2 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-yellow-400"> baaaack </button>
-        {/* <Link to={`/events/${id}`} className="my-3 btn btn-sm mx-2 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-yellow-400" >back</Link> */}
+        <button onClick={() => goBack()} className="my-3 btn btn-sm mx-2 rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-green-400"> Ok </button>
+        <button onClick={() => deleteActivity()} className="my-3 btn btn-sm mx-2 rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 bg-red-400"> Delete </button>
       </section>
 
     </div>
