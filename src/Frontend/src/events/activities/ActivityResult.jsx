@@ -51,7 +51,7 @@ function ActivityResult(props) {
   });
 
   function decrease(){
-    if(score == 0)
+    if(score === 0)
       return;
 
     scoreChanged(score-1);

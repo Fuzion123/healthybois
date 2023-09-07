@@ -3,7 +3,6 @@ import {useQuery } from 'react-query';
 import { eventapi } from '_api';
 import { date } from '_helpers';
 import ProgressBar from '_components/ProgressBar';
-import ParticipantBar from '_components/ParticipantBar';
 import ActivityList from './activities/ActivityList'
 import { Link } from 'react-router-dom';
 import ScoreBoard from '_components/Scoreboard';
