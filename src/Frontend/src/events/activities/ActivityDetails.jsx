@@ -48,7 +48,8 @@ function ActivityDetails() {
   return (
     <div>
       <section className="mb-8">
-        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"><span className="underline underline-offset-3 decoration-8 decoration-blue-400 dark:decoration-blue-600">{data.title}</span></h1>
+        <h1 className="text-5xl font-bold"><span>{data.title}</span></h1>
+        <br></br>
         {!isLoading && 
           <label className="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" onChange={() => toggleComplete(data.completed)} checked={data.completed} value="" className="sr-only peer"/>
@@ -56,6 +57,8 @@ function ActivityDetails() {
             <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Complete</span>
           </label>
         }
+        <br></br>
+        <br></br>
         <h4 className="text-x3 font-bold mb-2">Results</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {data.participants.map((p, i) => {

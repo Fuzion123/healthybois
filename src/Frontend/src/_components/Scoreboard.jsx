@@ -20,14 +20,14 @@ function ScoreBoard({event}) {
 
     return (
     <div>
-        <h2 className="text-2xl font-bold dark:text-white">Scoreboard</h2>
+        <h2 className="text-2xl font-bold">Scoreboard</h2>
         {
             !isLoading && 
             <div>
                 {data.map((p, index) => (
                     <li
                       key={p.id}
-                      className={`flex items-center justify-between list-group-item ${index % 2 === 0 ? 'bg-light' : ''}`}
+                      className={`flex items-center justify-between list-group-item ${index % 2 === 0 ? 'bg' : ''}`}
                     >
                       
                       <div
@@ -40,7 +40,7 @@ function ScoreBoard({event}) {
                             className="object-cover w-full h-full"
                         />
                         </div>
-                        <div><h1 class="text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">{p.points}</h1></div>
+                        <div><h1 class="text-2xl font-bold">{p.points}</h1></div>
                     </li>
                   ))}
             </div>

@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import { useMutation } from 'react-query';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 export default AddActivity;
 
@@ -30,7 +30,7 @@ function AddActivity(props) {
   const formOptions = { resolver: yupResolver(validationSchema) };
 
   // get functions to build form with useForm() hook
-  const { register, handleSubmit, formState, setValue } = useForm(formOptions);
+  const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors, isSubmitting } = formState;
 
   const mutation = useMutation(async (data) => {
@@ -45,18 +45,18 @@ function AddActivity(props) {
     await mutation.mutate(data)
   }
 
-  const [selectedFileName, setSelectedFileName] = useState('');
+  // const [selectedFileName, setSelectedFileName] = useState('');
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setValue('picture', file);
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   setValue('picture', file);
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setSelectedFileName(file.name);
-    };
-    reader.readAsDataURL(file);
-  };
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setSelectedFileName(file.name);
+  //   };
+  //   reader.readAsDataURL(file);
+  // };
 
   return (
     <div>
@@ -69,7 +69,7 @@ function AddActivity(props) {
             <div className="invalid-feedback">{errors.title?.message}</div>
           </div>
         </div>
-        <div className="mt-2">
+        {/* <div className="mt-2">
           <label className="mb-3 block text-md font-medium leading-6 text-gray-900">Activity picture</label>
           <div className="relative">
             <label htmlFor="fileInput" className="flex items-center justify-center w-8 h-8 bg-yellow-500 text-white rounded-full cursor-pointer">
@@ -93,7 +93,7 @@ function AddActivity(props) {
             {selectedFileName && <p>Selected File: {selectedFileName}</p>}
             {errors.picture?.message}
           </div>
-        </div>
+        </div> */}
         <div className="mt-2"></div>
         <button disabled={isSubmitting} className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           {isSubmitting ? (

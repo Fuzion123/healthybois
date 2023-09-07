@@ -11,13 +11,14 @@ export default  EventDetails;
 
 function EventDetails() {
   const { id } = useParams();
- 
+  // const queryClient = useQueryClient();
 
   // query
-  const {data, error, isLoading} = useQuery('getById', () => {
+  const {data, error, isLoading} = useQuery(`/getById/${id}`, () => {
     return eventapi.getById(id);
   },{
     onSuccess: (d) => {
+
     }
   }
   );
@@ -31,7 +32,7 @@ return (
     {(data) && (
     <>
     <div className="flex flex-row justify-between text-base/6">
-        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">{data.title}</h1>
+        <h1 className='text-2xl font-bold'>{data.title}</h1>
         <time dateTime={data.startsAt} className="text-sm text-base/8 text-gray-500">
           {date.formatDate(data.startsAt)}
         </time>

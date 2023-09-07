@@ -12,6 +12,8 @@ function Home(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  navigate(`/events`);
+
   function handleCardClick(event) {
     navigate(`/events/${event.id}`);
   }
