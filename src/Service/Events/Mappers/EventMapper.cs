@@ -29,6 +29,12 @@ namespace Service.Events.Mappers
 
             var owner = participants.FirstOrDefault(x => x.Id == @event.OwnerUserId) ?? throw new DomainException("No owner found on event");
 
+            var activityCount = @event.Activities.Count();
+
+            var activityCompleted = @event.Activities.Where(x => x.CompletedOn != null).Count();
+
+            var progress = activityCount == 0 ? 0 : (decimal)activityCount / (decimal)activityCompleted;
+
             return new EventDetailDto()
             {
                 Id = @event.Id,
@@ -40,6 +46,7 @@ namespace Service.Events.Mappers
                 EventPictureUrl = pictureService.GetPicture(@event.EventPictureId),
                 EventOwner = MapEventOwner(@event.Id, owner),
                 Activities = @event.Activities.Select(x => MapActivity(x)).ToList(),
+                Progress = progress,
                 Participants = participants.Select(x =>
                 {
                     var id = participantIdByUserId[x.Id];
@@ -77,6 +84,7 @@ namespace Service.Events.Mappers
                 EventId = activity.EventId,
                 OwnerUserId = activity.OwnerUserId,
                 UpdatedAt = activity.UpdatedAt,
+                CompletedOn = activity.CompletedOn,
                 Results = activity.Results.Select(y => MapResult(activity.EventId, y)).ToList(),
             };
         }

@@ -10,6 +10,7 @@ namespace Domain.Events
         public string Title { get; set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
+        public DateTime? CompletedOn { get; private set; }
 
         private readonly List<Result> _results;
         public IReadOnlyList<Result> Results => _results.AsReadOnly();
@@ -31,6 +32,7 @@ namespace Domain.Events
             Title = input.Title;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = CreatedAt;
+            CompletedOn = null;
         }
 
         public bool Update(ActivityUpdateInput activityInput)
@@ -40,7 +42,7 @@ namespace Domain.Events
                 throw new ArgumentNullException(nameof(activityInput));
             }
 
-            if(Title != activityInput.Title)
+            if (Title != activityInput.Title)
             {
                 Title = activityInput.Title;
 
@@ -84,7 +86,7 @@ namespace Domain.Events
 
             var existing = _results.FirstOrDefault(x => x.Id == resultId);
 
-            if(existing != null)
+            if (existing != null)
             {
                 _results.Remove(existing);
 
@@ -97,6 +99,11 @@ namespace Domain.Events
             }
 
             return updated;
+        }
+
+        public void SetCompleted(DateTime dateTime)
+        {
+            CompletedOn = dateTime;
         }
     }
 }

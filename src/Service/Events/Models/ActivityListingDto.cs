@@ -9,6 +9,7 @@ namespace Service.Events.Models
         public string Title { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public DateTime? CompletedOn { get; set; }
         public List<ResultDto> Results { get; set; }
     }
 }

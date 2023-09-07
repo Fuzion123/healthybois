@@ -13,5 +13,6 @@ namespace Service.Events.Models
         public EventOwnerDto EventOwner { get; set; }
         public List<UserParticipantDto> Participants { get; set; }
         public List<ActivityListingDto> Activities { get; set; }
+        public decimal Progress { get; set; }
     }
 }
