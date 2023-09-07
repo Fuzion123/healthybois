@@ -215,6 +215,7 @@ function AddEdit() {
                         <div className="mb-3 col">
                             <label>Start Date</label>
                             <DatePicker
+                                autoComplete='off'
                                 selected={startDate}
                                 onChange={date => setStartDate(date)}
                                 showTimeSelect
@@ -227,6 +228,7 @@ function AddEdit() {
                         <div className="mb-3 col">
                             <label>End Date</label>
                             <DatePicker
+                            autoComplete='off'
                             selected={endDate}
                             onChange={date => setEndDate(date)}
                             showTimeSelect

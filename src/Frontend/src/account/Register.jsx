@@ -3,10 +3,9 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { useState } from 'react';
-
 import { history } from '_helpers';
 import { userActions, alertActions } from '_store';
+import { useState } from 'react';
 
 export { Register };
 
@@ -77,18 +76,14 @@ function Register() {
       dispatch(alertActions.error(error));
     }
   }
-  const [selectedFileName, setSelectedFileName] = useState('');
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setValue('picture', file);
+  const [chosenPicture, setChosenPicture] = useState('');
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setSelectedFileName(file.name);
-    };
-    reader.readAsDataURL(file);
-  };
+  function setProfilePictureValue(val){
+    console.log(val)
+    setValue('profilePicture', val)
+    setChosenPicture(val.name);
+  }
 
   return (
 
@@ -109,17 +104,8 @@ function Register() {
                 />
               </svg>
             </label>
-            <input
-              id="fileInput"
-              name="picture"
-              type="file"
-              onChange={handleFileChange}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-          </div>
-          <div className="text-green-500 mt-2">
-            {selectedFileName && <p>Selected File: {selectedFileName}</p>}
-            {errors.picture?.message}
+            <input id="fileInput" name="profilePicture" type="file" onChange={(e) => setProfilePictureValue(e.target.files[0])} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+            {chosenPicture && <span>{chosenPicture}</span>}
           </div>
         </div>
         <div>
@@ -160,7 +146,7 @@ function Register() {
         </div>
 
         <div className="mt-2"></div>
-        <button disabled={isSubmitting} className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <button className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           {isSubmitting ? (
             <>
               <span className="spinner-border spinner-border-sm me-1"></span>

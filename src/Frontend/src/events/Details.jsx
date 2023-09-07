@@ -18,14 +18,13 @@ function EventDetails() {
   const {data, error, isLoading} = useQuery('getById', () => {
     return eventapi.getById(id);
   },{
-    onSuccess: () => {
-      console.log(data)
+    onSuccess: (d) => {
     }
   }
   );
 
   const profiles = [
-    { profilePictureUrl: data.participants.profilePictureUrl },
+    { profilePictureUrl: 'profile1.jpg' },
     { profilePictureUrl: 'profile2.jpg' },
     { profilePictureUrl: 'profile3.jpg' },
   ];
@@ -44,8 +43,8 @@ function EventDetails() {
 
 const submit = (event) => {
   confirmAlert({
-    title: <span className="confirm-title">Confirm to delete</span>,
-    message: <span className="confirm-message">Are you sure?</span>,
+    title: 'Confirm to delete',
+    message: 'Are you sure',
     buttons: [
       {
         label: 'Yes',

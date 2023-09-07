@@ -26,9 +26,9 @@ return (
             <h1>Users</h1>
             <div className="d-flex flex-wrap">
                 {users?.value?.map(user =>
-                    <div key={user.id} className="card m-2" style={{ width: '18rem' }} onClick={() => handleEditClick(user.id)}>
+                    <div key={user.id} className="card m-2" style={{ width: '18rem' }} >
                         <div className="card-body d-flex justify-content-between">
-                            <h5 className="card-title">{user.firstName}</h5>
+                            <h5 className="card-title" onClick={() => handleEditClick(user.id)}>{user.firstName}</h5>
                             <button onClick={() => dispatch(userActions.delete(user.id))} className="btn btn-sm btn-danger align-self-end" style={{ width: '60px' }} disabled={user.isDeleting}>
                                 {user.isDeleting 
                                     ? <span className="spinner-border spinner-border-sm"></span>

@@ -90,7 +90,7 @@ function Home(props) {
               <p className="text-gray-600">Join the vibrant message board community and connect with fellow competitors. Share strategies, exchange tips, and engage in meaningful discussions to enhance your competitive journey.</p>
             </div>
             <div className="bg-cyan-50 p-2 shadow-md rounded-lg">
-              <p className="text-gray-600"><Messages connection={props.connection} messages = { props.messages }></Messages></p>
+              <Messages connection={props.connection} messages = { props.messages }></Messages>
             </div>
           </div>
         </section>
