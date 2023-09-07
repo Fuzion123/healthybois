@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Service.Events;
 using Service.Events.Models;
 using WebApi.Authorization;
-using WebApi.Models.Events;
 
 namespace WebApi.Controllers
 {
@@ -44,7 +43,7 @@ namespace WebApi.Controllers
         {
             var Event = await EventService.GetById(eventId, CurrentUser.Id, cancellationToken);
 
-            if(Event == null)
+            if (Event == null)
             {
                 return NotFound();
             }
@@ -81,6 +80,35 @@ namespace WebApi.Controllers
             }
 
             return Ok(@event);
+        }
+
+        [HttpGet("{eventId}/scores")]
+        [Produces(typeof(EventDetailDto))]
+        public async Task<IActionResult> ScoresByEventId(int eventId, CancellationToken cancellationToken)
+        {
+            var @event = await EventService.GetById(eventId, CurrentUser.Id, cancellationToken);
+
+            if (@event == null)
+            {
+                return NotFound();
+            }
+
+            var participantScores = @event.Participants.Select(p =>
+            {
+                var overAllPoints = @event.Activities.SelectMany(x => x.Results.Where(r => r.ParticipantId == p.Id)).Sum(r => r.Score);
+
+                return new
+                {
+                    Points = overAllPoints,
+                    p.Id,
+                    p.FirstName,
+                    p.LastName,
+                    p.ProfilePictureUrl
+                };
+
+            }).OrderByDescending(x => x.Points).ToList();
+
+            return Ok(participantScores);
         }
     }
 }

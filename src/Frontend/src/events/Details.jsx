@@ -42,12 +42,12 @@ return (
       </div>
 
       <div className='my-3'>
-        <ScoreBoard></ScoreBoard>
+        <ScoreBoard event={data}></ScoreBoard>
       <br/>
       </div>
-      <div className='my-3'>
+      {/* <div className='my-3'>
       <ParticipantBar profiles={data.participants} />
-      </div>
+      </div> */}
       <div>
         
         <div className='my-2'>

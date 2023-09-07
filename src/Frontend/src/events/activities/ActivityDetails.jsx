@@ -2,7 +2,7 @@ import { activityapi } from "_api";
 import { useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
 import ActivityResult from "./ActivityResult";
-import { Link } from 'react-router-dom';
+import { history } from '_helpers';
 // import { history } from '_helpers';
 
 export default ActivityDetails;
@@ -12,7 +12,10 @@ function ActivityDetails() {
   const { id } = useParams();
   const queryClient = useQueryClient();
   // query
-  const { data, error, isLoading } = useQuery(`/activityapi.getById/${id}`, () => {
+
+
+
+  const { data, error, isLoading } = useQuery(`/activityapi.getById/${id}/${activityId}`, () => {
     return activityapi.getById(id, activityId);
   }, {
     onSuccess: (d) => {
@@ -28,8 +31,14 @@ function ActivityDetails() {
       await activityapi.markDone(id, activityId);
     }
 
-    queryClient.invalidateQueries({ queryKey: [`/activityapi.getById/${id}`] })
+    queryClient.invalidateQueries({ queryKey: [`/activityapi.getById/${id}/${activityId}`] })
     //history.navigate(`/events/${id}`);
+  }
+
+  function goBack(){
+    queryClient.invalidateQueries({ queryKey: [`/activityapi.getById/${id}/${activityId}`] })
+    
+    history.navigate(`/events/${id}`);
   }
 
   if (error) return <div>Request Failed</div>;
@@ -57,7 +66,8 @@ function ActivityDetails() {
             )
           })}
         </div>
-        <Link to={`/events/${id}`} className="my-3 btn btn-sm mx-2 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-yellow-400" >back</Link>
+        <button onClick={() => goBack()} className="my-3 btn btn-sm mx-2 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-yellow-400"> baaaack </button>
+        {/* <Link to={`/events/${id}`} className="my-3 btn btn-sm mx-2 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-yellow-400" >back</Link> */}
       </section>
 
     </div>

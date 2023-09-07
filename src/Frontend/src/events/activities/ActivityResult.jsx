@@ -10,8 +10,6 @@ export default ActivityResult;
 
 function ActivityResult(props) {
 
-  // console.log('new data: ' + JSON.stringify(props))
-
   const { participant, eventId, activityId, result } = props;
   const queryClient = useQueryClient();
 
@@ -48,7 +46,7 @@ function ActivityResult(props) {
   }, {
     onSuccess: () => {
       console.log('invalidating')
-      queryClient.invalidateQueries({ queryKey: [`/activityapi.getById/${eventId}`] })
+      queryClient.invalidateQueries({ queryKey: [`/activityapi.getById/${eventId}/${activityId}`] })
     }
   });
 
@@ -67,8 +65,6 @@ function ActivityResult(props) {
     if(val < 0)
       return;
 
-    console.log(val)
-
     mutation.mutate({
       participantId: participant.id,
       score: val
@@ -82,9 +78,14 @@ function ActivityResult(props) {
     <div>
       
       <label htmlFor="score" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">score</label>
-      <div className="relative">
-          <p className="">{participant.firstName}</p>
-          {/* <input defaultValue={props?.result?.score} name="score" type="text" {...register('score')} className={`block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-100 rounded-lg bg-gray-100 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${errors.score ? 'is-invalid' : ''}`} placeholder="score" /> */}
+      <div className="flex-row justify-items-center">
+            <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-full overflow-hidden">
+              <img
+                  src={participant.profilePictureUrl}
+                  alt={participant.firstName}
+                  className="object-cover w-full h-full"
+              />
+            </div>
           
             <div className="flex flex-row h-10 w-full rounded-lg relative bg-transparent mt-1">
               <button onClick={() => decrease()} className="bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-r cursor-pointer">

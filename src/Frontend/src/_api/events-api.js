@@ -18,9 +18,14 @@ const deleteById = async (id) => {
     return await fetchWrapper.delete(`${baseUrl}/${id}`);
 };
 
+const getScoreboardByEventId = async (id) => {
+    return await fetchWrapper.get(`${baseUrl}/${id}/scores`);
+};
+
 export const eventapi = {
     getById: getById,
     create: create,
     getAll: getAll,
-    deleteById: deleteById
+    deleteById: deleteById,
+    getScoreboardByEventId: getScoreboardByEventId
 };
