@@ -237,6 +237,8 @@ function Nav() {
                     'block rounded-md px-3 py-2 text-base font-medium">Users</NavLink>
                                         <NavLink to="/events" className="text-white hover:bg-gray-700 hover:text-white',
                     'block rounded-md px-3 py-2 text-base font-medium">Events</NavLink>
+                                        <NavLink to="/admin" className="text-white hover:bg-gray-700 hover:text-white',
+                                        'block rounded-md px-3 py-2 text-base font-medium">Admin</NavLink>
                                     </div>
                                 </div>
                             </div>
@@ -368,6 +370,14 @@ function Nav() {
                                                 }`}
                                         >
                                             Events
+                                        </NavLink>
+                                        <NavLink
+                                            to="/admin"
+                                            onClick={close}
+                                            className={`block rounded-md px-3 py-2 text-base font-medium ${pathname === '/events' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                                                }`}
+                                        >
+                                            Admin
                                         </NavLink>
                                     </motion.div>
                                 </Disclosure.Button>

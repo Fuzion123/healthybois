@@ -9,9 +9,10 @@ using Service.Events;
 using Service.Events.Mappers;
 using Service.Users;
 using Service.Users.Dependencies;
+using Startup.Authorization;
+using Startup.Settings;
 using WebApi.Authorization;
 using WebApi.Middleware;
-using WebApi.Settings;
 using WebApi.SignalR;
 
 namespace WebApi
@@ -58,6 +59,7 @@ namespace WebApi
                     builder
                         .WithOrigins("https://happy-field-0e3c42103.3.azurestaticapps.net")
                         .WithOrigins("http://localhost:3000")
+                        .WithOrigins("http://localhost:4280")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -85,7 +87,7 @@ namespace WebApi
             services.AddAutoMapper(typeof(Program));
 
             // configure strongly typed settings object
-            services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
+            services.AddSingleton(appSettings);
 
             // configure DI for application services
             services.AddScoped<IJwtUtils, JwtUtils>();

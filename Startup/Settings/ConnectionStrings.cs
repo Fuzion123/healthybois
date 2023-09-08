@@ -1,4 +1,4 @@
-﻿namespace WebApi.Settings
+﻿namespace Startup.Settings
 {
     public class ConnectionStrings
     {

@@ -1,21 +1,20 @@
-namespace WebApi.Authorization;
+namespace Startup.Authorization;
 
 using Domain.Users;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Service.Users.Dependencies;
+using Startup.Settings;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using WebApi.Settings;
 
 public class JwtUtils : IJwtUtils
 {
     private readonly AppSettings _appSettings;
 
-    public JwtUtils(IOptions<AppSettings> appSettings)
+    public JwtUtils(AppSettings appSettings)
     {
-        _appSettings = appSettings.Value;
+        _appSettings = appSettings;
     }
 
     public string GenerateToken(User user)
@@ -35,7 +34,7 @@ public class JwtUtils : IJwtUtils
 
     public int? ValidateToken(string token)
     {
-        if (token == null) 
+        if (token == null)
             return null;
 
         var tokenHandler = new JwtSecurityTokenHandler();

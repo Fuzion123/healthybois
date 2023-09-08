@@ -7,6 +7,7 @@ import { UsersLayout } from './users';
 import { EventsLayout } from './events';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import { useEffect, useState } from 'react';
+import { AdminLayout } from 'admin/AdminLayout';
 
 
 // Initialze the client
@@ -43,6 +44,7 @@ function App() {
                             <Route path="/" element={<Home connection= { connection } messages = {messages} />} />
                             <Route path="users/*" element={<UsersLayout />} />
                             <Route path="events/*" element={<EventsLayout />} />
+                            <Route path="admin/*" element={<AdminLayout />} />
                         </Route>
                         {/* public */}
                         <Route path="account/*" element={<AccountLayout />} />

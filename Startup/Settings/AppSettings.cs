@@ -1,6 +1,6 @@
 using Infrastructure.EmailService;
 
-namespace WebApi.Settings;
+namespace Startup.Settings;
 
 public class AppSettings
 {
