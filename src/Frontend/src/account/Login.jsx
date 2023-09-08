@@ -29,7 +29,7 @@ function Login() {
 
     return (
         
-  <div className="flex min-h-full flex-col justify-center px-10 py-14 lg:px-8">
+  <div className="flex min-h-full flex-col justify-center lg:px-8">
    <div className="sm:mx-auto sm:w-full sm:max-w-sm">
     <motion.div animate={{
         rotate: [0, 720],
@@ -40,9 +40,9 @@ function Login() {
         duration: 1, 
         ease: "easeInOut", 
       }}>
-   <img alt='healthybois-logo' className="mx-auto h-20 w-20 filter drop-shadow-2xl" src={process.env.PUBLIC_URL + '/logo.png'} />
+   <img alt='healthybois-logo' className="mx-auto h-28 w-28 filter drop-shadow-2xl" src={process.env.PUBLIC_URL + '/logo.png'} />
    </motion.div>
-                <h4 className="mt-10 text-center text-3xl font-bold leading-9 tracking-tight text-gray-900">Login</h4>
+                <h4 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Login</h4>
                
                 </div>
                 
