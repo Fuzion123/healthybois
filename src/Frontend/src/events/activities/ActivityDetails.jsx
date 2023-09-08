@@ -4,11 +4,13 @@ import { useParams } from "react-router-dom";
 import ActivityResult from "./ActivityResult";
 import { history } from '_helpers';
 import { useState } from "react";
-// import { history } from '_helpers';
+import { useDispatch } from "react-redux";
+import { alertActions } from "_store";
 
 export default ActivityDetails;
 
 function ActivityDetails() {
+  const dispatch = useDispatch();
   const { activityId } = useParams();
   const { id } = useParams();
   const queryClient = useQueryClient();
@@ -28,6 +30,11 @@ function ActivityDetails() {
     onSuccess: () => {
       setIsProcessing(false);
       history.navigate(`/events/${id}`);
+    },
+    onError: (err) => {
+      dispatch(alertActions.clear());
+      dispatch(alertActions.error(err));
+      setIsProcessing(false)
     }
   });
 

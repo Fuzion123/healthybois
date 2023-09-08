@@ -4,7 +4,6 @@ import { eventapi } from '_api';
 import { date } from '_helpers';
 import ProgressBar from '_components/ProgressBar';
 import ActivityList from './activities/ActivityList'
-import { Link } from 'react-router-dom';
 import ScoreBoard from '_components/Scoreboard';
 import { history } from '_helpers';
 
