@@ -38,16 +38,29 @@ function ActivityDetails() {
     }
   });
 
-  async function toggleComplete(val){
+  const toggleCompleteMutation = useMutation(async (val) => {
     if(val === true){
       await activityapi.markUnDone(id, activityId);
     }
     else{
       await activityapi.markDone(id, activityId);
     }
+  }, {
+    onSuccess: () => {
+      setIsProcessing(false);
+      queryClient.invalidateQueries({ queryKey: [`/activityapi.getById/${id}/${activityId}`] })
+    },
+    onError: (err) => {
+      dispatch(alertActions.clear());
+      dispatch(alertActions.error(err));
+      setIsProcessing(false);
+      queryClient.invalidateQueries({ queryKey: [`/activityapi.getById/${id}/${activityId}`] })
+    }
+  });
 
-    queryClient.invalidateQueries({ queryKey: [`/activityapi.getById/${id}/${activityId}`] })
-    //history.navigate(`/events/${id}`);
+  async function toggleComplete(val){
+    setIsProcessing(true);
+    toggleCompleteMutation.mutate(val);
   }
 
   function goBack(){
@@ -63,13 +76,13 @@ function ActivityDetails() {
 
   if (error) return <div>Request Failed</div>;
 
-  if (isLoading) return <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>;
+  if (isLoading) return <div className="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>;
 
   return (
     <div className="">
       <section className="mb-8 relative">
         <h1 className="text-5xl font-bold"><span>{data.title}</span></h1>
-        {isProcessing ? (<div style={{position: 'absolute', right: '0px'}} class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>) : (<></>)}
+        {isProcessing ? (<div style={{position: 'absolute', right: '0px'}} className="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>) : (<></>)}
         <br></br>
         {!isLoading && 
           <label className="relative inline-flex items-center cursor-pointer">
