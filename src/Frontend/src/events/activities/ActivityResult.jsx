@@ -97,11 +97,11 @@ function ActivityResult(props) {
             </div>
           
             <div className="flex flex-row h-10 w-full rounded-lg relative bg-transparent m-4">
-              <button disabled={isProcessing} onClick={() => decrease()} className="bg-blue-500  text-white font-bold py-2 px-4">
+              <button disabled={isProcessing} onClick={() => decrease()} className="bg-blue-500 text-white font-bold py-2 px-4">
                   <span className="m-auto font-thin">−</span>
               </button>
-              <input disabled={true} type="number" onChange={(e) => scoreChanged(e.target.value)} value={score} className="border-blue-500 text-center w-full bg-blue-500 font-semibold text-md hover:text-white focus:text-white md:text-basecursor-default flex items-center text-white" name="custom-input-number"></input>
-              <button disabled={isProcessing} onClick={() => increase()} className="bg-blue-500  text-white font-bold py-2 px-4 ">
+              <input disabled={true} type="number" onChange={(e) => scoreChanged(e.target.value)} value={score} className="border-blue-500 text-center w-full bg-blue-500 font-semibold text-mds flex items-center text-white" name="custom-input-number"></input>
+              <button disabled={isProcessing} onClick={() => increase()} className="bg-blue-500 text-white font-bold py-2 px-4 ">
                 <span className="m-auto font-thin">+</span>
               </button>
           </div>
