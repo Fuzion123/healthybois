@@ -50,6 +50,7 @@ function ActivityResult(props) {
     onSuccess: () => {
       console.log('invalidating')
       queryClient.invalidateQueries({ queryKey: [`/activityapi.getById/${eventId}/${activityId}`] })
+      queryClient.invalidateQueries({ queryKey: [`scoreboard/${eventId}`] })
       setIsProcessing(false);
       console.log('finishes processing')
     }

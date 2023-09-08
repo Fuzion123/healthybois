@@ -30,8 +30,11 @@ function List() {
         <div>
             <div className="grid grid-cols-2 gap-2">
             <h1 className="text-2xl font-bold justify-self-start">Events</h1>
-            <button onClick={() => history.navigate(`/events/add`)} className="mt bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded">Add event</button>
-            {/* <Link to="add" className="flex justify-self-end rounded-md bg-green-400 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500">Add event</Link> */}
+            {!events?.loading &&
+                <button  onClick={() => history.navigate(`/events/add`)} className="mt bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded">
+                    Add event
+                </button>
+            }
             </div>
             
             <div className="grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-10 lg:grid-cols-3">

@@ -6,7 +6,7 @@ export default ScoreBoard;
 function ScoreBoard({event}) {
     
     // query
-    const {data, error, isLoading} = useQuery('scoreboard', async () => {
+    const {data, error, isLoading} = useQuery(`scoreboard/${event.id}`, async () => {
         return await eventapi.getScoreboardByEventId(event.id);
     },{
         onSuccess: (d) => {
@@ -17,6 +17,9 @@ function ScoreBoard({event}) {
 
     if(error)
         return "No points found"
+
+    if(isLoading)
+        return 'loading...'
 
     return (
     <div>

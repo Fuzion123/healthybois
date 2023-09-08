@@ -35,6 +35,8 @@ function ActivityDetails() {
       dispatch(alertActions.clear());
       dispatch(alertActions.error(err));
       setIsProcessing(false)
+      queryClient.invalidateQueries({ queryKey: [`scoreboard/${id}`] })
+
     }
   });
 
