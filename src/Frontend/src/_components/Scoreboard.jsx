@@ -20,7 +20,7 @@ function ScoreBoard({event}) {
 
     return (
     <div>
-        <h2 className="text-2xl font-bold">Scoreboard</h2>
+        <h2 className="text-2xl font-bold mb-2">Scoreboard</h2>
         {
             !isLoading && 
             <div>
@@ -32,7 +32,7 @@ function ScoreBoard({event}) {
                       
                       <div
                         key={index}
-                        className="relative flex-shrink-0 w-16 h-16 bg-gray-200 rounded-full overflow-hidden"
+                        className="mb-2 relative flex-shrink-0 w-16 h-16 bg-gray-200 rounded-full overflow-hidden"
                         >
                         <img
                             src={p.profilePictureUrl}

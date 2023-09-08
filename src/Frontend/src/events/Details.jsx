@@ -37,19 +37,17 @@ return (
           {date.formatDate(data.startsAt)}
         </time>
       </div>
-      <div className='my-1'>
+      <div className='my-2'>
       <ProgressBar progress={data.progress} />
       </div>
 
-      <div className='my-3'>
+      <div className='my-2'>
         <ScoreBoard event={data}></ScoreBoard>
-      <br/>
       </div>
       {/* <div className='my-3'>
       <ParticipantBar profiles={data.participants} />
       </div> */}
       <div>
-        
         <div className='my-2'>
             <ActivityList activities={data.activities} />
             <button onClick={() => history.navigate(`/events/${id}/addActivity`)} className="mt-3 bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">Add Activity</button>
