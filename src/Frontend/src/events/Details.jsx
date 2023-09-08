@@ -6,6 +6,7 @@ import ProgressBar from '_components/ProgressBar';
 import ActivityList from './activities/ActivityList'
 import { Link } from 'react-router-dom';
 import ScoreBoard from '_components/Scoreboard';
+import { history } from '_helpers';
 
 export default  EventDetails;
 
@@ -14,11 +15,11 @@ function EventDetails() {
   // const queryClient = useQueryClient();
 
   // query
-  const {data, error, isLoading} = useQuery(`/getById/${id}`, () => {
-    return eventapi.getById(id);
+  const {data, error, isLoading} = useQuery(`/getById/${id}`, async () => {
+    return await eventapi.getById(id);
   },{
     onSuccess: (d) => {
-
+      
     }
   }
   );
@@ -52,11 +53,10 @@ return (
         
         <div className='my-2'>
             <ActivityList activities={data.activities} />
-            <Link to={`/events/${id}/addActivity`} className="my-3 btn btn-sm mx-2 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-green-400">Add Activity</Link>
+            <button onClick={() => history.navigate(`/events/${id}/addActivity`)} className="mt-3 bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">Add Activity</button>
         </div>
       </div>
-        
-      <Link to={`/events`} className="mx-2 rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-yellow-400" >back</Link>
+      <button onClick={() => history.navigate(`/events`)} className="mt bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 border-b-4 border-yellow-700 hover:border-yellow-500 rounded">Back</button>
         </> 
      
 )

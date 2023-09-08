@@ -6,8 +6,8 @@ export default ScoreBoard;
 function ScoreBoard({event}) {
     
     // query
-    const {data, error, isLoading} = useQuery('scoreboard', () => {
-        return eventapi.getScoreboardByEventId(event.id);
+    const {data, error, isLoading} = useQuery('scoreboard', async () => {
+        return await eventapi.getScoreboardByEventId(event.id);
     },{
         onSuccess: (d) => {
             console.log(d)

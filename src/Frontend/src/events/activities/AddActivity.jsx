@@ -6,14 +6,16 @@ import * as Yup from 'yup';
 import { useMutation } from 'react-query';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { alertActions } from '_store';
+import { useDispatch } from 'react-redux';
 // import { useState } from 'react';
 
 export default AddActivity;
 
 function AddActivity(props) {
   const { id } = useParams();
-
-  console.log(id)
+  const dispatch = useDispatch();
 
   // form validation rules 
   const validationSchema = Yup.object().shape({
@@ -31,17 +33,25 @@ function AddActivity(props) {
 
   // get functions to build form with useForm() hook
   const { register, handleSubmit, formState } = useForm(formOptions);
-  const { errors, isSubmitting } = formState;
+  const [isLoading, setIsLoading] = useState(false);
+  const { errors } = formState;
 
   const mutation = useMutation(async (data) => {
     await activityapi.create(id, data)
   }, {
     onSuccess: () => {
+      setIsLoading(false);
       history.navigate(-1);
+    },
+    onError:(error) => {
+      setIsLoading(false);
+      dispatch(alertActions.clear());
+      dispatch(alertActions.error(error));
     }
   });
 
   async function submit(data){
+    setIsLoading(true)
     await mutation.mutate(data)
   }
 
@@ -95,8 +105,8 @@ function AddActivity(props) {
           </div>
         </div> */}
         <div className="mt-2"></div>
-        <button disabled={isSubmitting} className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          {isSubmitting ? (
+        <button disabled={isLoading} className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          {isLoading ? (
             <>
               <span className="spinner-border spinner-border-sm me-1"></span>
               <span className="font-medium">Processing...</span>

@@ -3,6 +3,7 @@ import { useQuery, useQueryClient, useMutation } from "react-query";
 import { useParams } from "react-router-dom";
 import ActivityResult from "./ActivityResult";
 import { history } from '_helpers';
+import { useState } from "react";
 // import { history } from '_helpers';
 
 export default ActivityDetails;
@@ -11,12 +12,10 @@ function ActivityDetails() {
   const { activityId } = useParams();
   const { id } = useParams();
   const queryClient = useQueryClient();
-  // query
+  const [isProcessing, setIsProcessing] = useState(false);
 
-
-
-  const { data, error, isLoading } = useQuery(`/activityapi.getById/${id}/${activityId}`, () => {
-    return activityapi.getById(id, activityId);
+  const { data, error, isLoading } = useQuery(`/activityapi.getById/${id}/${activityId}`, async () => {
+    return await activityapi.getById(id, activityId);
   }, {
     onSuccess: (d) => {
     }
@@ -27,6 +26,7 @@ function ActivityDetails() {
     await activityapi.deleteById(id, activityId)
   }, {
     onSuccess: () => {
+      setIsProcessing(false);
       history.navigate(`/events/${id}`);
     }
   });
@@ -50,18 +50,19 @@ function ActivityDetails() {
   }
 
   async function deleteActivity(){
+    setIsProcessing(true);
     mutation.mutate();
-    
   }
 
   if (error) return <div>Request Failed</div>;
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>;
 
   return (
-    <div>
-      <section className="mb-8">
+    <div className="">
+      <section className="mb-8 relative">
         <h1 className="text-5xl font-bold"><span>{data.title}</span></h1>
+        {isProcessing ? (<div style={{position: 'absolute', right: '0px'}} class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>) : (<></>)}
         <br></br>
         {!isLoading && 
           <label className="relative inline-flex items-center cursor-pointer">
@@ -77,13 +78,13 @@ function ActivityDetails() {
           {data.participants.map((p, i) => {
             return (
               <div key={p.participant.id} className="">
-                <ActivityResult eventId={id} activityId={activityId} participant={p.participant} result={p.result}/>
+                <ActivityResult eventId={id} activityId={activityId} participant={p.participant} result={p.result} isProcessing={isProcessing} setIsProcessing={setIsProcessing}/>
               </div>
             )
           })}
         </div>
-        <button onClick={() => goBack()} className="my-3 btn btn-sm mx-2 rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-green-400"> Ok </button>
-        <button onClick={() => deleteActivity()} className="my-3 btn btn-sm mx-2 rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 bg-red-400"> Delete </button>
+        <button disabled={isProcessing} onClick={() => goBack()} className="mt-6 bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"> Ok </button>
+        <button disabled={isProcessing} onClick={() => deleteActivity()} className="ml-6 mt-6 bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded"> Delete </button>
       </section>
 
     </div>

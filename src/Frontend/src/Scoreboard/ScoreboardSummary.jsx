@@ -11,8 +11,8 @@ function ScoreboardSummary(props) {
 	const eventId = (props.eventId);
 	console.log(eventId)
 	// query
-	const { data, error, isLoading } = useQuery(`scoreboardsummary-${eventId}`, () => {
-		return Scoreboardapi.getByEventId(eventId);
+	const { data, error, isLoading } = useQuery(`scoreboardsummary-${eventId}`, async () => {
+		return await Scoreboardapi.getByEventId(eventId);
 	}, {
 		onSuccess: (d) => {
 

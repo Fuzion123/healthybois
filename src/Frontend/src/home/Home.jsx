@@ -26,8 +26,8 @@ function Home(props) {
 
   // query
 
-  const {data, error, isLoading} = useQuery('getAllEvents', () => {
-    return eventapi.getAll();
+  const {data, error, isLoading} = useQuery('getAllEvents', async () => {
+    return await eventapi.getAll();
   });
 
   

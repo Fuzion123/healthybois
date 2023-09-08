@@ -4,6 +4,7 @@ using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(EndureanceCupDbContext))]
-    partial class EndureanceCupDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230908124625_activity_title_not_required")]
+    partial class activity_title_not_required
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
