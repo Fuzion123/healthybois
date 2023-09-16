@@ -14,18 +14,35 @@ function List() {
     const events = useSelector(x => x.events.list);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    
     function handleCardClick(event) {
       navigate(`/events/${event.id}`);
     }
-  
-
+      
     useEffect(() => {
         dispatch(eventsActions.getReferenceAll());
-    }, []);
-
+    }, []);   
     
+    var today = new Date().toISOString();
+    const eventStatus = function eventStatus(event) {
 
+        if (event.eventIsActive === true && today <= event.endsAt) {
+            return (
+            <span className='bg-green-600 font-semibold text-white py-1 px-2'>Active</span>
+            );                         
+        }
+        else if (event.eventIsActive === true && today >= event.endsAt) {
+            return (
+            <span className='bg-red-500 font-semibold text-white py-1 px-2'>Event Over</span>
+            );                         
+        }
+        else if (event.eventIsActive !== true && today <= event.endsAt) {
+            return (
+            <span className='bg-yellow-500 font-semibold text-white py-1 px-2'>Event comming up</span>
+            );                         
+        }         
+    }
+    
     return (
         <div>
             <div className="grid grid-cols-2 gap-2">
@@ -44,17 +61,16 @@ function List() {
                         <img className="object-cover w-full h-52 md:h-72 rounded-t-lg" src={event.eventPictureUrl} alt='stock'></img>
                         <h5 className="text-1xl font-bold px-3 py-3">{event.title}</h5>
                         <p className="text-1xl px-3 pb-3">{event.description}</p>
-                        <div className="flex flex-wrap justify-between px-3 pb-3 text-xs">
+                        <div className="flex flex-wrap justify-between items-center px-3 pb-3 text-xs">
                             <span>Starts at: {date.formatDate(event.startsAt)}</span>
-                            {event.eventIsActive === true &&
-                            <span className='bg-green-600 font-semibold text-white py-1 px-2'>Active</span>
-                            }
+                            {eventStatus(event)}                            
                         </div>
                     </div>
 
               </div>
 
             )}
+            
             </div>
             {events?.loading &&
                 <div className="text-center">
