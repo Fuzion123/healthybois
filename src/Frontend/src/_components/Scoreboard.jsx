@@ -34,7 +34,7 @@ function ScoreBoard({ event }) {
               key={p.id}
               className={`pt-1.5 flex items-center justify-between list-group-item px-3 rounded ${
                 index % 2 === 0 ? 'bg' : ''
-              } ${index === 0 ? 'bg-yellow-400 text-white' : index === 1 ? 'bg-zinc-400 text-white' : index === 2 ? 'bg-amber-700 text-white' : ''}`}
+              } ${index === 0 ? 'bg-yellow-400 text-white' : index === 1 ? 'bg-zinc-400 text-white' : index === 2 ? 'bg-amber-700 text-white' : 'bg-slate-100'}`}
             >
               <div
                 key={index}

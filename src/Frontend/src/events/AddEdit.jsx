@@ -279,12 +279,13 @@ function AddEdit() {
                         </div>
                         </div>
                         <div className="mb-3">
-                        <button type="submit" disabled={isSubmitting} className="mr-2 bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded">
+                        <button type="submit" disabled={isSubmitting} className="btn-primary">
                             {isSubmitting && <span className="spinner-border spinner-border-sm me-1"></span>}
                             Create
                         </button>
-                        <button onClick={() => reset()} type="button" disabled={isSubmitting} className="mr-2 bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">Reset</button>
-                        <Link to="/events" className="mr-2 bg-red-500 hover:bg-red-400 text-white font-bold py-2.5 px-4 border-b-4 border-red-700 hover:border-red-500 rounded">Cancel</Link>
+                        <button onClick={() => reset()} type="button" disabled={isSubmitting} className="btn-secondary">Reset</button>
+                        <button onClick={() => history.navigate(`/events`)} className="btn-negative">Cancel</button>
+                        
                     </div>
                 </form>
             }
