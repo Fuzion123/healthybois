@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
+
 
 import { authActions } from '_store';
 
@@ -11,6 +13,7 @@ export { Login };
 
 function Login() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     // form validation rules 
     const validationSchema = Yup.object().shape({
@@ -70,7 +73,7 @@ function Login() {
                         </div>
                         </div>
                         <div>
-                        <button disabled={isSubmitting} className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <button disabled={isSubmitting} className="flex btn-primary w-full justify-center">
                             {isSubmitting ? (
                                 <>
                                     <svg className="mr-3 h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -85,9 +88,9 @@ function Login() {
                         </button>
                         </div>
                         </form>
-                        <p className="mt-10 text-center text-sm text-gray-500">
-                        <Link to="../register" className="font-semibold leading-6 text-gray-900 hover:text-indigo-500">Register</Link>
-                        </p>
+                        
+                        <button onClick={() => navigate(`../register`)} className="btn-secondary w-full">Register</button>                        
+                        
                 </div>
         </div>
   

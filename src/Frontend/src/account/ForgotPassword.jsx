@@ -3,7 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useMutation } from 'react-query';
 import { emailapi } from '_api';
-import { Link } from 'react-router-dom';
+import { history } from '_helpers';
 import { useDispatch } from 'react-redux';
 import { alertActions } from '_store';
 
@@ -54,7 +54,7 @@ function ForgotPassword() {
                             </div>
                             </div>
                         <div>
-                        <button disabled={mutation.isLoading} className="mb-4 flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <button disabled={mutation.isLoading} className="btn-primary w-full">
                             {mutation.isLoading ? (
                                 <>
                                     <svg className="mr-3 h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@ function ForgotPassword() {
                                 'Send reset code'
                             )}
                         </button>
-                        <Link to="../login" className="flex w-full justify-center rounded-md bg-red-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Back</Link>
+                        <button onClick={() => history.navigate(`/events`)} className="btn-negative w-full">Back</button>
                         </div>
                         </form>
                 </div>
