@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -37,7 +36,7 @@ function AddEdit() {
     const formOptions = { resolver: yupResolver(validationSchema) };
 
     // get functions to build form with useForm() hook
-    const { register, handleSubmit, reset, formState, setValue } = useForm(formOptions);
+    const { register, handleSubmit, reset, formState } = useForm(formOptions);
     const { errors, isSubmitting } = formState;
 
     useEffect(() => {
