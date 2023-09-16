@@ -34,7 +34,7 @@ return (
     <>
       <div className="flex flex-row justify-between text-base/6">
         <h1 className='text-2xl font-bold'>{data.title}</h1>
-        <time dateTime={data.startsAt} className="text-sm text-base/8 text-gray-500">
+        <time dateTime={data.startsAt} className="text-sm text-gray-500">
           {date.formatDate(data.startsAt)}
         </time>
       </div>
