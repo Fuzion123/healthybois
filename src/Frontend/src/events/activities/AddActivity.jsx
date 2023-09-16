@@ -105,7 +105,7 @@ function AddActivity(props) {
           </div>
         </div> */}
         <div className="mt-2"></div>
-        <button disabled={isLoading} className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <button disabled={isLoading} className="btn-primary w-full">
           {isLoading ? (
             <>
               <span className="spinner-border spinner-border-sm me-1"></span>
@@ -115,7 +115,7 @@ function AddActivity(props) {
             'Add'
           )}
         </button>
-        <Link to={`/events/${id}`} className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-red-400">Cancel</Link>
+        <button onClick={() => history.navigate(`/events`)} className="btn-negative w-full">Cancel</button>
       </form>
     </div>
   );

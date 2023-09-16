@@ -24,12 +24,12 @@ function List() {
 return (
         <div>
             <h1>Users</h1>
-            <div className="d-flex flex-wrap">
+            <div className="flex flex-wrap">
                 {users?.value?.map(user =>
                     <div key={user.id} className="card m-2" style={{ width: '18rem' }} >
                         <div className="card-body d-flex justify-content-between">
                             <h5 className="card-title" onClick={() => handleEditClick(user.id)}>{user.firstName}</h5>
-                            <button onClick={() => dispatch(userActions.delete(user.id))} className="btn btn-sm btn-danger align-self-end" style={{ width: '60px' }} disabled={user.isDeleting}>
+                            <button onClick={() => dispatch(userActions.delete(user.id))} className="btn-negative w-1/2 text-sm" disabled={user.isDeleting}>
                                 {user.isDeleting 
                                     ? <span className="spinner-border spinner-border-sm"></span>
                                     : <span>Delete</span>
@@ -44,7 +44,8 @@ return (
                     </div>
                 }
             </div>
-            <Link to="add" className="btn btn-sm btn-success mb-2 left">Add User</Link>
+            <button onClick={() => navigate(`/users/add`)} className="btn-primary md:m-2 mt-4">Add User</button>
+            
         </div>
     );
 }
