@@ -14,6 +14,8 @@ function List() {
     const events = useSelector(x => x.events.list);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    console.log(events);
+    
     
     function handleCardClick(event) {
       navigate(`/events/${event.id}`);
@@ -24,21 +26,21 @@ function List() {
     }, []);   
     
     var today = new Date().toISOString();
-    const eventStatus = function eventStatus(event) {
 
-        if (event.eventIsActive === true && today <= event.endsAt) {
+    const eventStatus = function eventStatus(event) {
+        if (event.startsAt <= today && today <= event.endsAt) {
             return (
-            <span className='bg-green-600 font-semibold text-white py-1 px-2'>Active</span>
+            <span className='bg-green-400 font-semibold text-white py-1 px-2'>Active</span>
             );                         
         }
-        else if (event.eventIsActive === true && today >= event.endsAt) {
+        else if (event.startsAt <= today && today >= event.endsAt) {
             return (
-            <span className='bg-red-500 font-semibold text-white py-1 px-2'>Event Over</span>
+            <span className='bg-red-200 font-semibold text-white py-1 px-2'>Event Over</span>
             );                         
         }
-        else if (event.eventIsActive !== true && today <= event.endsAt) {
+        else if (event.startsAt >= today) {
             return (
-            <span className='bg-yellow-500 font-semibold text-white py-1 px-2'>Event comming up</span>
+            <span className='bg-yellow-400 font-semibold text-white py-1 px-2'>Upcomming</span>
             );                         
         }         
     }

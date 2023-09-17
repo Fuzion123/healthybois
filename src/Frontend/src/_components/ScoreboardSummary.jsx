@@ -58,7 +58,7 @@ function ScoreboardSummary({ event }) {
 
   return (
     
-    <div class="mx-auto w-3/5 overflow-hidden">
+    <div className="mx-auto w-3/5 overflow-hidden">
       <canvas id="line-chart"></canvas>
     </div>
   );
