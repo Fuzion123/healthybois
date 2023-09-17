@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { userapi } from "_api";
-import { eventapi } from "_api_v2"
+import { eventapi } from '_api';
 import { history } from '_helpers';
 import { alertActions } from '_store';
 import { useMutation } from 'react-query';

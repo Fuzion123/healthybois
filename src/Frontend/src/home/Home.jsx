@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { eventapi } from "_api_v2";
+import { eventapi } from '_api';
 import {useQuery } from 'react-query';
 // import { Messages } from '_components';
 

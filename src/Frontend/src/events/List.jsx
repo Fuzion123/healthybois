@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { eventapi } from "_api_v2";
+import { eventapi } from '_api';
 import { date } from '_helpers';
 import { useQuery } from 'react-query';
 import { userService } from '_components';

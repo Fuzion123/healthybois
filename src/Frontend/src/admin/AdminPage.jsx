@@ -1,4 +1,4 @@
-import { eventapi } from "_api_v2";
+import { eventapi } from '_api';
 import { useQuery } from "react-query";
 
 export { AdminPage };

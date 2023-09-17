@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import {useQuery } from 'react-query';
-import { eventapi } from "_api_v2";
+import { eventapi } from '_api';
 import { date } from '_helpers';
 import ProgressBar from '_components/ProgressBar';
 import ActivityList from './activities/ActivityList'
