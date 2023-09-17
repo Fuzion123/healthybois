@@ -59,7 +59,7 @@ namespace WebApi
                     builder
                         .WithOrigins("https://happy-field-0e3c42103.3.azurestaticapps.net")
                         .WithOrigins("http://localhost:3000")
-                        .WithOrigins("http://localhost:4280")
+                        //.WithOrigins("http://localhost:4280")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
