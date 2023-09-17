@@ -36,7 +36,7 @@ function AddEdit() {
     const formOptions = { resolver: yupResolver(validationSchema) };
 
     // get functions to build form with useForm() hook
-    const { register, handleSubmit, reset, formState } = useForm(formOptions);
+    const { register, handleSubmit, reset, formState, setValue } = useForm(formOptions);
     const { errors, isSubmitting } = formState;
 
     useEffect(() => {
@@ -167,6 +167,7 @@ function AddEdit() {
 
       const changeHandler = (e) => {
         const file = e.target.files[0];
+        setValue('picture', file);
         if (!file.type.match(imageMimeType)) {
           alert("Image mime type is not valid");
           return;
