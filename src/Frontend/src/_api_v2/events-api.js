@@ -1,6 +1,6 @@
 import { fetchWrapper } from '_helpers';
 
-const baseUrl = `${process.env.FUNCTION_APP_URL}/api/events`;
+const baseUrl = `${process.env.REACT_APP_FUNCTION_URL}/api/events`;
 
 // const getById = async (id) => {
 //     return await fetchWrapper.get(`${baseUrl}/${id}`);
@@ -22,9 +22,8 @@ const baseUrl = `${process.env.FUNCTION_APP_URL}/api/events`;
 //     return await fetchWrapper.get(`${baseUrl}/${id}/scores`);
 // };
 
-const getById = async (id, userId) => {
-    console.log(id, userId)
-    return await fetchWrapper.get(`${baseUrl}/${id}/${userId}`);
+const getById = async () => {
+    return await fetchWrapper.get(`${baseUrl}/1/2`);
 };
 
 export const eventapi = {

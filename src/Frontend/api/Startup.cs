@@ -3,6 +3,7 @@ using Infrastructure.JobStorage;
 using Infrastructure.Repositories;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Service;
 using Service.Events;
@@ -26,17 +27,11 @@ namespace api
 
             builder.Services.AddSingleton<MyDependency>();
 
-            var appSettings = new AppSettings()
-            {
-                ConnectionStrings = new ConnectionStrings()
-                {
-                    AzureStorageAccount = context.Configuration["ConnectionStrings:AzureStorageAccount"],
-                    Database = context.Configuration["ConnectionStrings:Database"]
-                },
-                Secret = context.Configuration["Authentication:Secret"]
-            };
+            var appSettings = new AppSettings();
 
-            builder.Services.AddTransient(x => appSettings);
+            context.Configuration.Bind(appSettings);
+
+            builder.Services.AddSingleton(x => appSettings);
 
             builder.Services.AddDbContext<EndureanceCupDbContext>(options =>
             {
@@ -50,9 +45,6 @@ namespace api
 
             builder.Services.AddBlobJobStorage(appSettings.ConnectionStrings.AzureStorageAccount);
 
-
-            // configure strongly typed settings object
-            builder.Services.AddSingleton(appSettings);
 
             // configure DI for application services
             builder.Services.AddScoped<IJwtUtils, JwtUtils>();

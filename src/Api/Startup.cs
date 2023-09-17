@@ -37,7 +37,7 @@ namespace WebApi
 
             configuration.Bind(appSettings);
 
-            services.AddTransient(x => appSettings);
+            services.AddSingleton(x => appSettings);
 
             services.AddDbContext<EndureanceCupDbContext>(options =>
             {

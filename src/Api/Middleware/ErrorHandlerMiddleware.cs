@@ -7,10 +7,12 @@ using System.Text.Json;
 public class ErrorHandlerMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<ErrorHandlerMiddleware> logger;
 
-    public ErrorHandlerMiddleware(RequestDelegate next)
+    public ErrorHandlerMiddleware(RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger)
     {
         _next = next;
+        this.logger = logger;
     }
 
     public async Task Invoke(HttpContext context)
@@ -21,6 +23,8 @@ public class ErrorHandlerMiddleware
         }
         catch (Exception error)
         {
+            logger.LogError(error, "API error: {err}", error.Message);
+
             var response = context.Response;
             response.ContentType = "application/json";
 
@@ -40,7 +44,8 @@ public class ErrorHandlerMiddleware
                     break;
             }
 
-            var result = JsonSerializer.Serialize(new { message = error?.Message });
+            var result = JsonSerializer.Serialize(new { message = error?.Message, stacktrace = error.StackTrace });
+
             await response.WriteAsync(result);
         }
     }
