@@ -1,15 +1,13 @@
-import { useSelector, useDispatch } from 'react-redux';
-import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { eventapi } from '../_api'
+import { eventapi } from "_api_v2";
 import {useQuery } from 'react-query';
-import { Messages } from '_components';
-import { eventsActions } from '_store';
+// import { Messages } from '_components';
 
 export { Home };
 
 function Home(props) {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   navigate(`/events`);
@@ -17,10 +15,6 @@ function Home(props) {
   function handleCardClick(event) {
     navigate(`/events/${event.id}`);
   }
-
-  useEffect(() => {
-      dispatch(eventsActions.getReferenceAll());
-  }, []);
 
   const auth = useSelector(x => x.auth.value);
 
@@ -92,7 +86,7 @@ function Home(props) {
               <p className="text-gray-600">Join the vibrant message board community and connect with fellow competitors. Share strategies, exchange tips, and engage in meaningful discussions to enhance your competitive journey.</p>
             </div>
             <div className="bg-cyan-50 p-2 shadow-md rounded-lg">
-              <Messages connection={props.connection} messages = { props.messages }></Messages>
+              {/* <Messages connection={props.connection} messages = { props.messages }></Messages> */}
             </div>
           </div>
         </section>

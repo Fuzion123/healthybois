@@ -6,8 +6,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { userapi } from "_api";
+import { eventapi } from "_api_v2"
 import { history } from '_helpers';
-import { eventsActions, alertActions } from '_store';
+import { alertActions } from '_store';
+import { useMutation } from 'react-query';
 
 export default  AddEdit;
 const imageMimeType = /image\/(png|jpg|jpeg)/i;
@@ -42,6 +44,19 @@ function AddEdit() {
     useEffect(() => {
         setTitle('Add event');
     }, []);
+
+    const mutation = useMutation(async (data) => {
+      console.log(data)
+      await eventapi.create(data)
+    }, {
+      onSuccess: () => {
+        history.navigate('/events');
+      },
+      onError:(error) => {
+        dispatch(alertActions.clear());
+        dispatch(alertActions.error(error));
+      }
+    });
 
     const [query, setQuery] = useState("");
     const [usersSearchResult, SetUsersSearchResult] = useState([]);
@@ -138,22 +153,20 @@ function AddEdit() {
 
           const message = "event created";
 
-          await dispatch(
-            eventsActions.create({
-              data: {
-                title: data.title,
-                startsAt: startDate.toISOString(),
-                endsAt: endDate.toISOString(),
-                description: data.description,
-                picture: {
-                    name: data.picture.name,
-                    base64: imageAsBase64
-                  },
-                participants: users
-              },
-            })
-          ).unwrap();
-          history.navigate('/events');
+          await mutation.mutate(
+          {
+            title: data.title,
+              startsAt: startDate.toISOString(),
+              endsAt: endDate.toISOString(),
+              description: data.description,
+              picture: {
+                  name: data.picture.name,
+                  base64: imageAsBase64
+                },
+              participants: users
+          });
+          
+          
           dispatch(alertActions.success({ message, showAfterRedirect: true }));
         } catch (error) {
           dispatch(alertActions.error(error));

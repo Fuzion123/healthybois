@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import {useQuery } from 'react-query';
-import { eventapi } from '_api';
+import { eventapi } from "_api_v2";
 import { date } from '_helpers';
 import ProgressBar from '_components/ProgressBar';
 import ActivityList from './activities/ActivityList'
@@ -12,17 +12,11 @@ export default  EventDetails;
 
 function EventDetails() {
   const { id } = useParams();
-  // const queryClient = useQueryClient();
 
   // query
   const {data, error, isLoading} = useQuery(`/getById/${id}`, async () => {
     return await eventapi.getById(id);
-  },{
-    onSuccess: (d) => {
-      
-    }
-  }
-  );
+  });
 
   if (error) return <div>Request Failed</div>;
 

@@ -1,4 +1,4 @@
-import { eventapi } from '_api';
+import { eventapi } from "_api_v2";
 import { useQuery } from 'react-query';
 // Initialization for ES Users
 import {

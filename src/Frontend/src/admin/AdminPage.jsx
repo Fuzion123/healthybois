@@ -7,13 +7,8 @@ function AdminPage() {
 
       // query
     const {data, error, isLoading} = useQuery(`event`, async () => {
-        return await eventapi.getById();
-    },{
-        onSuccess: (data) => {
-            console.log(data)
-        }
-    }
-    );
+        return await eventapi.getAll();
+    });
 
     if(isLoading)
         return 'loading...'

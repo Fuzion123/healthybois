@@ -1,36 +1,39 @@
 import { fetchWrapper } from '_helpers';
 
 const baseUrl = `${process.env.REACT_APP_FUNCTION_URL}/api/events`;
+const auth = getAuth();
 
-// const getById = async (id) => {
-//     return await fetchWrapper.get(`${baseUrl}/${id}`);
-// };
+function getAuth() {
+    return JSON.parse(localStorage.getItem('auth'));
+}
 
-// const create = async (data) => {
-//     return await fetchWrapper.post(`${baseUrl}`, data);
-// };
+// endpoints
 
-// const getAll = async () => {
-//     return await fetchWrapper.get(`${baseUrl}`);
-// };
+const create = async (data) => {
+    console.log('from hehe' + JSON.stringify(data));
+    return await fetchWrapper.post(`${baseUrl}/${auth.id}`, data);
+};
 
-// const deleteById = async (id) => {
-//     return await fetchWrapper.delete(`${baseUrl}/${id}`);
-// };
+const getAll = async () => {
+    return await fetchWrapper.get(`${baseUrl}/${auth.id}`);
+};
 
-// const getScoreboardByEventId = async (id) => {
-//     return await fetchWrapper.get(`${baseUrl}/${id}/scores`);
-// };
+const deleteById = async (id) => {
+    return await fetchWrapper.delete(`${baseUrl}/${auth.id}/${id}`);
+};
 
-const getById = async () => {
-    return await fetchWrapper.get(`${baseUrl}/1/2`);
+const getScoreboardByEventId = async (id) => {
+    return await fetchWrapper.get(`${baseUrl}/${auth.id}/${id}/scores`);
+};
+
+const getById = async (eventId) => {
+    return await fetchWrapper.get(`${baseUrl}/${auth.id}/${eventId}`);
 };
 
 export const eventapi = {
-    // getById: getById,
-    // create: create,
-    // getAll: getAll,
-    // deleteById: deleteById,
-    // getScoreboardByEventId: getScoreboardByEventId,
-    getById: getById
+    getById: getById,
+    create: create,
+    getAll: getAll,
+    deleteById: deleteById,
+    getScoreboardByEventId: getScoreboardByEventId
 };

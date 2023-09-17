@@ -1,30 +1,19 @@
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-// import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { history } from '_helpers';
-
-import { eventsActions } from '_store';
+import { eventapi } from "_api_v2";
 import { date } from '_helpers';
+import { useQuery } from 'react-query';
+import { userService } from '_components';
 
 export default List;
 
 function List() {
-    const events = useSelector(x => x.events.list);
-    const dispatch = useDispatch();
     const navigate = useNavigate();
-    console.log(events);
     
-    
-    function handleCardClick(event) {
-      navigate(`/events/${event.id}`);
-    }
+    const {data, error, isLoading} = useQuery(`/user/events/${userService.getUserId()}`, async () => {
+        return await eventapi.getAll();
+    });
       
-    useEffect(() => {
-        dispatch(eventsActions.getReferenceAll());
-    }, []);   
-    
     var today = new Date().toISOString();
 
     const eventStatus = function eventStatus(event) {
@@ -44,22 +33,30 @@ function List() {
             );                         
         }         
     }
+
+    if(isLoading){
+        return <div className="text-center">
+                    <span className="spinner-border spinner-border-lg align-center"></span>
+                </div>
+    }
+
+    if(error){
+        return <div>{error}</div>
+    }
     
     return (
         <div>
             <div className="grid grid-cols-2 gap-2">
             <h1 className="text-2xl font-bold justify-self-start">Events</h1>
-            {!events?.loading &&
-                <button  onClick={() => history.navigate(`/events/add`)} className="mt bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded">
+                <button  onClick={() => navigate(`/events/add`)} className="mt bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded">
                     Add event
                 </button>
-            }
             </div>
             
             <div className="grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-10 lg:grid-cols-3">
-            {events?.value?.map(event =>
+            {data?.map(event =>
               <div key={event.id} className="flex flex-col my-8 shadow-md rounded-lg hover:cursor-pointer">
-                    <div className="" onClick={() => handleCardClick(event)}>
+                    <div className="" onClick={() => navigate(`/events/${event.id}`)}>
                         <img className="object-cover w-full h-52 md:h-72 rounded-t-lg" src={event.eventPictureUrl} alt='stock'></img>
                         <h5 className="text-1xl font-bold px-3 py-3">{event.title}</h5>
                         <p className="text-1xl px-3 pb-3">{event.description}</p>
@@ -68,18 +65,9 @@ function List() {
                             {eventStatus(event)}                            
                         </div>
                     </div>
-
               </div>
-
             )}
-            
             </div>
-            {events?.loading &&
-                <div className="text-center">
-                    <span className="spinner-border spinner-border-lg align-center"></span>
-                </div>
-            }
-            
         </div>
     );
 }
