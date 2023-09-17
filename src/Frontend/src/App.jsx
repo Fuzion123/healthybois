@@ -8,6 +8,7 @@ import { EventsLayout } from './events';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import { useEffect, useState } from 'react';
 import { AdminLayout } from 'admin/AdminLayout';
+import { YourProfile } from './profile';
 
 
 // Initialze the client
@@ -48,6 +49,7 @@ function App() {
                         </Route>
                         {/* public */}
                         <Route path="account/*" element={<AccountLayout />} />
+                        <Route path="profile/*" element={<YourProfile />} />
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
                 </div>
