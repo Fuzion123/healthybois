@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -11,7 +10,7 @@ import { history } from '_helpers';
 import { eventsActions, alertActions } from '_store';
 
 export default  AddEdit;
-
+const imageMimeType = /image\/(png|jpg|jpeg)/i;
 const toBase64 = file => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -160,18 +159,42 @@ function AddEdit() {
           dispatch(alertActions.error(error));
         }
       }
-      const [selectedFileName, setSelectedFileName] = useState('');
-  
-      const handleFileChange = (e) => {
+
+      // File selector and show image preview
+
+      const [file, setFile] = useState(null);
+      const [fileDataURL, setFileDataURL] = useState(null);
+
+      const changeHandler = (e) => {
         const file = e.target.files[0];
         setValue('picture', file);
-        
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setSelectedFileName(file.name);
-        };
-        reader.readAsDataURL(file);
-      };
+        if (!file.type.match(imageMimeType)) {
+          alert("Image mime type is not valid");
+          return;
+        }
+        setFile(file);
+      }
+      useEffect(() => {
+        let fileReader, isCancel = false;
+        if (file) {
+          fileReader = new FileReader();
+          fileReader.onload = (e) => {
+            const { result } = e.target;
+            if (result && !isCancel) {
+              setFileDataURL(result)
+            }
+          }
+          fileReader.readAsDataURL(file);
+        }
+        return () => {
+          isCancel = true;
+          if (fileReader && fileReader.readyState === 1) {
+            fileReader.abort();
+          }
+        }
+    
+      }, [file]);
+
     return (
         <>
             <h1 className="mb-8 text-4xl font-bold flex justify-center items-center">{title}</h1>
@@ -196,16 +219,22 @@ function AddEdit() {
           </svg>
         </label>
         <input
-          id="fileInput"
+          id="image"
           name="picture"
           type="file"
-          onChange={handleFileChange}
+          accept="image/*"
+          onChange={changeHandler}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
         />
       </div>
+     
       <div className="text-green-500 mt-2">
-        {selectedFileName && <p>Selected File: {selectedFileName}</p>}
-        {errors.picture?.message}
+        {fileDataURL ?
+        <p className="img-preview-wrapper">
+          {
+            <img className="md:max-w-xs" src={fileDataURL} alt="preview" />
+          }
+        </p> : null}
       </div> </div>                             
                           <div className="mb-4">
                             <label>Description</label>
@@ -239,11 +268,11 @@ function AddEdit() {
                         </div>
                         
                         <div className="mb-4">
-                          <h2>Add participants</h2>
+                          <h2 className="mb-1">Add participants</h2>
                           <div className="flex">                          
                             <div className="relative w-full">
-                                <input onChange={event => setQuery(event.target.value)} type="search" id="search-user-dropdown" className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="insert name" />
-                                <button disabled className="absolute top-0 right-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                <input onChange={event => setQuery(event.target.value)} type="search" id="search-user-dropdown" className="py3 px-3 w-full z-20 text-base rounded-r-lg border-gray-500 focus:ring-blue-500 focus:border-blue-500" placeholder="Insert name" />
+                                <button disabled className="absolute top-0 right-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-r-lg border-gray-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                     <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                                     </svg>
@@ -279,12 +308,13 @@ function AddEdit() {
                         </div>
                         </div>
                         <div className="mb-3">
-                        <button type="submit" disabled={isSubmitting} className="mr-2 bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded">
+                        <button type="submit" disabled={isSubmitting} className="btn-primary">
                             {isSubmitting && <span className="spinner-border spinner-border-sm me-1"></span>}
                             Create
                         </button>
-                        <button onClick={() => reset()} type="button" disabled={isSubmitting} className="mr-2 bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">Reset</button>
-                        <Link to="/events" className="mr-2 bg-red-500 hover:bg-red-400 text-white font-bold py-2.5 px-4 border-b-4 border-red-700 hover:border-red-500 rounded">Cancel</Link>
+                        <button onClick={() => reset()} type="button" disabled={isSubmitting} className="btn-secondary">Reset</button>
+                        <button onClick={() => history.navigate(`/events`)} className="btn-negative">Cancel</button>
+                        
                     </div>
                 </form>
             }

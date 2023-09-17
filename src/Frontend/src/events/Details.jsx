@@ -6,6 +6,7 @@ import ProgressBar from '_components/ProgressBar';
 import ActivityList from './activities/ActivityList'
 import ScoreBoard from '_components/Scoreboard';
 import { history } from '_helpers';
+import ScoreboardSummary from '_components/ScoreboardSummary';
 
 export default  EventDetails;
 
@@ -31,9 +32,9 @@ return (
   <div>
     {(data) && (
     <>
-    <div className="flex flex-row justify-between text-base/6">
+      <div className="flex flex-row justify-between text-base/6">
         <h1 className='text-2xl font-bold'>{data.title}</h1>
-        <time dateTime={data.startsAt} className="text-sm text-base/8 text-gray-500">
+        <time dateTime={data.startsAt} className="text-sm text-gray-500">
           {date.formatDate(data.startsAt)}
         </time>
       </div>
@@ -47,14 +48,18 @@ return (
       {/* <div className='my-3'>
       <ParticipantBar profiles={data.participants} />
       </div> */}
+      <div className='my-2'>
+        <ScoreboardSummary event={data}></ScoreboardSummary>
+      </div>
+
       <div>
         <div className='my-2'>
             <ActivityList activities={data.activities} />
-            <button onClick={() => history.navigate(`/events/${id}/addActivity`)} className="mt-3 bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">Add Activity</button>
+            <button onClick={() => history.navigate(`/events/${id}/addActivity`)} className="mt-3 btn-secondary">Add Activity</button>
         </div>
       </div>
-      <button onClick={() => history.navigate(`/events`)} className="flex flex-row mt bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 border-b-4 border-yellow-700 hover:border-yellow-500 rounded">
-      <div className="flex flex-row align-middle">
+      <button onClick={() => history.navigate(`/events`)} className="btn-back">
+      <div className="flex justify-center">
         <svg className="w-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
           <path fillRule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd"></path>
         </svg>

@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { useMutation } from 'react-query';
 import { userapi } from '_api';
 import { history } from '_helpers';
-import { Link, useParams} from 'react-router-dom';
+import { useParams} from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { alertActions } from '_store';
 
@@ -86,7 +86,7 @@ function ResetPassword() {
                             </div>
                             </div>
                         <div>
-                        <button disabled={mutation.isLoading} className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <button disabled={mutation.isLoading} className="flex btn-primary w-full justify-center">
                             {mutation.isLoading ? (
                                 <>
                                     <svg className="mr-3 h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -99,7 +99,7 @@ function ResetPassword() {
                                 'Reset'
                             )}
                         </button>
-                        <Link to="../login" className="font-semibold text-gray-900 hover:text-indigo-500">back</Link>
+                        <button onClick={() => history.navigate(`/login`)} className="btn-negative w-full">Back</button>
                         </div>
                         </form>
                 </div>
