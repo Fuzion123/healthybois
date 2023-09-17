@@ -49,15 +49,12 @@ return (
       <div>
         <div className='my-2'>
             <ActivityList activities={data.activities} />
-            <button onClick={() => history.navigate(`/events/${id}/addActivity`)} className="mt-3 btn-secondary">Add Activity</button>
+            <button onClick={() => history.navigate(`/events/${id}/addActivity`)} className="mt-3 btn-primary">Add Activity</button>
         </div>
       </div>
-      <button onClick={() => history.navigate(`/events`)} className="btn-back">
+      <button onClick={() => history.navigate(`/events`)} className="btn-negative w-full">
       <div className="flex justify-center">
-        <svg className="w-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <path fillRule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd"></path>
-        </svg>
-        <p className="">back</p>
+        <p className="">Cancel</p>
       </div>
       </button>
         </> 

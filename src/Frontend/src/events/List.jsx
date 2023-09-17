@@ -24,12 +24,12 @@ function List() {
         }
         else if (event.startsAt <= today && today >= event.endsAt) {
             return (
-            <span className='bg-red-200 font-semibold text-white py-1 px-2'>Event Over</span>
+            <span className='bg-red-200 font-semibold text-white py-1 px-2'>Completed</span>
             );                         
         }
         else if (event.startsAt >= today) {
             return (
-            <span className='bg-yellow-400 font-semibold text-white py-1 px-2'>Upcomming</span>
+            <span className='bg-yellow-400 font-semibold text-white py-1 px-2'>Upcoming</span>
             );                         
         }         
     }
