@@ -375,7 +375,7 @@ namespace Service.Events
             return null;
         }
 
-        public async Task<EventUserParticipantDto> GetParticipantById(int eventId, int participantId, CancellationToken cancellationToken)
+        public async Task<UserParticipantDto> GetParticipantById(int eventId, int participantId, CancellationToken cancellationToken)
         {
             var participant = await eventRepository.GetParticipantById(eventId, participantId, cancellationToken);
 
@@ -385,36 +385,24 @@ namespace Service.Events
 
                 if (user != null)
                 {
-                    return new EventUserParticipantDto()
-                    {
-                        Email = user.Email,
-                        FirstName = user.FirstName,
-                        UserId = user.Id,
-                        LastName = user.LastName,
-                        ProfilePictureUrl = pictureService.GetPicture(user.ProfilePictureId)
-                    };
+                    return participantMapper.MapParticipantFromUser(participant.Id, user);
                 }
             }
 
             return null;
         }
 
-        public async Task<List<EventUserParticipantDto>> GetAllParticipants(int eventId, CancellationToken cancellationToken)
+        public async Task<List<UserParticipantDto>> GetAllParticipants(int eventId, CancellationToken cancellationToken)
         {
             var participants = await eventRepository.GetAllParticipants(eventId, cancellationToken);
 
-            var ids = participants.Select(x => x.Id).ToArray();
+            var ids = participants.Select(x => x.UserId).ToArray();
 
             var users = await userRepository.GetByIds(ids, cancellationToken);
 
-            return users.Select(x => new EventUserParticipantDto()
-            {
-                Email = x.Email,
-                FirstName = x.FirstName,
-                UserId = x.Id,
-                LastName = x.LastName,
-                ProfilePictureUrl = pictureService.GetPicture(x.ProfilePictureId)
-            }).ToList();
+            var participantsByUserId = participants.ToDictionary(x => x.UserId);
+
+            return users.Select(user => participantMapper.MapParticipantFromUser(participantsByUserId[user.Id].Id, user)).ToList();
         }
 
         public async Task<ResultDto> GetResultById(int eventId, int activityId, int resultId, CancellationToken cancellationToken)
