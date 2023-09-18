@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Service.Email;
+using Service.Events;
 using Service.Users;
 using Service.Users.Models;
 using WebApi.Authorization;
@@ -13,11 +14,13 @@ using WebApi.Models.Users;
 public class UsersController : ControllerBase
 {
     private IUserService _userService;
+    private readonly EventService eventService;
     private readonly IRecoverCodeService recoverCodeService;
 
-    public UsersController(IUserService userService, IRecoverCodeService recoverCodeService)
+    public UsersController(IUserService userService, EventService eventService, IRecoverCodeService recoverCodeService)
     {
         _userService = userService;
+        this.eventService = eventService;
         this.recoverCodeService = recoverCodeService;
     }
 
@@ -80,7 +83,29 @@ public class UsersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        await _userService.Delete(id, cancellationToken);
+        var userId = id;
+
+        var events = await eventService.GetAllEventsReferencedByUser(userId, cancellationToken);
+
+        foreach (var @event in events)
+        {
+            if (@event.EventOwner.UserId == userId)
+            {
+                await eventService.Remove(@event.Id, userId, cancellationToken);
+
+                continue;
+            }
+
+            var participantId = @event.Participants.FirstOrDefault(x => x.UserId == userId);
+
+            if (participantId == null)
+                continue;
+
+            await eventService.RemoveParticipant(@event.Id, participantId.Id, @event.EventOwner.UserId, cancellationToken);
+        }
+
+        await _userService.Delete(userId, cancellationToken);
+
         return Ok(new { message = "User deleted successfully" });
     }
 

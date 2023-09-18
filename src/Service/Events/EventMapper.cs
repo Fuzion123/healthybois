@@ -151,6 +151,7 @@ namespace Service.Events.Mappers
                 FirstName = owner.FirstName,
                 LastName = owner.LastName,
                 Id = eventId,
+                UserId = owner.Id,
                 ProfilePictureUrl = pictureService.GetPicture(owner.ProfilePictureId)
             };
         }
