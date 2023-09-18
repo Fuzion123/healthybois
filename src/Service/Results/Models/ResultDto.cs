@@ -1,5 +1,4 @@
-﻿
-namespace Service.Events.Models
+﻿namespace Service.Results.Models
 {
     public class ResultDto
     {

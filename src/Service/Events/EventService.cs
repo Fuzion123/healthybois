@@ -2,9 +2,15 @@
 using Domain.Events.Input;
 using Domain.Pictures.Inputs;
 using Domain.Users;
+using Service.Activities;
 using Service.Events.Mappers;
 using Service.Events.Models;
 using Service.Exceptions;
+using Service.Participants;
+using Service.Participants.Models;
+using Service.Results;
+using Service.Results.Models;
+using static Service.Events.Mappers.EventMapper;
 
 namespace Service.Events
 {
@@ -13,17 +19,26 @@ namespace Service.Events
         private readonly IEventRepository eventRepository;
         private readonly IUserRepository userRepository;
         private readonly PictureService pictureService;
-        private readonly EventMapper mapper;
+        private readonly EventMapper eventMapper;
+        private readonly ActivityMapper activityMapper;
+        private readonly ParticipantMapper participantMapper;
+        private readonly ResultMapper resultMapper;
 
         public EventService(IEventRepository EventRepository,
                             IUserRepository userRepository,
                             PictureService pictureService,
-                            EventMapper eventMapper)
+                            EventMapper eventMapper,
+                            ActivityMapper activityMapper,
+                            ParticipantMapper participantMapper,
+                            ResultMapper resultMapper)
         {
             this.eventRepository = EventRepository;
             this.userRepository = userRepository;
             this.pictureService = pictureService;
-            this.mapper = eventMapper;
+            this.eventMapper = eventMapper;
+            this.activityMapper = activityMapper;
+            this.participantMapper = participantMapper;
+            this.resultMapper = resultMapper;
         }
 
         public async Task<EventDetailDto> Create(int EventOwner, EventInput EventInput, CancellationToken cancellationToken)
@@ -49,7 +64,7 @@ namespace Service.Events
 
             await eventRepository.SaveChangesAsync(cancellationToken);
 
-            return await mapper.Map(Event, cancellationToken);
+            return await eventMapper.Map(Event, cancellationToken);
         }
 
         public async Task<EventDetailDto> Update(int eventId, int eventOwnerId, EventInput EventInput, CancellationToken cancellationToken)
@@ -81,7 +96,7 @@ namespace Service.Events
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
 
-            return await mapper.Map(@event, cancellationToken);
+            return await eventMapper.Map(@event, cancellationToken);
         }
 
         public async Task<EventDetailDto> SetOrUpdateEventPicture(int eventId, int eventOwnerId, PictureInput picture, CancellationToken cancellationToken)
@@ -109,14 +124,14 @@ namespace Service.Events
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
 
-            return await mapper.Map(@event, cancellationToken);
+            return await eventMapper.Map(@event, cancellationToken);
         }
 
         public async Task<List<EventDetailDto>> GetAllEventsReferencedByUser(int userId, CancellationToken cancellationToken)
         {
             var Events = await eventRepository.GetAllReferencedEvents(userId, cancellationToken);
 
-            return Events.Select(async x => await mapper.Map(x, cancellationToken)).Select(x => x.Result).ToList();
+            return Events.Select(async x => await eventMapper.Map(x, cancellationToken)).Select(x => x.Result).ToList();
         }
 
         public async Task<EventDetailDto> GetByTitle(string title, CancellationToken cancellationToken)
@@ -128,7 +143,7 @@ namespace Service.Events
 
             var Event = await eventRepository.GetByTitle(title, cancellationToken);
 
-            return await mapper.Map(Event, cancellationToken);
+            return await eventMapper.Map(Event, cancellationToken);
         }
 
         public async Task<EventDetailDto> GetById(int EventId, int userId, CancellationToken cancellationToken)
@@ -139,7 +154,7 @@ namespace Service.Events
                 return null;
 
             if (Event.OwnerUserId == userId || Event.Participants.Any(x => x.UserId == userId))
-                return await mapper.Map(Event, cancellationToken);
+                return await eventMapper.Map(Event, cancellationToken);
 
             throw new AppException($"Current user does not have access to Event with id {EventId}");
         }
@@ -179,7 +194,7 @@ namespace Service.Events
 
             await eventRepository.SaveChangesAsync(cancellationToken);
 
-            return mapper.MapParticipantFromUser(participant.Id, user);
+            return participantMapper.MapParticipantFromUser(participant.Id, user);
         }
 
         public async Task<EventDetailDto> RemoveParticipant(int eventId, int participantId, int ownerUserId, CancellationToken cancellationToken)
@@ -191,7 +206,7 @@ namespace Service.Events
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
 
-            return await mapper.Map(@event, cancellationToken);
+            return await eventMapper.Map(@event, cancellationToken);
         }
 
         public async Task<ActivityListingDto> AddActivity(ActivityInput input, CancellationToken cancellationToken)
@@ -207,7 +222,7 @@ namespace Service.Events
 
             await eventRepository.SaveChangesAsync(cancellationToken);
 
-            return mapper.MapActivity(activity);
+            return activityMapper.MapActivity(activity);
         }
 
         public async Task<ActivityListingDto> UpdateActivity(int eventId, ActivityUpdateInput input, CancellationToken cancellationToken)
@@ -224,7 +239,7 @@ namespace Service.Events
             if (activity == null)
                 return null;
 
-            return mapper.MapActivity(activity);
+            return activityMapper.MapActivity(activity);
         }
 
         public async Task<ActivityListingDto> MarkComplete(int eventId, int activityId, CancellationToken cancellationToken)
@@ -240,7 +255,7 @@ namespace Service.Events
 
             await eventRepository.SaveChangesAsync(cancellationToken);
 
-            return mapper.MapActivity(activity);
+            return activityMapper.MapActivity(activity);
         }
 
         public async Task<ActivityListingDto> MarkUnComplete(int eventId, int activityId, CancellationToken cancellationToken)
@@ -256,7 +271,7 @@ namespace Service.Events
 
             await eventRepository.SaveChangesAsync(cancellationToken);
 
-            return mapper.MapActivity(activity);
+            return activityMapper.MapActivity(activity);
         }
 
         public async Task<EventDetailDto> RemoveActivity(int eventId, int activityId, int userId, CancellationToken cancellationToken)
@@ -268,7 +283,7 @@ namespace Service.Events
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
 
-            return await mapper.Map(@event, cancellationToken);
+            return await eventMapper.Map(@event, cancellationToken);
         }
 
         public async Task<ActivityListingDto> AddOrUpdateResult(int eventId, int activityId, ResultInput input, CancellationToken cancellationToken)
@@ -285,7 +300,7 @@ namespace Service.Events
 
             var activity = @event.Activities.FirstOrDefault(x => x.Id == activityId);
 
-            return mapper.MapActivity(activity);
+            return activityMapper.MapActivity(activity);
         }
 
         public async Task<EventDetailDto> RemoveResult(int eventId, int activityId, int resultId, CancellationToken cancellationToken)
@@ -300,7 +315,7 @@ namespace Service.Events
                 await eventRepository.SaveChangesAsync(cancellationToken);
             }
 
-            return await mapper.Map(@event, cancellationToken);
+            return await eventMapper.Map(@event, cancellationToken);
         }
 
         public async Task<List<ActivityListingDto>> GetAllActivities(int eventId, CancellationToken cancellationToken)
@@ -317,7 +332,7 @@ namespace Service.Events
                     Id = activity.Id,
                     OwnerUserId = activity.OwnerUserId,
                     Title = activity.Title,
-                    Results = activity.Results.Select(x => mapper.MapResult(eventId, x)).ToList()
+                    Results = activity.Results.Select(x => resultMapper.MapResult(eventId, x)).ToList()
                 };
             }).ToList();
         }
@@ -339,7 +354,7 @@ namespace Service.Events
                 {
                     var participantId = participantIdsByUserId[user.Id];
                     var result = resultByParticipantId.ContainsKey(participantId) ? resultByParticipantId[participantId] : null;
-                    var participant = mapper.MapActivityDetailsParticipant(@event.Id, participantId, user, result);
+                    var participant = activityMapper.MapActivityDetailsParticipant(@event.Id, participantId, user, result);
 
                     participants.Add(participant);
                 }
@@ -360,7 +375,7 @@ namespace Service.Events
             return null;
         }
 
-        public async Task<UserParticipantDto> GetParticipantById(int eventId, int participantId, CancellationToken cancellationToken)
+        public async Task<EventUserParticipantDto> GetParticipantById(int eventId, int participantId, CancellationToken cancellationToken)
         {
             var participant = await eventRepository.GetParticipantById(eventId, participantId, cancellationToken);
 
@@ -370,7 +385,7 @@ namespace Service.Events
 
                 if (user != null)
                 {
-                    return new UserParticipantDto()
+                    return new EventUserParticipantDto()
                     {
                         Email = user.Email,
                         FirstName = user.FirstName,
@@ -384,7 +399,7 @@ namespace Service.Events
             return null;
         }
 
-        public async Task<List<UserParticipantDto>> GetAllParticipants(int eventId, CancellationToken cancellationToken)
+        public async Task<List<EventUserParticipantDto>> GetAllParticipants(int eventId, CancellationToken cancellationToken)
         {
             var participants = await eventRepository.GetAllParticipants(eventId, cancellationToken);
 
@@ -392,7 +407,7 @@ namespace Service.Events
 
             var users = await userRepository.GetByIds(ids, cancellationToken);
 
-            return users.Select(x => new UserParticipantDto()
+            return users.Select(x => new EventUserParticipantDto()
             {
                 Email = x.Email,
                 FirstName = x.FirstName,
@@ -408,7 +423,7 @@ namespace Service.Events
 
             if (result != null)
             {
-                return mapper.MapResult(eventId, result);
+                return resultMapper.MapResult(eventId, result);
             }
 
             return null;
@@ -420,7 +435,7 @@ namespace Service.Events
 
             if (result != null)
             {
-                return mapper.MapResult(eventId, result);
+                return resultMapper.MapResult(eventId, result);
             }
 
             return null;
@@ -430,7 +445,7 @@ namespace Service.Events
         {
             var results = await eventRepository.GetAllResultsForActivity(eventId, activityId, cancellationToken);
 
-            return results.Select(x => mapper.MapResult(eventId, x)).ToList();
+            return results.Select(x => resultMapper.MapResult(eventId, x)).ToList();
         }
 
         public async Task<ScoreboardSummaryDto> GetScoreboardSummary(int eventId, int currentUserId, CancellationToken cancellationToken)
@@ -455,6 +470,11 @@ namespace Service.Events
                 .GroupBy(x => x.ParticipantId)
                 .ToDictionary(x => x.Key, value => value.Sum(u => u.Score));
 
+            var participantResults = eventMapper.MapParticipantResults(@event);
+
+            var participantResultsByParticipantId = participantResults.ToDictionary(x => x.Id);
+
+
             return new ScoreboardSummaryDto()
             {
                 EventId = eventId,
@@ -468,9 +488,25 @@ namespace Service.Events
                         score = totalScoreByUserId[participantId];
                     }
 
+                    ParticipantResult result;
+
+                    if (participantResultsByParticipantId.ContainsKey(participantId))
+                    {
+                        result = participantResultsByParticipantId[participantId];
+                    }
+                    else
+                    {
+                        result = new ParticipantResult()
+                        {
+                            Id = participantId,
+                            TotalScore = 0,
+                            EventPlacement = null
+                        };
+                    }
+
                     return new ScoreboardSummaryResultDto()
                     {
-                        Participant = mapper.MapParticipantFromUser(participantId, usersById[x.UserId]),
+                        Participant = eventMapper.MapParticipantFromUser(usersById[x.UserId], result),
                         TotalScoreSum = score
                     };
 

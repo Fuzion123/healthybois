@@ -11,8 +11,9 @@ namespace Service.Events.Models
         public bool EventIsActive { get; set; }
         public Uri EventPictureUrl { get; set; }
         public EventOwnerDto EventOwner { get; set; }
-        public List<UserParticipantDto> Participants { get; set; }
+        public List<EventUserParticipantDto> Participants { get; set; }
         public List<ActivityListingDto> Activities { get; set; }
         public decimal Progress { get; set; }
+        public List<int> LeadingParticipantIds { get; set; } = new List<int>();
     }
 }

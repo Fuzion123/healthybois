@@ -1,4 +1,6 @@
 ﻿
+using Service.Results.Models;
+
 namespace Service.Events.Models
 {
     public class ActivityListingDto

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Service.Events;
 using Service.Events.Models;
+using Service.Results.Models;
 using WebApi.Authorization;
 
 namespace WebApi.Controllers

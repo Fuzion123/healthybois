@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Service;
+using Service.Activities;
 using Service.Events;
 using Service.Events.Mappers;
+using Service.Participants;
+using Service.Results;
 using Service.Users;
 using Service.Users.Dependencies;
 using Startup.Authorization;
@@ -100,6 +103,9 @@ namespace WebApi
             services.AddAzureEmailService(appSettings.AzureEmailSettings);
             services.AddTransient<PictureService>();
             services.AddTransient<EventMapper>();
+            services.AddTransient<ActivityMapper>();
+            services.AddTransient<ParticipantMapper>();
+            services.AddTransient<ResultMapper>();
             services.AddSignalR();
 
 
