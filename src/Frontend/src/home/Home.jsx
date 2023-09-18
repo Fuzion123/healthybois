@@ -10,7 +10,6 @@ export { Home };
 function Home(props) {
   const navigate = useNavigate();
 
-  navigate(`/events`);
 
   function handleCardClick(event) {
     navigate(`/events/${event.id}`);

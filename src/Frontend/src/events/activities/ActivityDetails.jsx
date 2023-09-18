@@ -1,11 +1,14 @@
 import { activityapi } from "_api";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import { useParams } from "react-router-dom";
-import ActivityResult from "./ActivityResult";
+// import ActivityResult from "./ActivityResult";
 import { history } from '_helpers';
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { alertActions } from "_store";
+import ParticipantBar from "_components/ParticipantBar";
+
+
 
 export default ActivityDetails;
 
@@ -97,16 +100,20 @@ function ActivityDetails() {
         <br></br>
         <h4 className="text-x3 font-bold mb-2">Results</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <ParticipantBar eventId={id}/>
+        </div>
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {data.participants.map((p, i) => {
             return (
               <div key={p.participant.id} className="">
                 <ActivityResult eventId={id} activityId={activityId} participant={p.participant} result={p.result} isProcessing={isProcessing} setIsProcessing={setIsProcessing}/>
               </div>
+              
             )
           })}
-        </div>
-        <button disabled={isProcessing} onClick={() => goBack()} className="mt-6 bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"> Ok </button>
-        <button disabled={isProcessing} onClick={() => deleteActivity()} className="ml-6 mt-6 bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded"> Delete </button>
+        </div> */}
+        <button disabled={isProcessing} onClick={() => goBack()} className="mt-3 btn-primary"> Ok </button>
+        <button disabled={isProcessing} onClick={() => deleteActivity()} className="mt-3 btn-negative"> Delete </button>
       </section>
 
     </div>
