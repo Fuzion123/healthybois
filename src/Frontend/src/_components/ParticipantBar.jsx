@@ -10,7 +10,7 @@ function ParticipantBar({ eventId }) {
   }, {
     onSuccess: (d) => {
       console.log('data: ' + JSON.stringify(d));
-      setParticipantPoints(new Array(d.length).fill(null));
+      setParticipantPoints(d.map(() => null)); // Initialize with null values
     }
   });
 
@@ -34,8 +34,16 @@ function ParticipantBar({ eventId }) {
 
     if (draggedParticipantIndex !== "") {
       const newPoints = [...participantPoints];
-      newPoints[pointIndex] = data[draggedParticipantIndex];
-      newPoints[draggedParticipantIndex] = null;
+      const draggedParticipant = data[draggedParticipantIndex];
+      newPoints[pointIndex] = draggedParticipant; // Place the dragged participant in the new position
+
+      // Clear the old position by setting it to null
+      if (participantPoints[pointIndex] !== null) {
+        const oldPositionIndex = data.findIndex(p => p.id === participantPoints[pointIndex].id);
+        if (oldPositionIndex !== -1) {
+          newPoints[oldPositionIndex] = null;
+        }
+      }
 
       setParticipantPoints(newPoints);
     }
@@ -52,15 +60,17 @@ function ParticipantBar({ eventId }) {
         {data.map((p, index) => (
           <div
             key={p.id}
-            className={`relative flex-shrink-0 w-16 h-16 bg-gray-200 rounded-full overflow-hidden ${participantPoints[index] ? "opacity-0" : ""}`}
+            className={`relative flex-shrink-0 w-16 h-16 ${participantPoints[index] ? "opacity-0" : ""} rounded-full overflow-hidden bg-gray-200`}
             draggable="true"
             onDragStart={(e) => handleDragStart(e, index)}
           >
-            <img
-              src={p.profilePictureUrl}
-              alt={p.firstName}
-              className="object-cover w-full h-full"
-            />
+            {participantPoints[index] === null ? (
+              <img
+                src={p.profilePictureUrl}
+                alt={p.firstName}
+                className="object-cover w-full h-full rounded-full" // Apply rounded-full class
+              />
+            ) : null}
           </div>
         ))}
       </div>
@@ -68,7 +78,7 @@ function ParticipantBar({ eventId }) {
         {participantPoints.map((participant, index) => (
           <div
             key={index}
-            className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center"
+            className={`w-16 h-16 rounded-full ${participant ? "" : "bg-gray-200"} flex items-center justify-center`}
             onDragOver={(e) => handleDragOver(e, index)}
             onDrop={(e) => handleDrop(e, index)}
           >
@@ -76,7 +86,7 @@ function ParticipantBar({ eventId }) {
               <img
                 src={participant.profilePictureUrl}
                 alt={participant.firstName}
-                className="object-cover w-full h-full"
+                className="object-cover w-full h-full rounded-full" // Apply rounded-full class
               />
             ) : (
               <div className="text-gray-500">Drop Here</div>
