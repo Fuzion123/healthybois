@@ -49,6 +49,56 @@ function ParticipantBar({ eventId }) {
     }
   };
 
+  const handleTouchStart = (e, participantIndex) => {
+    const touch = e.touches[0];
+    e.dataTransfer.setData("participantIndex", participantIndex);
+    e.dataTransfer.setData("touchX", touch.clientX);
+    e.dataTransfer.setData("touchY", touch.clientY);
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const draggedParticipantIndex = e.dataTransfer.getData("participantIndex");
+
+    if (draggedParticipantIndex !== "") {
+      const xDiff = touch.clientX - parseInt(e.dataTransfer.getData("touchX"));
+      const yDiff = touch.clientY - parseInt(e.dataTransfer.getData("touchY"));
+      const draggedElement = document.getElementById(`participant-${draggedParticipantIndex}`);
+
+      if (draggedElement) {
+        draggedElement.style.transform = `translate(${xDiff}px, ${yDiff}px)`;
+      }
+    }
+  };
+
+  const handleTouchEnd = (e, pointIndex) => {
+    e.preventDefault();
+    const draggedParticipantIndex = e.dataTransfer.getData("participantIndex");
+
+    if (draggedParticipantIndex !== "") {
+      const draggedElement = document.getElementById(`participant-${draggedParticipantIndex}`);
+
+      if (draggedElement) {
+        draggedElement.style.transform = "translate(0, 0)";
+      }
+
+      const newPoints = [...participantPoints];
+      const draggedParticipant = data[draggedParticipantIndex];
+      newPoints[pointIndex] = draggedParticipant; // Place the dragged participant in the new position
+
+      // Clear the old position by setting it to null
+      if (participantPoints[pointIndex] !== null) {
+        const oldPositionIndex = data.findIndex(p => p.id === participantPoints[pointIndex].id);
+        if (oldPositionIndex !== -1) {
+          newPoints[oldPositionIndex] = null;
+        }
+      }
+
+      setParticipantPoints(newPoints);
+    }
+  };
+
   return (
     <>
       <div className="my-2">
@@ -60,9 +110,13 @@ function ParticipantBar({ eventId }) {
         {data.map((p, index) => (
           <div
             key={p.id}
+            id={`participant-${index}`}
             className={`relative flex-shrink-0 w-16 h-16 ${participantPoints[index] ? "opacity-0" : ""} rounded-full overflow-hidden bg-gray-200`}
             draggable="true"
             onDragStart={(e) => handleDragStart(e, index)}
+            onTouchStart={(e) => handleTouchStart(e, index)}
+            onTouchMove={(e) => handleTouchMove(e)}
+            onTouchEnd={(e) => handleTouchEnd(e, index)}
           >
             {participantPoints[index] === null ? (
               <img
