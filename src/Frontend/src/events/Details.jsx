@@ -52,9 +52,9 @@ return (
             <button onClick={() => history.navigate(`/events/${id}/addActivity`)} className="mt-3 btn-primary">Add Activity</button>
         </div>
       </div>
-      <button onClick={() => history.navigate(`/events`)} className="btn-negative w-full">
+      <button onClick={() => history.navigate(`/events`)} className="btn-back">
       <div className="flex justify-center">
-        <p className="">Cancel</p>
+        <p className="">Back</p>
       </div>
       </button>
         </> 
