@@ -77,7 +77,7 @@ export default function ScoreboardSummary({event}) {
         },
         y: {
           title: {
-            display: true,
+            display: false,
             text: 'Score',
           },
           beginAtZero: true,
