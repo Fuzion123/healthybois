@@ -1,15 +1,14 @@
-// App.js
 import Chart from "chart.js/auto";
 import React from 'react';
 import { Line } from "react-chartjs-2";
 
 console.log(Chart);
 
-export default function ScoreboardSummary({event}) {
+export default function ScoreboardSummary({ event }) {
 
   console.log(event);
 
-  const activities = event.activities.map(activity => activity.title); 
+  const activities = event.activities.map(activity => activity.title);
 
 
 
@@ -30,6 +29,7 @@ export default function ScoreboardSummary({event}) {
 
     return {
       name: participant.firstName,
+      img: participant.profilePictureUrl,
       scores: scores,
     };
   });
@@ -47,7 +47,7 @@ export default function ScoreboardSummary({event}) {
       fill: false, // Set to false for a line chart
       borderColor: getRandomColor(), // Helper function to generate random colors
     }));
-  
+
     // Helper function to generate random colors
     function getRandomColor() {
       const letters = '0123456789ABCDEF';
@@ -57,13 +57,13 @@ export default function ScoreboardSummary({event}) {
       }
       return color;
     }
-  
+
     // Create the chart data
     const chartData = {
       labels: activities,
       datasets: datasets,
     };
-  
+
     // Create the chart options
     const chartOptions = {
       responsive: true,
@@ -84,7 +84,7 @@ export default function ScoreboardSummary({event}) {
         },
       },
     };
-  
+
     return (
       <div>
         <Line data={chartData} options={chartOptions} />
@@ -93,8 +93,8 @@ export default function ScoreboardSummary({event}) {
   };
 
   return (
-    <div className="App">
-      <h1>Multi-line Chart</h1>
+    <div className="">
+      <h1 className="text-2xl font-bold mb-2">Event Scoreboard</h1>
       <MultiLineChart activities={activities} participants={participants} />
     </div>
   );
