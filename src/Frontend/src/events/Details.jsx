@@ -4,7 +4,7 @@ import { eventapi } from '_api';
 import { date } from '_helpers';
 import ProgressBar from '_components/ProgressBar';
 import ActivityList from './activities/ActivityList'
-import ScoreBoard from '_components/Scoreboard';
+// import ScoreBoard from '_components/Scoreboard';
 import { history } from '_helpers';
 import ScoreboardSummary from '_components/ScoreboardSummary';
 
@@ -36,9 +36,9 @@ return (
       <ProgressBar progress={data.progress} />
       </div>
 
-      <div className='my-2'>
+      {/* <div className='my-2'>
         <ScoreBoard event={data}></ScoreBoard>
-      </div>
+      </div> */}
       {/* <div className='my-3'>
       <ParticipantBar profiles={data.participants} />
       </div> */}

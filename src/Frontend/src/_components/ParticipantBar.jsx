@@ -49,10 +49,10 @@ function ParticipantBar({ eventId }) {
     }
   };
 
-  const handleDragEnd = (e, index) => {
-    e.preventDefault();
-    handleDrop(e, index);
-  };
+  // const handleDragEnd = (e, index) => {
+  //   e.preventDefault();
+  //   handleDrop(e, index);
+  // };
 
   const handleDrop = (e, pointIndex) => {
     e.preventDefault();
