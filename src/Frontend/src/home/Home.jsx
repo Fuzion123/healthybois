@@ -1,8 +1,8 @@
-import { useSelector } from 'react-redux';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { eventapi } from '_api';
-import {useQuery } from 'react-query';
+import { useSelector } from "react-redux";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { eventapi } from "_api";
+import { useQuery } from "react-query";
 // import { Messages } from '_components';
 
 export { Home };
@@ -10,20 +10,17 @@ export { Home };
 function Home(props) {
   const navigate = useNavigate();
 
-
   function handleCardClick(event) {
     navigate(`/events/${event.id}`);
   }
 
-  const auth = useSelector(x => x.auth.value);
+  const auth = useSelector((x) => x.auth.value);
 
   // query
 
-  const {data, error, isLoading} = useQuery('getAllEvents', async () => {
+  const { data, error, isLoading } = useQuery("getAllEvents", async () => {
     return await eventapi.getAll();
   });
-
-  
 
   if (error) return <div>Request Failed</div>;
 
@@ -44,7 +41,11 @@ function Home(props) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-8">
               <h3 className="text-md font-bold mb-2">Get ready to compete</h3>
-              <p className="text-gray-600">Don't miss out on our upcoming events! Join an event for an unforgettable experience filled with excitement, inspiration, and community. Sign up and claim your spot among the champions!</p>
+              <p className="text-gray-600">
+                Don't miss out on our upcoming events! Join an event for an
+                unforgettable experience filled with excitement, inspiration,
+                and community. Sign up and claim your spot among the champions!
+              </p>
             </div>
             <div className="bg-green-50 p-8 shadow-md rounded-lg">
               <h3 className="text-md font-bold mb-2">Next 3 events</h3>
@@ -54,11 +55,20 @@ function Home(props) {
                   .slice(0, 3)
                   .map((p, i) => (
                     <div key={i} onClick={() => handleCardClick(p)}>
-                    <img className="object-cover w-50 h-50 md:h-20 rounded-t-lg" src={p.eventPictureUrl} alt="stock" />
-                    <p className='font-semibold'>{p.title}</p>
-                    <img alt="profile" className="h-10 w-10" src={p.eventOwner.profilePictureUrl}></img>
-                  </div>
-          ))}</p>
+                      <img
+                        className="object-cover w-50 h-50 md:h-20 rounded-t-lg"
+                        src={p.eventPictureUrl}
+                        alt="stock"
+                      />
+                      <p className="font-semibold">{p.title}</p>
+                      <img
+                        alt="profile"
+                        className="h-10 w-10"
+                        src={p.eventOwner.profilePictureUrl}
+                      ></img>
+                    </div>
+                  ))}
+              </p>
             </div>
           </div>
         </section>
@@ -68,7 +78,12 @@ function Home(props) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-8">
               <h3 className="text-md font-bold mb-2">Check this guy out</h3>
-              <p className="text-gray-600">With exceptional skills and unmatched dedication, is a force to be reckoned with on in the tourney. Don't miss the opportunity to witness their extraordinary performances or beat them in the upcoming events</p>
+              <p className="text-gray-600">
+                With exceptional skills and unmatched dedication, is a force to
+                be reckoned with on in the tourney. Don't miss the opportunity
+                to witness their extraordinary performances or beat them in the
+                upcoming events
+              </p>
             </div>
             <div className="bg-yellow-50 p-8 shadow-md rounded-lg">
               <h3 className="text-md font-bold mb-2">Player in focus</h3>
@@ -82,7 +97,11 @@ function Home(props) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-8">
               <h3 className="text-md font-bold mb-2">Connect with others</h3>
-              <p className="text-gray-600">Join the vibrant message board community and connect with fellow competitors. Share strategies, exchange tips, and engage in meaningful discussions to enhance your competitive journey.</p>
+              <p className="text-gray-600">
+                Join the vibrant message board community and connect with fellow
+                competitors. Share strategies, exchange tips, and engage in
+                meaningful discussions to enhance your competitive journey.
+              </p>
             </div>
             <div className="bg-cyan-50 p-2 shadow-md rounded-lg">
               {/* <Messages connection={props.connection} messages = { props.messages }></Messages> */}

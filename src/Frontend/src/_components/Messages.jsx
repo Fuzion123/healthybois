@@ -3,46 +3,44 @@ import { useSelector } from "react-redux";
 
 export { Messages };
 
-function Messages(props){
+function Messages(props) {
+  const auth = useSelector((x) => x.auth.value);
 
-    const auth = useSelector(x => x.auth.value);
+  const [message, setMessage] = useState("");
 
-    const [message, setMessage] = useState("");
-
-    const sendMessage = async () => {
-      try {
-
-          const user = auth?.firstName;
-          await props.connection.invoke("SendMessage", { user, message });
-          setMessage("");
-      } catch (error) {
-        console.log('custom error: ' + error)
-      }
+  const sendMessage = async () => {
+    try {
+      const user = auth?.firstName;
+      await props.connection.invoke("SendMessage", { user, message });
+      setMessage("");
+    } catch (error) {
+      console.log("custom error: " + error);
     }
+  };
 
-    const handleInputChange = (e) => {
-      setMessage(e.target.value)
-    }
+  const handleInputChange = (e) => {
+    setMessage(e.target.value);
+  };
 
-    const onKeyUp = (e) => {
-      if (e.key === 'Enter' || e.keyCode === 13) {
-        sendMessage();
-      }
+  const onKeyUp = (e) => {
+    if (e.key === "Enter" || e.keyCode === 13) {
+      sendMessage();
     }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
-        <section className="mb-8">
+      <section className="mb-8">
         <h2 className="text-md font-bold mb-2">Message board</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-screen">
-            <div className="p-8 overflow-hidden">
-              { props.messages.map((m, i) => (
-                <div key={i}>
-                  <h3 className="text-md font-bold mb-2">{m.user}</h3>
-                  <p>{m.message}</p>
-                </div>
-              ))}
-            </div>
+          <div className="p-8 overflow-hidden">
+            {props.messages.map((m, i) => (
+              <div key={i}>
+                <h3 className="text-md font-bold mb-2">{m.user}</h3>
+                <p>{m.message}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="flex-grow ml-4">
@@ -79,7 +77,7 @@ function Messages(props){
             </button>
           </div>
         </div>
-        </section>
+      </section>
     </div>
-  )
+  );
 }

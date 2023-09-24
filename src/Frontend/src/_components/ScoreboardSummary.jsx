@@ -1,23 +1,22 @@
 import Chart from "chart.js/auto";
-import React from 'react';
+import React from "react";
 import { Line } from "react-chartjs-2";
 
 console.log(Chart);
 
 export default function ScoreboardSummary({ event }) {
-
   console.log(event);
 
-  const activities = event.activities.map(activity => activity.title);
+  const activities = event.activities.map((activity) => activity.title);
 
-
-
-  const participants = event.participants.map(participant => {
+  const participants = event.participants.map((participant) => {
     const id = participant.id;
     let cumulativeScore = 0; // Initialize the cumulative score for this participant
 
-    const scores = event.activities.map(activity => {
-      const participantResult = activity.results.find(result => result.participantId === id);
+    const scores = event.activities.map((activity) => {
+      const participantResult = activity.results.find(
+        (result) => result.participantId === id
+      );
 
       if (participantResult) {
         cumulativeScore += participantResult.score; // Add the score to the cumulative score
@@ -34,10 +33,7 @@ export default function ScoreboardSummary({ event }) {
     };
   });
 
-
   console.log(participants);
-
-
 
   const MultiLineChart = ({ activities, participants }) => {
     // Create a dataset for each participant
@@ -50,8 +46,8 @@ export default function ScoreboardSummary({ event }) {
 
     // Helper function to generate random colors
     function getRandomColor() {
-      const letters = '0123456789ABCDEF';
-      let color = '#';
+      const letters = "0123456789ABCDEF";
+      let color = "#";
       for (let i = 0; i < 6; i++) {
         color += letters[Math.floor(Math.random() * 16)];
       }
@@ -72,13 +68,13 @@ export default function ScoreboardSummary({ event }) {
         x: {
           title: {
             display: false,
-            text: 'Activities',
+            text: "Activities",
           },
         },
         y: {
           title: {
             display: false,
-            text: 'Score',
+            text: "Score",
           },
           beginAtZero: true,
         },

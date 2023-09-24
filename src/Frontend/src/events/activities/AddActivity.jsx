@@ -1,13 +1,13 @@
-import { history } from '_helpers';
-import { activityapi } from '_api';
+import { history } from "_helpers";
+import { activityapi } from "_api";
 import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import { useMutation } from 'react-query';
-import { useParams } from 'react-router-dom';
-import { useState } from 'react';
-import { alertActions } from '_store';
-import { useDispatch } from 'react-redux';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { useMutation } from "react-query";
+import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { alertActions } from "_store";
+import { useDispatch } from "react-redux";
 // import { useState } from 'react';
 
 export default AddActivity;
@@ -16,17 +16,16 @@ function AddActivity(props) {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  // form validation rules 
+  // form validation rules
   const validationSchema = Yup.object().shape({
-      title: Yup.string()
-      .required('Title is required')
-      // picture: Yup.mixed()
-      // .test('fileSize', 'Profile picture is too large', (value) => {
-      //   return value && value.size <= 20000000; // maximum file size of 20 MB
-      // })
-      // .test('fileType', 'Unsupported file format', (value) => {
-      //   return value && ['image/jpeg', 'image/png', 'image/gif'].includes(value.type);
-      // })
+    title: Yup.string().required("Title is required"),
+    // picture: Yup.mixed()
+    // .test('fileSize', 'Profile picture is too large', (value) => {
+    //   return value && value.size <= 20000000; // maximum file size of 20 MB
+    // })
+    // .test('fileType', 'Unsupported file format', (value) => {
+    //   return value && ['image/jpeg', 'image/png', 'image/gif'].includes(value.type);
+    // })
   });
   const formOptions = { resolver: yupResolver(validationSchema) };
 
@@ -35,23 +34,26 @@ function AddActivity(props) {
   const [isLoading, setIsLoading] = useState(false);
   const { errors } = formState;
 
-  const mutation = useMutation(async (data) => {
-    await activityapi.create(id, data)
-  }, {
-    onSuccess: () => {
-      setIsLoading(false);
-      history.navigate(-1);
+  const mutation = useMutation(
+    async (data) => {
+      await activityapi.create(id, data);
     },
-    onError:(error) => {
-      setIsLoading(false);
-      dispatch(alertActions.clear());
-      dispatch(alertActions.error(error));
+    {
+      onSuccess: () => {
+        setIsLoading(false);
+        history.navigate(-1);
+      },
+      onError: (error) => {
+        setIsLoading(false);
+        dispatch(alertActions.clear());
+        dispatch(alertActions.error(error));
+      },
     }
-  });
+  );
 
-  async function submit(data){
-    setIsLoading(true)
-    await mutation.mutate(data)
+  async function submit(data) {
+    setIsLoading(true);
+    await mutation.mutate(data);
   }
 
   // const [selectedFileName, setSelectedFileName] = useState('');
@@ -69,12 +71,26 @@ function AddActivity(props) {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(submit)} className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm space-y-6">
-        <h1 className='block text-md font-medium leading-6 text-gray-900 text-3xl'>Add new activity</h1>
+      <form
+        onSubmit={handleSubmit(submit)}
+        className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm space-y-6"
+      >
+        <h1 className="block text-md font-medium leading-6 text-gray-900 text-3xl">
+          Add new activity
+        </h1>
         <div>
-          <label className="block text-md font-medium leading-6 text-gray-900">Title</label>
+          <label className="block text-md font-medium leading-6 text-gray-900">
+            Title
+          </label>
           <div className="mt-2">
-            <input name="title" type="text" {...register('title')} className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.title ? 'is-invalid' : ''}`} />
+            <input
+              name="title"
+              type="text"
+              {...register("title")}
+              className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
+                errors.title ? "is-invalid" : ""
+              }`}
+            />
             <div className="invalid-feedback">{errors.title?.message}</div>
           </div>
         </div>
@@ -111,10 +127,15 @@ function AddActivity(props) {
               <span className="font-medium">Processing...</span>
             </>
           ) : (
-            'Add'
+            "Add"
           )}
         </button>
-        <button onClick={() => history.navigate(`/events`)} className="btn-negative w-full">Cancel</button>
+        <button
+          onClick={() => history.navigate(`/events`)}
+          className="btn-negative w-full"
+        >
+          Cancel
+        </button>
       </form>
     </div>
   );

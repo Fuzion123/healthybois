@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 function ProgressBar({ progress }) {
   const [width, setWidth] = useState(0);
@@ -13,16 +13,15 @@ function ProgressBar({ progress }) {
     <div className="relative pt-1">
       <div className="flex mb-2 items-center justify-between">
         <div>
-          
-          {complete ?  
+          {complete ? (
             <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-teal-600 bg-teal-200">
               Done
-            </span> : 
+            </span>
+          ) : (
             <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-yellow-600 bg-yellow-200">
               In Progress
             </span>
-          }
-          
+          )}
         </div>
         <div className="text-right">
           <span className="text-xs font-semibold inline-block text-teal-600">

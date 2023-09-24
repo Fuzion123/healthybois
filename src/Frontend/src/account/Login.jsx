@@ -48,12 +48,12 @@ function Login() {
             src={process.env.PUBLIC_URL + "/logo.png"}
           />
         </motion.div>
-        <h4 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+        <h4 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Sign in
         </h4>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <label className="block text-md font-medium leading-6 text-gray-900">
             User name
@@ -82,7 +82,7 @@ function Login() {
               <input
                 name="password"
                 type="password"
-                placeholder="&#9679; &#9679; &#9679; &#9679; &#9679; &#9679; &#9679; &#9679;"
+                placeholder="at least 6 characters"
                 {...register("password")}
                 className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
                   errors.password ? "is-invalid" : ""
@@ -140,7 +140,7 @@ function Login() {
             onClick={() => navigate(`../register`)}
             className="flex items-center"
           >
-            <span className="font-bold text-primary-600 underline dark:text-primary-500 mr-1">
+            <span className="font-bold text-primary-600 underline mr-1">
               Sign up!
             </span>
             <img
