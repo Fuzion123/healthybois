@@ -140,9 +140,7 @@ function Login() {
             onClick={() => navigate(`../register`)}
             className="flex items-center"
           >
-            <span className="font-bold text-primary-600 underline mr-1">
-              Sign up!
-            </span>
+            <span className="font-bold text-primary-600 mr-1">Sign up!</span>
             <img
               alt="healthybois-logo"
               className="mx-auto h-5 w-5 filter drop-shadow-2xl"
