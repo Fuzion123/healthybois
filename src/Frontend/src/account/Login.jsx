@@ -148,6 +148,22 @@ function Login() {
             />
           </button>
         </div>
+        <div className="flex justify-between mt-3">
+          <p></p>
+          <button
+            onClick={() => navigate(`../register_v2`)}
+            className="flex items-center"
+          >
+            <span className="font-bold text-primary-600 mr-1">
+              Sign up! V2 (not ready)
+            </span>
+            <img
+              alt="healthybois-logo"
+              className="mx-auto h-5 w-5 filter drop-shadow-2xl"
+              src={process.env.PUBLIC_URL + "/images/flex_arm.png"}
+            />
+          </button>
+        </div>
       </div>
     </div>
   );
