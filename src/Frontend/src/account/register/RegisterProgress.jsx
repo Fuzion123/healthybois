@@ -2,20 +2,19 @@ import React, { useState, useEffect } from "react";
 
 export { RegisterProgress };
 
-function RegisterProgress({ progress }) {
+function RegisterProgress({ progress, stepsCount, currentStepCount }) {
   const [width, setWidth] = useState(0);
 
   useEffect(() => {
-    console.log(progress);
     setWidth(progress);
   }, [progress]);
 
   return (
     <div className="relative pt-1">
-      <div className="flex mb-2 items-center justify-between">
-        <div className="text-right">
+      <div className="flex mb-2 justify-center">
+        <div className="text-right ">
           <span className="text-xs font-semibold inline-block text-teal-600">
-            {width.toFixed(0)} %
+            {currentStepCount}/{stepsCount}
           </span>
         </div>
       </div>
