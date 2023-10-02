@@ -13,4 +13,5 @@ public interface IUserService
     Task Delete(int id, CancellationToken cancellationToken);
     Task ResetPassword(string email, ResetPasswordRequest request, CancellationToken cancellationToken);
     Task<List<UserSearchResponseDto>> Search(string term, CancellationToken cancellationToken);
+    Task<bool> IsUserNameTaken(string userName, string email, CancellationToken cancellation);
 }

@@ -1,10 +1,42 @@
+import { useQuery } from "react-query";
+import { userapi } from "_api";
+import { useDispatch } from "react-redux";
+import { alertActions } from "_store";
+
 export { AccountDetails };
 
-function AccountDetails() {
+function AccountDetails({ userName, email, updateFields, hasErrors }) {
+  const dispatch = useDispatch();
+
+  useQuery(
+    `user/exists/${userName}/${email}`,
+    async () => {
+      if (userName === "" && email === "") {
+        return false;
+      }
+
+      return await userapi.exists({ userName, email });
+    },
+    {
+      onSuccess: (exists) => {
+        if (exists) {
+          dispatch(alertActions.error(`user name or email already taken`));
+
+          hasErrors = true;
+
+          return;
+        }
+
+        dispatch(alertActions.clear());
+        hasErrors = false;
+      },
+    }
+  );
+
   return (
     <div>
       <div className="mb-3">
-        <h1 class="mb-2 text-2xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-4xl">
+        <h1 className="mb-2 text-2xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-4xl">
           Account details
         </h1>
       </div>
@@ -17,8 +49,11 @@ function AccountDetails() {
             name="username"
             type="text"
             required
+            autoFocus
+            value={userName}
             placeholder="add a healthy nick name"
             className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+            onChange={(e) => updateFields({ userName: e.target.value })}
           />
         </div>
       </div>
@@ -29,10 +64,12 @@ function AccountDetails() {
         <div className="mt-2">
           <input
             name="email"
-            type="text"
+            type="email"
             required
+            value={email}
             placeholder="add you email"
             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            onChange={(e) => updateFields({ email: e.target.value })}
           />
         </div>
       </div>

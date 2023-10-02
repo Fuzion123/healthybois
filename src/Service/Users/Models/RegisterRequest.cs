@@ -10,7 +10,7 @@ public class RegisterRequest
 
     [Required]
     public string LastName { get; set; }
-    
+
     [Required]
     public string Email { get; set; }
 
@@ -19,7 +19,8 @@ public class RegisterRequest
 
     [Required]
     public string Password { get; set; }
-
     [Required]
+    public string PasswordConfirm { get; set; }
+
     public PictureInput ProfilePicture { get; set; }
 }

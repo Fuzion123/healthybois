@@ -5,6 +5,7 @@ using Domain.Users;
 using Service.Exceptions;
 using Service.Users.Dependencies;
 using Service.Users.Models;
+using System.Threading;
 using WebApi.Models.Users;
 
 public class UserService : IUserService
@@ -101,6 +102,21 @@ public class UserService : IUserService
         if (await userRepository.Exists(model.Username, model.Email, cancellationToken))
             throw new AppException("Username or email is already taken");
 
+        if (string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.PasswordConfirm))
+        {
+            throw new AppException("passwords not set");
+        }
+
+        if (model.Password != model.PasswordConfirm)
+        {
+            throw new AppException("password and confirm password are not equals");
+        }
+
+        if (model.Password.Length < 6)
+        {
+            throw new AppException("password is less than 6 characters");
+        }
+
         // hash password
         var passwordHash = BCrypt.HashPassword(model.Password);
 
@@ -195,5 +211,10 @@ public class UserService : IUserService
             UserId = x.Id,
             ProfilePictureUri = pictureService.GetPicture(x.ProfilePictureId)
         }).ToList();
+    }
+
+    public async Task<bool> IsUserNameTaken(string userName, string email, CancellationToken cancellation)
+    {
+        return await userRepository.Exists(userName, email, cancellation);
     }
 }

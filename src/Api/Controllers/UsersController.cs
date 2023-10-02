@@ -119,4 +119,16 @@ public class UsersController : ControllerBase
 
         return Ok(await _userService.Search(term, cancellationToken));
     }
+
+    [HttpPost("exists")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Exists(UserExistsRequest request, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrEmpty(request.UserName) && string.IsNullOrEmpty(request.Email))
+        {
+            return BadRequest("user name and email was both null/empty");
+        }
+
+        return Ok(await _userService.IsUserNameTaken(request.UserName, request.Email, cancellationToken));
+    }
 }
