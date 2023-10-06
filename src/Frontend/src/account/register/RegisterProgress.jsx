@@ -11,7 +11,7 @@ function RegisterProgress({ progress, stepsCount, currentStepCount }) {
 
   return (
     <div className="relative pt-1">
-      <div className="flex mb-2 justify-center">
+      <div className="flex justify-center">
         <div className="text-right ">
           <span className="text-xs font-semibold inline-block text-teal-600">
             {currentStepCount}/{stepsCount}
