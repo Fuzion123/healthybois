@@ -3,7 +3,7 @@ export { LastName };
 function LastName({ lastName, updateFields }) {
   return (
     <div>
-      <div className="mb-4">
+      <div className="mb-2">
         <h1 className="mb-2 text-1xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-4xl">
           Your information
         </h1>

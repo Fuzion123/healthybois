@@ -1,7 +1,7 @@
 import { useMultiStepForm } from "./useMultiStepForm";
 import { Password } from "./steps/Password";
 import { RegisterProgress } from "./RegisterProgress";
-import { AccountDetails } from "./steps/AccountDetails";
+import { Email } from "./steps/Email";
 import { FirstName } from "./steps/FirstName";
 import { ProfilePicture } from "./steps/ProfilePicture";
 import { useState } from "react";
@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { alertActions } from "_store";
 import { history } from "_helpers";
 import { LastName } from "./steps/LastName";
+import { UserName } from "./steps/UserName";
 
 export { Registerv2 };
 
@@ -48,7 +49,8 @@ function Registerv2() {
   } = useMultiStepForm([
     <FirstName {...formData} updateFields={updateFields} />,
     <LastName {...formData} updateFields={updateFields} />,
-    <AccountDetails {...formData} updateFields={updateFields} />,
+    <Email {...formData} updateFields={updateFields} />,
+    <UserName {...formData} updateFields={updateFields} />,
     <ProfilePicture {...formData} updateFields={updateFields} />,
     <Password {...formData} updateFields={updateFields} />,
   ]);
@@ -109,7 +111,7 @@ function Registerv2() {
       onSubmit={onSubmit}
       className="flex h-screen flex-col px-1 py-1 lg:px-8 "
     >
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm basis-1/3 ">
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h1 className="text-2xl text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
           Account creation
         </h1>
@@ -121,9 +123,9 @@ function Registerv2() {
         />
       </div>
 
-      <div className="mt-2 basis-1/3">{step}</div>
+      <div className="mt-12 mb-12">{step}</div>
 
-      <div className="flex flex-col justify-items-center mb-20 basis-1/3">
+      <div className="flex flex-col justify-items-center mb-20">
         <button
           disabled={step.hasErrors}
           className="btn-primary disabled:opacity-25A"

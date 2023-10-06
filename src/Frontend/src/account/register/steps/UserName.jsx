@@ -1,0 +1,62 @@
+import { useQuery } from "react-query";
+import { userapi } from "_api";
+import { useDispatch } from "react-redux";
+import { alertActions } from "_store";
+
+export { UserName };
+
+function UserName({ userName, updateFields, hasErrors }) {
+  const dispatch = useDispatch();
+
+  useQuery(
+    `user/exists/${userName}`,
+    async () => {
+      if (userName === "") {
+        return false;
+      }
+
+      return await userapi.exists({ userName, email: null });
+    },
+    {
+      onSuccess: (exists) => {
+        if (exists) {
+          dispatch(alertActions.error(`user name or email already taken`));
+
+          hasErrors = true;
+
+          return;
+        }
+
+        dispatch(alertActions.clear());
+        hasErrors = false;
+      },
+    }
+  );
+
+  return (
+    <div>
+      <div className="">
+        <h1 className="mb-2 text-1xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-4xl">
+          Account details
+        </h1>
+      </div>
+      <div>
+        <label className="block text-md font-medium leading-6 text-gray-900">
+          Nick name
+        </label>
+        <div className="mt-2">
+          <input
+            name="username"
+            type="text"
+            required
+            autoFocus
+            value={userName}
+            placeholder="add a healthy nick name"
+            className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+            onChange={(e) => updateFields({ userName: e.target.value })}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
