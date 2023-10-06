@@ -12,6 +12,7 @@ import { alertActions } from "_store";
 import { history } from "_helpers";
 import { LastName } from "./steps/LastName";
 import { UserName } from "./steps/UserName";
+import BackButton from "_components/BackButton";
 
 export { Registerv2 };
 
@@ -107,38 +108,38 @@ function Registerv2() {
   }
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="flex h-screen flex-col px-1 py-1 lg:px-8 "
-    >
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h1 className="text-2xl text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
-          Account creation
-        </h1>
+    <div>
+      <form onSubmit={onSubmit} className="flex flex-col px-1 py-1 lg:px-8 ">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+          <h1 className="text-2xl text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
+            Account creation
+          </h1>
 
-        <RegisterProgress
-          progress={progress()}
-          currentStepCount={currentStepIndex + 1}
-          stepsCount={steps.length}
-        />
-      </div>
+          <RegisterProgress
+            progress={progress()}
+            currentStepCount={currentStepIndex + 1}
+            stepsCount={steps.length}
+          />
+        </div>
 
-      <div className="mt-12 mb-12">{step}</div>
+        <div className="mt-12 mb-12">{step}</div>
 
-      <div className="flex flex-col justify-items-center mb-20">
-        <button
-          disabled={step.hasErrors}
-          className="btn-primary disabled:opacity-25A"
-          type="submit"
-        >
-          {isLastStep ? "Create" : "Next"}
-        </button>
-        {!isFirstStep && (
-          <button type="button" onClick={back}>
-            Back
+        <div className="flex flex-col justify-items-center">
+          <button
+            disabled={step.hasErrors}
+            className="btn-primary disabled:opacity-25A"
+            type="submit"
+          >
+            {isLastStep ? "Create" : "Next"}
           </button>
-        )}
-      </div>
-    </form>
+          {!isFirstStep && (
+            <button type="button" onClick={back}>
+              Back
+            </button>
+          )}
+        </div>
+        {isFirstStep && <BackButton buttonName={"Cancel"} />}
+      </form>
+    </div>
   );
 }

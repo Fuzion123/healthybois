@@ -4,7 +4,7 @@
 
 @layer components {
   .btn-primary {
-    @apply w-full mb-2 md:w-1/4 md:mr-2 bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-6 border-b-4 border-green-700 hover:border-green-500 rounded;
+    @apply w-full mb-2 md:w-1/4 md:mr-2 bg-teal-400 hover:bg-teal-300 text-white font-bold py-2 px-6 border-b-4 border-teal-700 hover:border-teal-500 rounded;
   }
 
   .btn-secondary {
@@ -16,7 +16,7 @@
   }
 
   .btn-back {
-    @apply w-full mb-2 md:w-1/4 md:mr-2 bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-6 border-b-4 border-yellow-700 hover:border-yellow-500 rounded;
+    @apply w-full mb-2 md:w-1/4 md:mr-2 bg-amber-400 hover:bg-amber-300 text-white font-bold py-2 px-6 border-b-4 border-amber-700 hover:border-amber-500 rounded;
   }
 
 }

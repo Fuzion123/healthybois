@@ -105,7 +105,7 @@ function ForgotPassword() {
               )}
             </button>
             <button
-              onClick={() => history.navigate(`/events`)}
+              onClick={() => history.navigate(`/account/login`)}
               className="btn-negative w-full"
             >
               Back
