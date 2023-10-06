@@ -122,7 +122,7 @@ function Registerv2() {
           />
         </div>
 
-        <div className="mt-12 mb-12">{step}</div>
+        <div className="mt-8 mb-8">{step}</div>
 
         <div className="flex flex-col justify-items-center">
           <button
