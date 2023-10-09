@@ -3,6 +3,9 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^6.4.2",
+        "@fortawesome/free-solid-svg-icons": "^6.4.2",
+        "@fortawesome/react-fontawesome": "^0.2.0",
         "@headlessui/react": "^1.7.14",
         "@heroicons/react": "^2.0.18",
         "@hookform/resolvers": "^2.9.0",
@@ -11,6 +14,8 @@
         "@tailwindcss/forms": "^0.5.3",
         "apexcharts": "^3.42.0",
         "chart.js": "^4.4.0",
+        "flowbite": "^1.8.1",
+        "flowbite-react": "^0.6.4",
         "framer-motion": "^10.12.16",
         "react": "^18.1.0",
         "react-chartjs-2": "^5.2.0",

@@ -1,37 +1,60 @@
 import { useQuery } from "react-query";
 import { userapi } from "_api";
-import { useDispatch } from "react-redux";
-import { alertActions } from "_store";
+import { useState } from "react";
 
 export { Email };
 
-function Email({ email, updateFields, hasErrors }) {
-  const dispatch = useDispatch();
+function Email({ email, updateFields, setError, setIsLoading }) {
+  const [timeoutId, setTimeoutId] = useState(null);
 
-  useQuery(
+  const { refetch } = useQuery(
     `user/exists/${email}`,
     async () => {
       if (email === "") {
+        setIsLoading(false);
         return false;
       }
+
+      setIsLoading(true);
 
       return await userapi.exists({ userName: null, email });
     },
     {
       onSuccess: (exists) => {
-        if (exists) {
-          dispatch(alertActions.error(`user name or email already taken`));
+        setIsLoading(false);
 
-          hasErrors = true;
+        if (exists) {
+          setError("email already taken");
 
           return;
         }
 
-        dispatch(alertActions.clear());
-        hasErrors = false;
+        setError(null);
       },
+      onError(err) {
+        setError(err);
+        setIsLoading(false);
+      },
+      enabled: false,
     }
   );
+
+  function onInput(e) {
+    updateFields({ email: e.target.value });
+    clearTimeout(timeoutId);
+
+    if (e.target.value === "") {
+      setIsLoading(false);
+      return;
+    }
+
+    const id = setTimeout(function () {
+      setIsLoading(true);
+      refetch();
+    }, 300);
+
+    setTimeoutId(id);
+  }
 
   return (
     <div>
@@ -53,7 +76,7 @@ function Email({ email, updateFields, hasErrors }) {
             value={email}
             placeholder="enter your email"
             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            onChange={(e) => updateFields({ email: e.target.value })}
+            onChange={(e) => onInput(e)}
           />
         </div>
       </div>

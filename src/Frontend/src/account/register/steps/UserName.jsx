@@ -1,37 +1,60 @@
 import { useQuery } from "react-query";
 import { userapi } from "_api";
-import { useDispatch } from "react-redux";
-import { alertActions } from "_store";
+import { useState } from "react";
 
 export { UserName };
 
-function UserName({ userName, updateFields, hasErrors }) {
-  const dispatch = useDispatch();
+function UserName({ userName, updateFields, setError, setIsLoading }) {
+  const [timeoutId, setTimeoutId] = useState(null);
 
-  useQuery(
+  const { refetch } = useQuery(
     `user/exists/${userName}`,
     async () => {
       if (userName === "") {
+        setIsLoading(false);
         return false;
       }
+
+      setIsLoading(true);
 
       return await userapi.exists({ userName, email: null });
     },
     {
       onSuccess: (exists) => {
-        if (exists) {
-          dispatch(alertActions.error(`user name or email already taken`));
+        setIsLoading(false);
 
-          hasErrors = true;
+        if (exists) {
+          setError("user name already taken");
 
           return;
         }
 
-        dispatch(alertActions.clear());
-        hasErrors = false;
+        setError(null);
       },
+      onError(err) {
+        setError(err);
+        setIsLoading(false);
+      },
+      enabled: false,
     }
   );
+
+  function onInput(e) {
+    updateFields({ userName: e.target.value });
+    clearTimeout(timeoutId);
+
+    if (e.target.value === "") {
+      setIsLoading(false);
+      return;
+    }
+
+    const id = setTimeout(function () {
+      setIsLoading(true);
+      refetch();
+    }, 300);
+
+    setTimeoutId(id);
+  }
 
   return (
     <div>
@@ -53,7 +76,7 @@ function UserName({ userName, updateFields, hasErrors }) {
             value={userName}
             placeholder="add a healthy nick name"
             className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
-            onChange={(e) => updateFields({ userName: e.target.value })}
+            onChange={(e) => onInput(e)}
           />
         </div>
       </div>

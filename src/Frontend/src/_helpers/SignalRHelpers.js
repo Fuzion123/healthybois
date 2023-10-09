@@ -1,43 +1,35 @@
-import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 const connect = async (setMessages) => {
-    try {
+  try {
+    const connection = new HubConnectionBuilder()
+      .withUrl(`${process.env.REACT_APP_API_URL}/chat`)
+      .configureLogging(LogLevel.Warning)
+      .build();
 
-        console.log("Connecting...")
+    connection.on("newMessage", (chatMessage) => {
+      setMessages((messages) => [
+        ...messages,
+        {
+          user: chatMessage.user,
+          message: chatMessage.message,
+        },
+      ]);
+    });
 
-        const connection = new HubConnectionBuilder()
-            .withUrl(`${process.env.REACT_APP_API_URL}/chat`)
-            .configureLogging(LogLevel.Information)
-            .build();
+    await connection.start();
 
-        connection.on('newMessage', ( chatMessage ) => {
-
-            console.log("called!")
-
-            setMessages(messages => [...messages, 
-                { 
-                    user: chatMessage.user, 
-                    message: chatMessage.message 
-                }])
-        });
-
-        await connection.start();
-
-        console.log("Successfully connected.")
-
-        return connection;
-
-    } catch (error) {
-        console.error(error);
-    } 
-}
+    return connection;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const sendMessage = async (connection, user, message) => {
-    await connection.invoke("SendMessage", { user, message });
-}
-
+  await connection.invoke("SendMessage", { user, message });
+};
 
 export const signalrHelper = {
-    connect: connect,
-    sendMessage: sendMessage
-}
+  connect: connect,
+  sendMessage: sendMessage,
+};

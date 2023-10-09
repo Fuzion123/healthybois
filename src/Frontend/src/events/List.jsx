@@ -3,7 +3,7 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 import { eventapi } from "_api";
 import { date } from "_helpers";
 import { useQuery } from "react-query";
-import { userService } from "_components";
+import { userService } from "_helpers";
 
 export default List;
 

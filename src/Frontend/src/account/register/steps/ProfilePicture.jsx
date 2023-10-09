@@ -8,8 +8,6 @@ function ProfilePicture({
   profilePictureUrl,
   updateFields,
   profilePictureFile,
-  customValidationError,
-  customValidationValidated,
 }) {
   const changeHandler = (e) => {
     const localFile = e.target.files[0];
@@ -18,8 +16,6 @@ function ProfilePicture({
       alert("Image mime type is not valid");
       return;
     }
-
-    customValidationValidated = true;
 
     updateFields({ profilePictureFile: localFile });
   };

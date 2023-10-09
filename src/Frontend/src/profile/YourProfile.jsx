@@ -1,5 +1,5 @@
 import { history } from "_helpers";
-import { userService } from "_components";
+import { userService } from "_helpers";
 import { eventapi } from "_api";
 import { useQuery } from "react-query";
 

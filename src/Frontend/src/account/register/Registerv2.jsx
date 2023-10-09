@@ -12,7 +12,9 @@ import { alertActions } from "_store";
 import { history } from "_helpers";
 import { LastName } from "./steps/LastName";
 import { UserName } from "./steps/UserName";
-import BackButton from "_components/BackButton";
+import { Header } from "_components/Header";
+import { imageService } from "_helpers/ImageService";
+import { FormStepError } from "_components/FormStepError";
 
 export { Registerv2 };
 
@@ -31,6 +33,8 @@ function Registerv2() {
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState(INITIAL_DATA);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   function updateFields(fields) {
     setFormData((prev) => {
@@ -50,33 +54,38 @@ function Registerv2() {
   } = useMultiStepForm([
     <FirstName {...formData} updateFields={updateFields} />,
     <LastName {...formData} updateFields={updateFields} />,
-    <Email {...formData} updateFields={updateFields} />,
-    <UserName {...formData} updateFields={updateFields} />,
+    <Email
+      {...formData}
+      updateFields={updateFields}
+      setError={setError}
+      setIsLoading={setIsLoading}
+    />,
+    <UserName
+      {...formData}
+      updateFields={updateFields}
+      setError={setError}
+      setIsLoading={setIsLoading}
+    />,
     <ProfilePicture {...formData} updateFields={updateFields} />,
     <Password {...formData} updateFields={updateFields} />,
   ]);
 
   const createUser = useMutation(
     async (data) => {
+      setIsLoading(true);
       await userapi.register(data);
     },
     {
       onSuccess: () => {
+        setIsLoading(false);
         history.navigate("/account/created");
       },
       onError: (error) => {
+        setIsLoading(false);
         dispatch(alertActions.error(error));
       },
     }
   );
-
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-    });
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -88,7 +97,7 @@ function Registerv2() {
     var profilePicture = null;
 
     if (formData.profilePictureFile) {
-      var base64 = await toBase64(formData.profilePictureFile);
+      var base64 = await imageService.toBase64(formData.profilePictureFile);
 
       profilePicture = {
         name: formData.profilePictureFile.name,
@@ -107,14 +116,20 @@ function Registerv2() {
     });
   }
 
+  function previous() {
+    setIsLoading(false);
+    setError(null);
+    back();
+  }
+
   return (
     <div>
       <form onSubmit={onSubmit} className="flex flex-col px-1 py-1 lg:px-8 ">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h1 className="text-2xl text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
-            Account creation
-          </h1>
-
+          <Header
+            title={"Account creation"}
+            overwriteClickHandler={!isFirstStep ? previous : undefined}
+          />
           <RegisterProgress
             progress={progress()}
             currentStepCount={currentStepIndex + 1}
@@ -122,23 +137,54 @@ function Registerv2() {
           />
         </div>
 
-        <div className="mt-8 mb-8">{step}</div>
+        <div className="mt-8 mb-8">
+          {step}
+          <FormStepError error={error} />
+        </div>
 
         <div className="flex flex-col justify-items-center">
           <button
-            disabled={step.hasErrors}
-            className="btn-primary disabled:opacity-25A"
+            disabled={error !== null || isLoading === true}
+            className="btn-primary disabled:opacity-60"
             type="submit"
           >
-            {isLastStep ? "Create" : "Next"}
+            {isLoading === true ? (
+              <>
+                <div className="flex justify-center">
+                  <svg
+                    className="flex mr-3 h-5 w-5 animate-spin text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                </div>
+              </>
+            ) : isLastStep ? (
+              "Create"
+            ) : (
+              "Next"
+            )}
           </button>
           {!isFirstStep && (
-            <button type="button" onClick={back}>
-              Back
+            <button type="button" onClick={previous}>
+              Previous
             </button>
           )}
         </div>
-        {isFirstStep && <BackButton buttonName={"Cancel"} />}
       </form>
     </div>
   );
