@@ -4,7 +4,13 @@ import { useState } from "react";
 
 export { UserName };
 
-function UserName({ userName, updateFields, setError, setIsLoading }) {
+function UserName({
+  userName,
+  updateFields,
+  setError,
+  setIsLoading,
+  userNameAvailable,
+}) {
   const [timeoutId, setTimeoutId] = useState(null);
 
   const { refetch } = useQuery(
@@ -25,10 +31,12 @@ function UserName({ userName, updateFields, setError, setIsLoading }) {
 
         if (exists) {
           setError("user name already taken");
+          setUserNameAvailable(false);
 
           return;
         }
 
+        setUserNameAvailable(true);
         setError(null);
       },
       onError(err) {
@@ -42,6 +50,7 @@ function UserName({ userName, updateFields, setError, setIsLoading }) {
   function onInput(e) {
     updateFields({ userName: e.target.value });
     clearTimeout(timeoutId);
+    setUserNameAvailable(false);
 
     if (e.target.value === "") {
       setIsLoading(false);
@@ -56,6 +65,10 @@ function UserName({ userName, updateFields, setError, setIsLoading }) {
     setTimeoutId(id);
   }
 
+  function setUserNameAvailable(value) {
+    updateFields({ userNameAvailable: value });
+  }
+
   return (
     <div>
       <div className="">
@@ -67,17 +80,19 @@ function UserName({ userName, updateFields, setError, setIsLoading }) {
         <label className="block text-md font-medium leading-6 text-gray-900">
           Nick name
         </label>
-        <div className="mt-2">
-          <input
-            name="username"
-            type="text"
-            required
-            autoFocus
-            value={userName}
-            placeholder="add a healthy nick name"
-            className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
-            onChange={(e) => onInput(e)}
-          />
+        <div className="mt-2 relative">
+          <div className={userNameAvailable === true ? `checkmark` : ""}>
+            <input
+              name="username"
+              type="text"
+              required
+              autoFocus
+              value={userName}
+              placeholder="add a healthy nick name"
+              className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+              onChange={(e) => onInput(e)}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -22,7 +22,9 @@ const INITIAL_DATA = {
   firstName: "",
   lastName: "",
   userName: "",
+  userNameAvailable: null,
   email: "",
+  emailAvailable: null,
   password: "",
   passwordConfirm: "",
   profilePictureUrl: "",
@@ -144,7 +146,7 @@ function Registerv2() {
 
         <div className="flex flex-col justify-items-center">
           <button
-            disabled={error !== null || isLoading === true}
+            disabled={isLoading === true || error !== null}
             className="btn-primary disabled:opacity-60"
             type="submit"
           >
@@ -179,11 +181,6 @@ function Registerv2() {
               "Next"
             )}
           </button>
-          {!isFirstStep && (
-            <button type="button" onClick={previous}>
-              Previous
-            </button>
-          )}
         </div>
       </form>
     </div>
