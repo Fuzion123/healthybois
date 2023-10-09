@@ -61,7 +61,6 @@ function Login() {
             <input
               name="username"
               type="text"
-              autoFocus
               autoComplete="on"
               placeholder="User name or email"
               {...register("username")}
