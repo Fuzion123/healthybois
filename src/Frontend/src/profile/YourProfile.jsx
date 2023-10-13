@@ -1,11 +1,13 @@
-import { history } from "_helpers";
+import { useNavigate } from "react-router-dom";
 import { userService } from "_helpers";
 import { eventapi } from "_api";
 import { useQuery } from "react-query";
+import BackButton from "_components/BackButton";
 
 export { YourProfile };
 
 function YourProfile() {
+  const navigate = useNavigate();
   const user = userService.getUser();
 
   const { data, error, isLoading } = useQuery(
@@ -27,8 +29,17 @@ function YourProfile() {
     return <div>{error}</div>;
   }
   console.log(data);
-  const eventData = data.forEach((event) => console.log(event.id));
-  console.log(eventData);
+
+  var today = new Date().toISOString();
+
+  // change "leadingParticipantIds" to the user ID instead of the participant id
+  
+  const wonEvents = data.filter(event => {
+    return event.leadingParticipantIds === user.id && today >= event.endsAt;
+
+  });
+  console.log(wonEvents);
+  
 
   return (
     <div>
@@ -61,12 +72,12 @@ function YourProfile() {
         <div className="flex flex-col mt-2 mb-4 shadow-md rounded-lg px-3 pt-2 pb-3">
           <h2 className="text-lg font-bold mb-2">Won events</h2>
           <div className="grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-10 lg:grid-cols-3">
-            {data?.map((event) => (
+            {wonEvents?.map((event) => (
               <div
                 key={event.id}
                 className="flex flex-col my-8 shadow-md rounded-lg"
               >
-                <div className="">
+                <div className="" onClick={() => navigate(`/events/${event.id}`)}>
                   <img
                     className="object-cover w-full h-52 md:h-72 rounded-t-lg"
                     src={event.eventPictureUrl}
@@ -82,24 +93,10 @@ function YourProfile() {
           </div>
         </div>
       </div>
-
-      <button onClick={() => history.navigate(`/`)} className="btn-back">
-        <div className="flex justify-center">
-          <svg
-            className="w-5 mr-2"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
-              clipRule="evenodd"
-            ></path>
-          </svg>
-          <p className="">back</p>
-        </div>
-      </button>
+      <div className="btn-back text-center">
+        <BackButton title="Back"></BackButton>
+      </div>
+      
     </div>
   );
 }
