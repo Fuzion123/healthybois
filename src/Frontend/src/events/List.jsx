@@ -28,7 +28,7 @@ function List() {
       );
     } else if (event.startsAt <= today && today >= event.endsAt) {
       return (
-        <span className="bg-red-200 font-semibold text-white py-1 px-2">
+        <span className="bg-teal-200 font-semibold text-white py-1 px-2">
           Completed
         </span>
       );
@@ -59,7 +59,7 @@ function List() {
         <h1 className="text-2xl font-bold justify-self-start">Events</h1>
         <button
           onClick={() => navigate(`/events/add`)}
-          className="mt bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded"
+          className="w-full btn-primary"
         >
           Add event
         </button>

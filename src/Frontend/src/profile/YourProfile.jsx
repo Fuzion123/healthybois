@@ -20,7 +20,7 @@ function YourProfile() {
   if (isLoading) {
     return (
       <div className="text-center">
-        <span className="spinner-border spinner-border-lg align-center"></span>
+        <p className="spinner-border spinner-border-lg align-center"></p>
       </div>
     );
   }
@@ -33,51 +33,53 @@ function YourProfile() {
   var today = new Date().toISOString();
 
   // change "leadingParticipantIds" to the user ID instead of the participant id
-  
-  const wonEvents = data.filter(event => {
-    return event.leadingParticipantIds === user.id && today >= event.endsAt;
 
+  const wonEvents = data.filter((event) => {
+    return event.leadingParticipantIds.includes(26) && today >= event.endsAt;
   });
   console.log(wonEvents);
-  
 
   return (
     <div>
       <h1 className="text-2xl font-bold">Your Profile</h1>
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="flex flex-col mt-2 mb-4 shadow-md rounded-lg px-3 pt-2 pb-3">
+        <div className="flex flex-col mt-2 mb-4 shadow-md rounded-lg px-3 pt-2 pb-3 text-center">
           <h2 className="text-lg font-bold mb-2">User Information</h2>
-          <p className="text-base py-2">
-            <span className="font-bold">Name:</span>
-            <br></br> {user.firstName} {user.lastName}
-          </p>
-          <p className="text-base py-2">
-            <span className="font-bold">Email:</span>
-            <br></br> {user.email}
-          </p>
-          <p className="text-base py-2">
-            <span className="font-bold">User Name:</span>
-            <br></br> {user.username}
-          </p>
-          <p className="text-base py-2">
-            <span className="font-bold">Profile Picture</span>
-            <br></br>
+          <div className="text-base py-3">
+            <p className="font-bold">Name:</p>
+            <p>
+              {user.firstName} {user.lastName}
+            </p>
+          </div>
+          <div className="text-base py-3">
+            <p className="font-bold">Email:</p>
+            <p>{user.email}</p>
+          </div>
+          <div className="text-base py-3">
+            <p className="font-bold">User Name:</p>
+            <p> {user.username}</p>
+          </div>
+          <div className="text-base py-3">
+            <p className="font-bold">Profile Picture</p>
             <img
-              className="mt-1 h-20 w-20 rounded-full"
+              className="mt-1 h-28 w-28 rounded-full m-auto"
               src={user.profilePictureUrl}
               alt="Profile pic"
             />
-          </p>
+          </div>
         </div>
         <div className="flex flex-col mt-2 mb-4 shadow-md rounded-lg px-3 pt-2 pb-3">
-          <h2 className="text-lg font-bold mb-2">Won events</h2>
+          <h2 className="text-lg font-bold mb-2 text-center">Won events</h2>
           <div className="grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-10 lg:grid-cols-3">
             {wonEvents?.map((event) => (
               <div
                 key={event.id}
                 className="flex flex-col my-8 shadow-md rounded-lg"
               >
-                <div className="" onClick={() => navigate(`/events/${event.id}`)}>
+                <div
+                  className=""
+                  onClick={() => navigate(`/events/${event.id}`)}
+                >
                   <img
                     className="object-cover w-full h-52 md:h-72 rounded-t-lg"
                     src={event.eventPictureUrl}
@@ -86,7 +88,7 @@ function YourProfile() {
                   <h5 className="text-1xl font-bold px-3 py-3">
                     {event.title}
                   </h5>
-                  <p className="text-1xl px-3 pb-3">{event.description}</p>
+                  <div className="text-1xl px-3 pb-3">{event.description}</div>
                 </div>
               </div>
             ))}
@@ -96,7 +98,6 @@ function YourProfile() {
       <div className="btn-back text-center">
         <BackButton title="Back"></BackButton>
       </div>
-      
     </div>
   );
 }

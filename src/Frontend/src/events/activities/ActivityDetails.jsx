@@ -93,15 +93,8 @@ function ActivityDetails() {
 
   if (isLoading)
     return (
-      <div className="lds-roller">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+      <div className="text-center">
+        <span className="spinner-border spinner-border-lg align-center"></span>
       </div>
     );
 
@@ -112,18 +105,8 @@ function ActivityDetails() {
           <span>{data.title}</span>
         </h1>
         {isProcessing ? (
-          <div
-            style={{ position: "absolute", right: "0px" }}
-            className="lds-roller"
-          >
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+          <div className="text-center">
+            <span className="spinner-border spinner-border-lg align-center"></span>
           </div>
         ) : (
           <></>
