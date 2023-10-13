@@ -6,6 +6,7 @@ import { emailapi } from "_api";
 import { history } from "_helpers";
 import { useDispatch } from "react-redux";
 import { alertActions } from "_store";
+import BackButton from "_components/BackButton";
 
 export { ForgotPassword };
 
@@ -43,14 +44,15 @@ function ForgotPassword() {
   }
 
   return (
-    <div className="flex min-h-full flex-col justify-center px-10 py-14 lg:px-8">
+    <div className="flex min-h-full flex-col justify-center lg:px-8">
+      <BackButton title={"back"} useTitleAndLogo={true}></BackButton>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
           alt="healthybois-logo"
-          className="mx-auto h-60 w-60 filter drop-shadow-2xl"
+          className="mx-auto h-28 w-28 filter drop-shadow-2xl"
           src={process.env.PUBLIC_URL + "/logo.png"}
         />
-        <h4 className="mt-10 text-center text-3xl font-bold leading-9 tracking-tight text-gray-900">
+        <h4 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Forgot password
         </h4>
       </div>
@@ -103,12 +105,6 @@ function ForgotPassword() {
               ) : (
                 "Send reset code"
               )}
-            </button>
-            <button
-              onClick={() => history.navigate(`/account/login`)}
-              className="btn-negative w-full"
-            >
-              Back
             </button>
           </div>
         </form>
