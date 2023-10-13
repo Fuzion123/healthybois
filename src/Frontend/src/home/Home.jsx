@@ -49,7 +49,7 @@ function Home(props) {
             </div>
             <div className="bg-green-50 p-8 shadow-md rounded-lg">
               <h3 className="text-md font-bold mb-2">Next 3 events</h3>
-              <p className="text-gray-600">
+              <div className="text-gray-600">
                 {data
                   .sort((a, b) => a.startsAt - b.startsAt)
                   .slice(0, 3)
@@ -68,7 +68,7 @@ function Home(props) {
                       ></img>
                     </div>
                   ))}
-              </p>
+              </div>
             </div>
           </div>
         </section>
