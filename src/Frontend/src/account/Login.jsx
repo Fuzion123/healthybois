@@ -24,6 +24,8 @@ function Login() {
   const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors, isSubmitting } = formState;
 
+  const videoSource = process.env.PUBLIC_URL + "/Healthybois-logo.mp4";
+
   function onSubmit({ username, password }) {
     return dispatch(authActions.login({ username, password }));
   }
@@ -32,21 +34,15 @@ function Login() {
     <div className="flex min-h-full flex-col justify-center lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <motion.div
-          animate={{
-            rotate: [0, 720],
-            scale: [1, 2, 1],
-            filter: ["none", "brightness(2)", "none"],
-          }}
-          transition={{
-            duration: 1,
-            ease: "easeInOut",
-          }}
         >
-          <img
-            alt="healthybois-logo"
-            className="mx-auto h-28 w-28 filter drop-shadow-2xl"
-            src={process.env.PUBLIC_URL + "/logo.png"}
-          />
+      <video
+        autoPlay
+        muted
+        className="mx-auto h-38 w-38 filter"
+      >
+        <source src={videoSource} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
         </motion.div>
         <h4 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Sign in

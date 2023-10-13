@@ -1,17 +1,15 @@
-import { activityapi } from "_api";
+import { activityapi,  } from "_api";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import { useParams } from "react-router-dom";
-// import ActivityResult from "./ActivityResult";
+import ActivityResult from "./ActivityResult";
 import { history } from "_helpers";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { alertActions } from "_store";
-import ParticipantBar from "_components/ParticipantBar";
+
 
 export default ActivityDetails;
 
 function ActivityDetails() {
-  const dispatch = useDispatch();
+
   const { activityId } = useParams();
   const { id } = useParams();
   const queryClient = useQueryClient();
@@ -21,6 +19,7 @@ function ActivityDetails() {
     `/activityapi.getById/${id}/${activityId}`,
     async () => {
       return await activityapi.getById(id, activityId);
+
     },
     {
       onSuccess: (d) => {},
@@ -37,8 +36,7 @@ function ActivityDetails() {
         history.navigate(`/events/${id}`);
       },
       onError: (err) => {
-        dispatch(alertActions.clear());
-        dispatch(alertActions.error(err));
+
         setIsProcessing(false);
         queryClient.invalidateQueries({ queryKey: [`scoreboard/${id}`] });
       },
@@ -61,8 +59,6 @@ function ActivityDetails() {
         });
       },
       onError: (err) => {
-        dispatch(alertActions.clear());
-        dispatch(alertActions.error(err));
         setIsProcessing(false);
         queryClient.invalidateQueries({
           queryKey: [`/activityapi.getById/${id}/${activityId}`],
@@ -131,9 +127,8 @@ function ActivityDetails() {
         <br></br>
         <h4 className="text-x3 font-bold mb-2">Results</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <ParticipantBar eventId={id} />
         </div>
-        {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {data.participants.map((p, i) => {
             return (
               <div key={p.participant.id} className="">
@@ -142,7 +137,7 @@ function ActivityDetails() {
               
             )
           })}
-        </div> */}
+        </div>
         <button
           disabled={isProcessing}
           onClick={() => goBack()}

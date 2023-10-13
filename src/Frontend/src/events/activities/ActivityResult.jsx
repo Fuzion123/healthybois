@@ -1,138 +1,88 @@
-// import { useForm } from "react-hook-form";
-// import { yupResolver } from '@hookform/resolvers/yup';
-// import * as Yup from 'yup';
-import { useMutation, useQueryClient } from "react-query";
-import { resultapi } from "_api";
-import { useState } from "react";
-// import '../../index.css';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
+import { useMutation, useQueryClient } from 'react-query';
+import { resultapi, participantsapi } from '_api';
+import { useEffect } from 'react';
 
-export default ActivityResult;
-
-function ActivityResult(props) {
-  const {
-    participant,
-    eventId,
-    activityId,
-    result,
-    isProcessing,
-    setIsProcessing,
-  } = props;
+export default function ActivityResult(props) {
+  const { participant, eventId, activityId } = props;
   const queryClient = useQueryClient();
 
-  const [score, setScore] = useState(() => {
-    if (result !== null) return result.score;
-
-    return 0;
+  const validationSchema = Yup.object().shape({
+    score: Yup.number('Score needs to be a number').required('Put in a score'),
   });
 
-  // // form validation rules
-  // const validationSchema = Yup.object().shape({
-  //   score: Yup.number('Score needs to be a number')
-  //     .required('Put in a score')
+  const formOptions = { resolver: yupResolver(validationSchema) };
 
-  // });
-
-  // const formOptions = { resolver: yupResolver(validationSchema) };
-
-  // get functions to build form with useForm() hook
-  // const { register, handleSubmit, formState } = useForm(formOptions);
-  // const { errors, isSubmitting } = formState;
-
-  // const [isProcessing, setIsProcessing] = useState(false);
+  const { register, handleSubmit, formState } = useForm(formOptions);
+  const { errors, isSubmitting } = formState;
 
   const mutation = useMutation(
     async (data) => {
-      console.log(data);
-
       var request = {
-        participantId: data.participantId,
+        participantId: participant.id,
         score: data.score,
       };
 
-      await resultapi.AddOrUpdateResult(eventId, activityId, request);
+      resultapi.AddOrUpdateResult(eventId, activityId, request);
     },
     {
       onSuccess: () => {
-        console.log("invalidating");
-        queryClient.invalidateQueries({
-          queryKey: [`/activityapi.getById/${eventId}/${activityId}`],
-        });
-        queryClient.invalidateQueries({ queryKey: [`scoreboard/${eventId}`] });
-        setIsProcessing(false);
-        console.log("finishes processing");
+        queryClient.invalidateQueries({ queryKey: [`/activityapi.getById/${eventId}`] });
       },
     }
   );
 
-  function decrease() {
-    if (score === 0) return;
+  useEffect(() => {
+    const fetchParticipants = async () => {
+      try {
+        const result = await participantsapi.getByEventId(eventId);
+        console.log('Participants data:', result);
+      } catch (error) {
+        console.error('Error fetching participants:', error);
+      }
+    };
 
-    scoreChanged(score - 1);
-  }
-
-  function increase() {
-    scoreChanged(score + 1);
-  }
-
-  function scoreChanged(val) {
-    if (val < 0) return;
-
-    setScore(val);
-    setIsProcessing(true);
-
-    mutation.mutate({
-      participantId: participant.id,
-      score: val,
-    });
-  }
+    fetchParticipants();
+  }, [eventId]); 
 
   return (
     <div>
-      <label
-        htmlFor="score"
-        className="mb-2 text-sm font-medium sr-only dark:text-white"
-      >
-        score
-      </label>
-      <div className="flex flex-row justify-between items-center bg-white border rounded-lg">
-        <div className="m-3">
-          <div className="justify-center flex-shrink-0 w-16 h-16 rounded-full overflow-hidden">
-            <img
-              src={participant.profilePictureUrl}
-              alt={participant.firstName}
-              className="object-cover w-full h-full"
-            />
-          </div>
-          <p className="justify-center">Frederik</p>
-        </div>
-
-        <div className="flex flex-row h-10 w-full rounded-lg relative bg-transparent m-4">
-          <button
-            disabled={isProcessing}
-            onClick={() => decrease()}
-            className="bg-blue-500 text-white font-bold py-2 px-4"
-          >
-            <span className="m-auto font-thin">−</span>
-          </button>
+      <form onSubmit={handleSubmit(mutation.mutate)} className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <label htmlFor="score" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
+          score
+        </label>
+        <div className="relative">
+        <span className="mb-2 text-sm font-medium text-gray-900">
+          {participant.firstName} 
+          </span>
           <input
-            disabled={true}
-            type="number"
-            onChange={(e) => scoreChanged(e.target.value)}
-            value={score}
-            className="border-blue-500 text-center w-full bg-blue-500 font-semibold text-mds flex items-center text-white"
-            name="custom-input-number"
-          ></input>
+            defaultValue={props?.result?.score}
+            name="score"
+            type="text"
+            {...register('score')}
+            className={`block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-100 rounded-lg bg-gray-100 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
+              errors.score ? 'is-invalid' : ''
+            }`}
+            placeholder="score"
+          />
+          <div className="invalid-feedback">{errors.score?.message}</div>
           <button
-            disabled={isProcessing}
-            onClick={() => increase()}
-            className="bg-blue-500 text-white font-bold py-2 px-4 "
+            disabled={isSubmitting}
+            className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
-            <span className="m-auto font-thin">+</span>
+            {isSubmitting ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-1"></span>
+                <span className="font-medium">Processing...</span>
+              </>
+            ) : (
+              'Save'
+            )}
           </button>
         </div>
-
-        {/* <div className="invalid-feedback">{errors.score?.message}</div> */}
-      </div>
+      </form>
     </div>
   );
 }
