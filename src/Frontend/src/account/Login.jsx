@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { authActions } from "_store";
+import '../index.css';
 
 export { Login };
 
@@ -144,8 +145,8 @@ function Login() {
             <span className="font-bold text-primary-600 mr-1">Sign up!</span>
             <img
               alt="healthybois-logo"
-              className="mx-auto h-5 w-5 filter drop-shadow-2xl"
-              src={process.env.PUBLIC_URL + "/images/flex_arm.png"}
+              className="mx-auto h-5 w-5 filter drop-shadow-2xl animate-arm"
+              src={process.env.PUBLIC_URL + "/images/flex_arm_transparent.png"}
             />
           </button>
         </div>
