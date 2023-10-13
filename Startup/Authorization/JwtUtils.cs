@@ -24,15 +24,16 @@ public class JwtUtils : IJwtUtils
         var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+            Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()), new Claim("passwordHash", user.PasswordHash) }),
             Expires = DateTime.UtcNow.AddDays(7),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
         };
+
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
 
-    public int? ValidateToken(string token)
+    public ValidateTokenResponse ValidateToken(string token)
     {
         if (token == null)
             return null;
@@ -52,10 +53,16 @@ public class JwtUtils : IJwtUtils
             }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
+
             var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+            var passwordHash = jwtToken.Claims.First(x => x.Type == "passwordHash").Value;
 
             // return user id from JWT token if validation successful
-            return userId;
+            return new ValidateTokenResponse()
+            {
+                UserId = userId,
+                PasswordHash = passwordHash
+            };
         }
         catch
         {

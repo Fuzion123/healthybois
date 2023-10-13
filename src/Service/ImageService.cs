@@ -15,6 +15,11 @@ namespace Service
 
         public async Task<string> AddPicture(PictureInput profilePicture, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(profilePicture.Base64))
+            {
+                throw new AppException("profile picture base64 is null/empty");
+            }
+
             if (!new FileExtensionContentTypeProvider().TryGetContentType(profilePicture.Name, out var contentType))
             {
                 throw new AppException($"Uploaded profile picture '{profilePicture.Name}' mimetype is not supported");
@@ -39,6 +44,19 @@ namespace Service
             }
 
             return jobStorage.GetServiceSasUriForBlob(pictureId);
+        }
+
+        public async Task DeletePicture(string pictureId, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(pictureId))
+            {
+                return;
+            }
+
+            if (await jobStorage.Exists(pictureId, cancellationToken))
+            {
+                await jobStorage.Delete(pictureId, cancellationToken);
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
 using Domain.Users;
-using Service.Users;
 using Service.Users.Dependencies;
 
 namespace WebApi.Authorization;
@@ -19,12 +18,17 @@ public class JwtMiddleware
         CancellationToken cancellationToken = context?.RequestAborted ?? CancellationToken.None;
 
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-        var userId = jwtUtils.ValidateToken(token);
-        
-        if (userId != null)
+        var response = jwtUtils.ValidateToken(token);
+
+        if (response != null && response.UserId.HasValue)
         {
             // attach user to context on successful jwt validation
-            context.Items["User"] = await userRepository.GetById(userId.Value, cancellationToken);
+            var user = await userRepository.GetById(response.UserId.Value, cancellationToken);
+
+            if (user != null && user.PasswordHash == response.PasswordHash)
+            {
+                context.Items["User"] = user;
+            }
         }
 
         await _next(context);

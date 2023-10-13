@@ -65,7 +65,7 @@ namespace Infrastructure.Repositories.Users
         public async Task<List<User>> Search(string term, CancellationToken cancellationToken)
         {
             var users = await dbContext.Users
-                .Where(x => EF.Functions.Like(x.FirstName, $"%{term}%") || EF.Functions.Like(x.LastName, $"%{term}%"))
+                .Where(x => EF.Functions.Like(x.FirstName, $"%{term}%") || EF.Functions.Like(x.LastName, $"%{term}%") || EF.Functions.Like(x.UserName, $"%{term}%") || EF.Functions.Like(x.Email, $"%{term}%"))
                 .ToListAsync(cancellationToken);
 
             return users;

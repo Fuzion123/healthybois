@@ -50,7 +50,7 @@ public class User
         Role = Role.User;
         ProfilePictureId = profilePictureId;
         Email = email;
-     }
+    }
 
     public bool Update(string firstName, string lastName, string passwordHash, string profilePictureId)
     {
@@ -66,7 +66,7 @@ public class User
             throw new ArgumentException($"'{nameof(lastName)}' cannot be null or empty.", nameof(lastName));
         }
 
-        if(FirstName != firstName)
+        if (FirstName != firstName)
         {
             FirstName = firstName;
 
@@ -87,7 +87,7 @@ public class User
             updated = true;
         }
 
-        if(ProfilePictureId != profilePictureId)
+        if (ProfilePictureId != profilePictureId)
         {
             updated = true;
 
@@ -102,10 +102,40 @@ public class User
         return updated;
     }
 
-    public void SetOrUpdateProfilePciture(string profilePictureId)
+    public bool UpdateFirstName(string firstName)
     {
-        ProfilePictureId = ProfilePictureId;
-        UpdatedAt = DateTime.UtcNow;
+        if (!string.IsNullOrEmpty(firstName) && FirstName != firstName)
+        {
+            FirstName = firstName;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool UpdateLastName(string lastName)
+    {
+        if (!string.IsNullOrEmpty(lastName) && LastName != lastName)
+        {
+            LastName = lastName;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool SetOrUpdateProfilePciture(string profilePictureId)
+    {
+        if (!string.IsNullOrEmpty(profilePictureId) && ProfilePictureId != profilePictureId)
+        {
+            ProfilePictureId = profilePictureId;
+            UpdatedAt = DateTime.UtcNow;
+            return true;
+        }
+
+        return false;
     }
 
     public void DeleteProfilePicture()
@@ -114,19 +144,21 @@ public class User
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public void UpdatePassword(string passwordHash)
+    public bool UpdatePassword(string passwordHash)
     {
         if (string.IsNullOrEmpty(passwordHash))
         {
             throw new ArgumentException($"'{nameof(passwordHash)}' cannot be null or empty.", nameof(passwordHash));
         }
 
-        if(PasswordHash == passwordHash) 
+        if (PasswordHash == passwordHash)
         {
             throw new DomainException("New password can't be the same as the old password. Please enter a different password.");
         }
 
         PasswordHash = passwordHash;
         UpdatedAt = DateTime.UtcNow;
+
+        return true;
     }
 }

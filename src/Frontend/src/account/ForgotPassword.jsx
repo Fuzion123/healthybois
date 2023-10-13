@@ -3,7 +3,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useMutation } from "react-query";
 import { emailapi } from "_api";
-import { history } from "_helpers";
 import { useDispatch } from "react-redux";
 import { alertActions } from "_store";
 import BackButton from "_components/BackButton";

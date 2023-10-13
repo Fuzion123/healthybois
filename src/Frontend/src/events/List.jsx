@@ -11,7 +11,7 @@ function List() {
   const navigate = useNavigate();
 
   const { data, error, isLoading } = useQuery(
-    `/user/events/${userService.getUserId()}`,
+    `/user/events/${userService.currentUser.id}`,
     async () => {
       return await eventapi.getAll();
     }

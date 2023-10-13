@@ -8,10 +8,10 @@ export { YourProfile };
 
 function YourProfile() {
   const navigate = useNavigate();
-  const user = userService.getUser();
+  const user = userService.currentUser;
 
   const { data, error, isLoading } = useQuery(
-    `/user/events/${userService.getUserId()}`,
+    `/user/events/${user.id}`,
     async () => {
       return await eventapi.getAll();
     }
@@ -28,7 +28,6 @@ function YourProfile() {
   if (error) {
     return <div>{error}</div>;
   }
-  console.log(data);
 
   var today = new Date().toISOString();
 
@@ -37,7 +36,6 @@ function YourProfile() {
   const wonEvents = data.filter((event) => {
     return event.leadingParticipantIds.includes(26) && today >= event.endsAt;
   });
-  console.log(wonEvents);
 
   return (
     <div>

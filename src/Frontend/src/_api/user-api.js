@@ -18,9 +18,14 @@ const exists = async (request) => {
   return await fetchWrapper.post(`${baseUrl}/exists`, request);
 };
 
+const editFirstName = async (data) => {
+  return await fetchWrapper.put(`${baseUrl}/edit/firstname`, data);
+};
+
 export const userapi = {
   resetpassword: resetpassword,
   searchUsers: searchUsers,
   register: register,
   exists: exists,
+  editFirstName: editFirstName,
 };

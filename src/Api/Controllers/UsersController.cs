@@ -1,5 +1,6 @@
 ﻿namespace WebApi.Controllers;
 
+using Domain.Pictures.Inputs;
 using Microsoft.AspNetCore.Mvc;
 using Service.Email;
 using Service.Events;
@@ -7,17 +8,19 @@ using Service.Users;
 using Service.Users.Models;
 using WebApi.Authorization;
 using WebApi.Models.Users;
+using WebApi.Models.Users.Edits;
 
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class UsersController : ControllerBase
+public class UsersController : ControllerWithUserBase
 {
     private IUserService _userService;
     private readonly EventService eventService;
     private readonly IRecoverCodeService recoverCodeService;
 
-    public UsersController(IUserService userService, EventService eventService, IRecoverCodeService recoverCodeService)
+    public UsersController(IUserService userService, EventService eventService, IRecoverCodeService recoverCodeService, IHttpContextAccessor httpContextAccessor)
+        : base(httpContextAccessor)
     {
         _userService = userService;
         this.eventService = eventService;
@@ -44,7 +47,7 @@ public class UsersController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("resetpassword/{code}")]
-    public async Task<IActionResult> Register(string code, [FromBody] ResetPasswordRequest model, CancellationToken cancellationToken)
+    public async Task<IActionResult> Resetpassword(string code, [FromBody] ResetPasswordRequest model, CancellationToken cancellationToken)
     {
         var recoverCode = await recoverCodeService.GetRecoverCode(code, cancellationToken);
 
@@ -130,5 +133,58 @@ public class UsersController : ControllerBase
         }
 
         return Ok(await _userService.IsUserNameTaken(request.UserName, request.Email, cancellationToken));
+    }
+
+    [HttpPut("edit/firstname")]
+    public async Task<IActionResult> EditFirstName(UserEditFirstName request, CancellationToken cancellationToken)
+    {
+        await _userService.Update(CurrentUser.Id, new UpdateRequest()
+        {
+            EditType = EditType.FirstName,
+            FirstName = request.FirstName
+        }, cancellationToken);
+
+        return Ok();
+    }
+
+    [HttpPut("edit/lastname")]
+    public async Task<IActionResult> EditLastName(UserEditLastName request, CancellationToken cancellationToken)
+    {
+        await _userService.Update(CurrentUser.Id, new UpdateRequest()
+        {
+            EditType = EditType.LastName,
+            LastName = request.LastName
+        }, cancellationToken);
+
+        return Ok();
+    }
+
+    [HttpPut("edit/password")]
+    public async Task<IActionResult> EditPassword(UserEditPassword request, CancellationToken cancellationToken)
+    {
+        await _userService.Update(CurrentUser.Id, new UpdateRequest()
+        {
+            EditType = EditType.Password,
+            Password = request.Password,
+            PasswordConfirm = request.PasswordConfirm
+        }, cancellationToken);
+
+        return Ok();
+    }
+
+    [HttpPut("edit/profilepicture")]
+    public async Task<IActionResult> EditProfilePicture(UserEditProfilePicture request, CancellationToken cancellationToken)
+    {
+        await _userService.Update(CurrentUser.Id, new UpdateRequest()
+        {
+            EditType = EditType.ProfilePicture,
+            ProfilePicture = new PictureInput()
+            {
+                Base64 = request.Base64,
+                Name = request.Name,
+            }
+        }, cancellationToken);
+
+        return Ok();
     }
 }

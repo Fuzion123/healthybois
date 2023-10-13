@@ -1,6 +1,7 @@
 namespace Service.Users;
 
 using BCrypt.Net;
+using Domain.Exceptions;
 using Domain.Users;
 using Service.Exceptions;
 using Service.Users.Dependencies;
@@ -136,23 +137,95 @@ public class UserService : IUserService
         await userRepository.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task Update(int id, UpdateRequest model, CancellationToken cancellationToken)
+    public async Task Update(int id, UpdateRequest request, CancellationToken cancellationToken)
     {
+        var updated = false;
+        string error;
+
+        var type = request.EditType;
+
         var user = await userRepository.GetById(id, cancellationToken);
 
-        // validate
-        if (model.Username != user.UserName && await userRepository.Exists(model.Username, cancellationToken))
-            throw new AppException("Username '" + model.Username + "' is already taken");
+        if (type == EditType.Full)
+        {
+            throw new NotSupportedException("full updates is not supported yet");
+        }
+        else if (type == EditType.UserName)
+        {
+            throw new NotSupportedException("username updates is not supported yet");
 
-        string passwordHash = null;
+            //// validate
+            //if (request.Username != user.UserName && await userRepository.Exists(request.Username, cancellationToken))
+            //    throw new AppException("Username '" + request.Username + "' is already taken");
+        }
+        else if (type == EditType.Email)
+        {
+            throw new NotSupportedException("email updates is not supported yet");
+        }
+        else if (type == EditType.FirstName)
+        {
+            updated = user.UpdateFirstName(request.FirstName);
 
-        // hash password if it was entered
-        if (!string.IsNullOrEmpty(model.Password))
-            passwordHash = BCrypt.HashPassword(model.Password);
+            error = !updated ? "please provide a different first name than already entered" : null;
+        }
+        else if (type == EditType.LastName)
+        {
+            updated = user.UpdateLastName(request.LastName);
 
-        user.Update(model.FirstName, model.LastName, passwordHash, null);
+            error = !updated ? "please provide a different last name than already entered" : null;
+        }
+        else if (type == EditType.Password)
+        {
+            // hash password if it was entered
+            if (string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.PasswordConfirm))
+            {
+                throw new DomainException("requested password or passwordconfirm can't be null or empty when changing password");
+            }
 
-        await userRepository.SaveChangesAsync(cancellationToken);
+            if (request.Password != request.PasswordConfirm)
+            {
+                throw new DomainException("password and passwordconfirm needs to be the same value");
+            }
+
+            var passwordHash = BCrypt.HashPassword(request.Password);
+
+            updated = user.UpdatePassword(passwordHash);
+
+            error = !updated ? "please provide a different password than already entered" : null;
+
+        }
+        else if (type == EditType.ProfilePicture)
+        {
+            if (request.ProfilePicture != null)
+            {
+                var oldPictureId = user.ProfilePictureId;
+
+                var url = await pictureService.AddPicture(request.ProfilePicture, cancellationToken);
+
+                updated = user.SetOrUpdateProfilePciture(url);
+
+                if (updated && !string.IsNullOrEmpty(oldPictureId))
+                {
+                    await pictureService.DeletePicture(oldPictureId, cancellationToken);
+                }
+            }
+
+            error = !updated ? "please provide a different profile picture than already entered" : null;
+        }
+        else
+        {
+            throw new AppException("Update request recieved for a 'EditType' type not supported.");
+        }
+
+        if (updated)
+        {
+            await userRepository.SaveChangesAsync(cancellationToken);
+        }
+
+        if (!string.IsNullOrEmpty(error))
+        {
+            throw new AppException(error);
+        }
     }
 
     public async Task Delete(int id, CancellationToken cancellationToken)
