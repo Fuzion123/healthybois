@@ -39,7 +39,7 @@ function Login() {
         muted
         playsInline 
         preload="auto"
-        className="mx-auto h-38 w-38 filter"
+        className="mx-auto h-38 w-38 filter .non-clickable"
       >
         <source src={videoSource} type="video/mp4" />
         Your browser does not support the video tag.
