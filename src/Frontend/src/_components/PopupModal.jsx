@@ -57,7 +57,7 @@ export default function FormElements(title, input) {
               </div>
               <TextInput
                 id="FirstName"
-                defaultValue={userService.currentUser.firstName}
+                defaultValue={firstName}
                 onChange={(e) => props.setFirstName(e.target.value)}
                 required
               />
