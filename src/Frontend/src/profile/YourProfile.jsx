@@ -3,6 +3,7 @@ import { userService } from "_helpers";
 import { eventapi } from "_api";
 import { useQuery } from "react-query";
 import BackButton from "_components/BackButton";
+import FormElements from "_components/PopupModal";
 
 export { YourProfile };
 
@@ -94,7 +95,11 @@ function YourProfile() {
         </div>
       </div>
       <div className="btn-back text-center">
-        <BackButton title="Back"></BackButton>
+        <BackButton title="Back" useTitleAndLogo="true"></BackButton>
+      </div>
+
+      <div>
+        <FormElements></FormElements>
       </div>
     </div>
   );
