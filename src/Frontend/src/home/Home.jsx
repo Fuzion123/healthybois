@@ -3,28 +3,49 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { eventapi } from "_api";
 import { useQuery } from "react-query";
+import { userService } from "_helpers";
+import { date } from "_helpers";
+import ScoreboardSummary from "_components/ScoreboardSummary";
 // import { Messages } from '_components';
 
 export { Home };
 
 function Home(props) {
   const navigate = useNavigate();
-
-  function handleCardClick(event) {
-    navigate(`/events/${event.id}`);
-  }
+  const user = userService.currentUser;
 
   const auth = useSelector((x) => x.auth.value);
 
   // query
 
-  const { data, error, isLoading } = useQuery("getAllEvents", async () => {
-    return await eventapi.getAll();
+
+  const { data, error, isLoading } = useQuery(
+    `/user/events/${user.id}`,
+    async () => {
+      return await eventapi.getAll();
+    }
+  );
+
+  if (isLoading) {
+    return (
+      <div className="text-center">
+        <p className="spinner-border spinner-border-lg align-center"></p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+  var today = new Date().toISOString();
+
+  const currentEvent = data.filter((event) => {
+    return event.startsAt <= today && today <= event.endsAt ;
   });
 
-  if (error) return <div>Request Failed</div>;
-
-  if (isLoading) return <div>Loading...</div>;
+  const nextEvents = data.filter((event) => {
+    return event.startsAt >= today ;
+  });
 
   return (
     <div className="min-h-screen">
@@ -36,78 +57,84 @@ function Home(props) {
       {/* Sections */}
 
       <div className="container mx-auto px-4 py-8">
+
+        {/* Current Event */}
+
         <section className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Upcoming Events</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-8">
-              <h3 className="text-md font-bold mb-2">Get ready to compete</h3>
-              <p className="text-gray-600">
-                Don't miss out on our upcoming events! Join an event for an
-                unforgettable experience filled with excitement, inspiration,
-                and community. Sign up and claim your spot among the champions!
-              </p>
-            </div>
-            <div className="bg-green-50 p-8 shadow-md rounded-lg">
-              <h3 className="text-md font-bold mb-2">Next 3 events</h3>
-              <div className="text-gray-600">
-                {data
-                  .sort((a, b) => a.startsAt - b.startsAt)
-                  .slice(0, 3)
-                  .map((p, i) => (
-                    <div key={i} onClick={() => handleCardClick(p)}>
-                      <img
-                        className="object-cover w-50 h-50 md:h-20 rounded-t-lg"
-                        src={p.eventPictureUrl}
-                        alt="stock"
-                      />
-                      <p className="font-semibold">{p.title}</p>
-                      <img
-                        alt="profile"
-                        className="h-10 w-10"
-                        src={p.eventOwner.profilePictureUrl}
-                      ></img>
-                    </div>
-                  ))}
+            <h2 className="text-xl font-bold mb-4">Current Event</h2>
+            <div className="grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-10 lg:grid-cols-3">
+            {currentEvent
+            .map((event) => (              
+              <div
+                key={event.id}
+                className="flex flex-col my-8 shadow-md rounded-lg"
+              >
+                <div
+                  className=""
+                  onClick={() => navigate(`/events/${event.id}`)}
+                >                  
+                  <img
+                    className="object-cover w-full h-52 md:h-72 rounded-t-lg"
+                    src={event.eventPictureUrl}
+                    alt="stock"
+                  ></img>
+                  <h5 className="text-1xl font-bold px-3 py-3">
+                    {event.title}
+                  </h5>
+                  <div className="text-1xl px-3 pb-3">{event.description}</div>
+                  <div className="flex flex-wrap justify-between items-center px-3 pb-3 text-xs">
+                    <span>Starts at: {date.formatDate(event.startsAt)}</span>
+                    
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </section>
+
+        {/* Upcoming Event */}
 
         <section className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Highlighted Profile</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-8">
-              <h3 className="text-md font-bold mb-2">Check this guy out</h3>
-              <p className="text-gray-600">
-                With exceptional skills and unmatched dedication, is a force to
-                be reckoned with on in the tourney. Don't miss the opportunity
-                to witness their extraordinary performances or beat them in the
-                upcoming events
-              </p>
-            </div>
-            <div className="bg-yellow-50 p-8 shadow-md rounded-lg">
-              <h3 className="text-md font-bold mb-2">Player in focus</h3>
-              <p className="text-gray-600"></p>
-            </div>
+            <h2 className="text-xl font-bold mb-4">Your Upcoming Events</h2>  
+            <div className="grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-10 lg:grid-cols-3">
+            {nextEvents
+            .slice(0, 3)
+            .map((event) => ( 
+              <div
+                key={event.id}
+                className="flex flex-col my-8 shadow-md rounded-lg"
+              >
+                <div
+                  className=""
+                  onClick={() => navigate(`/events/${event.id}`)}
+                >
+                  <img
+                    className="object-cover w-full h-52 md:h-72 rounded-t-lg"
+                    src={event.eventPictureUrl}
+                    alt="stock"
+                  ></img>
+                  <h5 className="text-1xl font-bold px-3 py-3">
+                    {event.title}
+                  </h5>
+                  <div className="text-1xl px-3 pb-3">{event.description}</div>
+                  <div className="flex flex-wrap justify-between items-center px-3 pb-3 text-xs">
+                    <span>Starts at: {date.formatDate(event.startsAt)}</span>
+                    
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
-        <section>
-          <h2 className="text-xl font-bold mb-4">Latest post</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-8">
-              <h3 className="text-md font-bold mb-2">Connect with others</h3>
-              <p className="text-gray-600">
-                Join the vibrant message board community and connect with fellow
-                competitors. Share strategies, exchange tips, and engage in
-                meaningful discussions to enhance your competitive journey.
-              </p>
-            </div>
-            <div className="bg-cyan-50 p-2 shadow-md rounded-lg">
-              {/* <Messages connection={props.connection} messages = { props.messages }></Messages> */}
-            </div>
-          </div>
+         {/* Player in focus */}
+
+        <section className="mb-8">
+            <h2 className="text-xl font-bold mb-4">Player in focus</h2>  
+            
         </section>
+
+
       </div>
     </div>
   );
