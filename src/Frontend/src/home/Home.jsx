@@ -5,7 +5,6 @@ import { eventapi } from "_api";
 import { useQuery } from "react-query";
 import { userService } from "_helpers";
 import { date } from "_helpers";
-import ScoreboardSummary from "_components/ScoreboardSummary";
 // import { Messages } from '_components';
 
 export { Home };
