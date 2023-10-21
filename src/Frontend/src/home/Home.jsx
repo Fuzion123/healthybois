@@ -9,7 +9,7 @@ import { date } from "_helpers";
 
 export { Home };
 
-function Home(props) {
+function Home() {
   const navigate = useNavigate();
   const user = userService.currentUser;
 
