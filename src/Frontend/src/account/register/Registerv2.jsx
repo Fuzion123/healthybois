@@ -147,7 +147,7 @@ function Registerv2() {
         <div className="flex flex-col justify-items-center">
           <button
             disabled={isLoading === true || error !== null}
-            className="btn-primary disabled:opacity-60"
+            className="btn-primary w-full disabled:opacity-60"
             type="submit"
           >
             {isLoading === true ? (
