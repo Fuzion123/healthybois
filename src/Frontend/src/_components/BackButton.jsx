@@ -39,7 +39,7 @@ function BackButton({
               />
             </svg>
             {useTitleAndLogo && useTitleAndLogo === true && (
-              <div className="text-xl">back</div>
+              <div>back</div>
             )}
           </div>
         )}

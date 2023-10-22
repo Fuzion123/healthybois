@@ -4,21 +4,31 @@ import { eventapi } from "_api";
 import { useQuery } from "react-query";
 import BackButton from "_components/BackButton";
 import FormElements from "_components/PopupModal";
+import { userapi } from "_api";
+import { useState } from "react";
 
 export { YourProfile };
 
-function YourProfile(modalId, props) {
+function YourProfile(props) {
   const navigate = useNavigate();
   const user = userService.currentUser;
+   const [openModal, setOpenModal] = useState();
+  
+  const { data: userData, error: userError, isLoading: userLoad } = useQuery(
+    `/users/${user.id}`,
+    async () => {
+      return await userapi.getById(user.id);
+    }
+  );
 
-  const { data, error, isLoading } = useQuery(
+  const { data: eventData, error: eventError, isLoading: eventLoad } = useQuery(
     `/user/events/${user.id}`,
     async () => {
       return await eventapi.getAll();
     }
   );
 
-  if (isLoading) {
+  if (eventLoad || userLoad) {
     return (
       <div className="text-center">
         <p className="spinner-border spinner-border-lg align-center"></p>
@@ -26,15 +36,18 @@ function YourProfile(modalId, props) {
     );
   }
 
-  if (error) {
-    return <div>{error}</div>;
+  if (eventError || userError ) {
+    return <div>{eventError || userError}</div>;
   }
+
+  console.log(userData);
+ 
 
   var today = new Date().toISOString();
 
   // change "leadingParticipantIds" to the user ID instead of the participant id
 
-  const wonEvents = data.filter((event) => {
+  const wonEvents = eventData.filter((event) => {
     return event.leadingParticipantIds.includes(26) && today >= event.endsAt;
   });
 
@@ -42,7 +55,7 @@ function YourProfile(modalId, props) {
     <div>
       <h1 className="text-2xl font-bold">Your Profile</h1>
             <div>
-        <FormElements title="Edit Email" modalName="form-elements">
+        <FormElements userData={userData} title="Edit First Name" modalName="FirstName">
           <p>testing</p>
         </FormElements>
       </div>
@@ -53,29 +66,40 @@ function YourProfile(modalId, props) {
         <div className="flex flex-col mt-2 mb-4 shadow-md rounded-lg px-3 pt-2 pb-3 text-center">
           <h2 className="text-lg font-bold mb-2">User Information</h2>
           <div className="text-base py-3 relative">
-              <p className="font-bold">Name:</p>
+              <p className="font-bold">First Name:</p>
               <p>
-                {user.firstName} {user.lastName}
+                {userData.firstName}
               </p>         
-              <button className="absolute right-1 top-1/2 -translate-y-1/2" onClick={() => props.setOpenModal(modalId)}>
-                  <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 21">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.418 17.861 1 20l2.139-6.418m4.279 4.279 10.7-10.7a3.027 3.027 0 0 0-2.14-5.165c-.802 0-1.571.319-2.139.886l-10.7 10.7m4.279 4.279-4.279-4.279m2.139 2.14 7.844-7.844m-1.426-2.853 4.279 4.279"/>
+              <button className="absolute right-1 top-1/2 -translate-y-1/2" onClick={() => setOpenModal("FirstName")}>
+                  <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 21">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7.418 17.861 1 20l2.139-6.418m4.279 4.279 10.7-10.7a3.027 3.027 0 0 0-2.14-5.165c-.802 0-1.571.319-2.139.886l-10.7 10.7m4.279 4.279-4.279-4.279m2.139 2.14 7.844-7.844m-1.426-2.853 4.279 4.279"/>
+                  </svg>
+              </button>
+          </div>
+          <div className="text-base py-3 relative">
+              <p className="font-bold">Last Name:</p>
+              <p>
+                {userData.lastName}
+              </p>         
+              <button className="absolute right-1 top-1/2 -translate-y-1/2" onClick={() => setOpenModal("LastName")}>
+                  <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 21">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7.418 17.861 1 20l2.139-6.418m4.279 4.279 10.7-10.7a3.027 3.027 0 0 0-2.14-5.165c-.802 0-1.571.319-2.139.886l-10.7 10.7m4.279 4.279-4.279-4.279m2.139 2.14 7.844-7.844m-1.426-2.853 4.279 4.279"/>
                   </svg>
               </button>
           </div>
           <div className="text-base py-3">
               <p className="font-bold">Email:</p>
-              <p>{user.email}</p>
+              <p>{userData.email}</p>
           </div>
           <div className="text-base py-3">
               <p className="font-bold">User Name:</p>
-              <p> {user.username}</p>
+              <p> {userData.userName}</p>
           </div>
           <div className="text-base py-3">
               <p className="font-bold">Profile Picture</p>
               <img
                 className="mt-1 h-28 w-28 rounded-full m-auto"
-                src={user.profilePictureUrl}
+                src={userData.profileUrl}
                 alt="Profile pic"
               />
           </div>

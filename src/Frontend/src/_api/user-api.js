@@ -18,6 +18,10 @@ const exists = async (request) => {
   return await fetchWrapper.post(`${baseUrl}/exists`, request);
 };
 
+const getById = async (id) => {
+    return await fetchWrapper.get(`${baseUrl}/${id}`);
+};
+
 const editFirstName = async (data) => {
   return await fetchWrapper.put(`${baseUrl}/edit/firstname`, data);
 };
@@ -27,5 +31,6 @@ export const userapi = {
   searchUsers: searchUsers,
   register: register,
   exists: exists,
+  getById: getById,
   editFirstName: editFirstName,
 };

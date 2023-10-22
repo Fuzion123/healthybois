@@ -20,8 +20,20 @@ import { faCheckSquare, faCoffee } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faCheckSquare, faCoffee);
 
+
 // Initialze the client
-const queryClient = new QueryClient();
+const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnmount: false,
+      refetchOnReconnect: false,
+      retry: false,
+      staleTime: twentyFourHoursInMs,
+    },
+  },
+});
 
 export { App };
 
