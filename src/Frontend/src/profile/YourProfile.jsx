@@ -13,6 +13,8 @@ function YourProfile(props) {
   const navigate = useNavigate();
   const user = userService.currentUser;
    const [openModal, setOpenModal] = useState();
+   
+   console.log(openModal);
   
   const { data: userData, error: userError, isLoading: userLoad } = useQuery(
     `/users/${user.id}`,
