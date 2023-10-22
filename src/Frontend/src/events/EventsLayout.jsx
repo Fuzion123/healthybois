@@ -4,6 +4,7 @@ import AddEdit from "./AddEdit";
 import Details from "./Details";
 import AddActivity from "./activities/AddActivity";
 import ActivityDetails from "./activities/ActivityDetails";
+import { CreateEvent } from "./create/CreateEvent";
 
 export { EventsLayout };
 
@@ -13,6 +14,7 @@ function EventsLayout() {
       <Routes>
         <Route index element={<List />} />
         <Route path="add" element={<AddEdit />} />
+        <Route path="add_v2" element={<CreateEvent />} />
         <Route path="edit/:id" element={<AddEdit />} />
         <Route path="/:id" element={<Details />} />
         <Route path="/:id/addActivity" element={<AddActivity />} />

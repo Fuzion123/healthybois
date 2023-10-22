@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 // import { motion } from "framer-motion";
 import { authActions } from "_store";
-import '../index.css';
+import "../index.css";
 
 export { Login };
 
@@ -33,17 +33,17 @@ function Login() {
   return (
     <div className="flex min-h-full flex-col justify-center lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-<div>
-      <video
-        autoPlay
-        muted
-        playsInline 
-        preload="auto"
-        className="mx-auto h-38 w-38 filter .non-clickable"
-      >
-        <source src={videoSource} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+        <div>
+          <video
+            autoPlay
+            muted
+            playsInline
+            preload="auto"
+            className="mx-auto h-38 w-38 filter .non-clickable"
+          >
+            <source src={videoSource} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </div>
         <h4 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Sign in
@@ -136,7 +136,7 @@ function Login() {
         <div className="flex justify-between mt-3">
           <p>Not a healthy boi yet?</p>
           <button
-            onClick={() => navigate(`../register_v2`)}
+            onClick={() => navigate(`../register`)}
             className="flex items-center"
           >
             <span className="font-bold text-primary-600 mr-1">Sign up!</span>

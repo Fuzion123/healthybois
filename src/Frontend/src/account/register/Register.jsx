@@ -1,280 +1,187 @@
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+import { useMultiStepForm } from "../../_components/useMultiStepForm";
+import { Password } from "./steps/Password";
+import { RegisterProgress } from "./RegisterProgress";
+import { Email } from "./steps/Email";
+import { FirstName } from "./steps/FirstName";
+import { ProfilePicture } from "./steps/ProfilePicture";
+import { useState } from "react";
+import { userapi } from "_api";
+import { useMutation } from "react-query";
 import { useDispatch } from "react-redux";
+import { alertActions } from "_store";
 import { history } from "_helpers";
-import { userActions, alertActions } from "_store";
-import { useEffect, useState } from "react";
+import { LastName } from "./steps/LastName";
+import { UserName } from "./steps/UserName";
+import { Header } from "_components/Header";
+import { imageService } from "_helpers/ImageService";
+import { FormStepError } from "_components/FormStepError";
 
 export { Register };
 
-const imageMimeType = /image\/(png|jpg|jpeg)/i;
-const toBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });
+const INITIAL_DATA = {
+  firstName: "",
+  lastName: "",
+  userName: "",
+  userNameAvailable: null,
+  email: "",
+  emailAvailable: null,
+  password: "",
+  passwordConfirm: "",
+  profilePictureUrl: "",
+  profilePictureFile: null,
+};
 
 function Register() {
   const dispatch = useDispatch();
 
-  // form validation rules
-  const validationSchema = Yup.object().shape({
-    firstName: Yup.string().required("First Name is required"),
-    lastName: Yup.string().required("Last Name is required"),
-    email: Yup.string().email().required("Email is required"),
-    username: Yup.string().required("Username is required"),
-    password: Yup.string()
-      .required("Password is required")
-      .min(6, "Password must be at least 6 characters"),
-    picture: Yup.mixed()
-      .required("Profile picture is required")
-      .test("fileSize", "Profile picture is too large", (value) => {
-        return value && value.size <= 20000000; // maximum file size of 20 MB
-      })
-      .test("fileType", "Unsupported file format", (value) => {
-        return (
-          value && ["image/jpeg", "image/png", "image/gif"].includes(value.type)
-        );
-      }),
-  });
-  const formOptions = { resolver: yupResolver(validationSchema) };
+  const [formData, setFormData] = useState(INITIAL_DATA);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // get functions to build form with useForm() hook
-  const { register, handleSubmit, formState, setValue } = useForm(formOptions);
-  const { errors, isSubmitting } = formState;
-
-  async function onSubmit(data) {
-    dispatch(alertActions.clear());
-
-    try {
-      var imageAsBase64 = await toBase64(data.picture);
-
-      var request = {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        username: data.username,
-        password: data.password,
-        profilePicture: {
-          name: data.picture.name,
-          base64: imageAsBase64,
-        },
-      };
-
-      await dispatch(userActions.register(request)).unwrap();
-
-      // redirect to login page and display success alert
-      history.navigate("/account/login");
-      dispatch(
-        alertActions.success({
-          message: "Registration successful",
-          showAfterRedirect: true,
-        })
-      );
-    } catch (error) {
-      dispatch(alertActions.error(error));
-    }
+  function updateFields(fields) {
+    setFormData((prev) => {
+      return { ...prev, ...fields };
+    });
   }
 
-  // const [chosenPicture, setChosenPicture] = useState('');
+  const {
+    steps,
+    currentStepIndex,
+    step,
+    isLastStep,
+    isFirstStep,
+    progress,
+    next,
+    back,
+  } = useMultiStepForm([
+    <FirstName {...formData} updateFields={updateFields} />,
+    <LastName {...formData} updateFields={updateFields} />,
+    <Email
+      {...formData}
+      updateFields={updateFields}
+      setError={setError}
+      setIsLoading={setIsLoading}
+    />,
+    <UserName
+      {...formData}
+      updateFields={updateFields}
+      setError={setError}
+      setIsLoading={setIsLoading}
+    />,
+    <ProfilePicture {...formData} updateFields={updateFields} />,
+    <Password {...formData} updateFields={updateFields} />,
+  ]);
 
-  // function setProfilePictureValue(val){
-  //   console.log(val)
-  //   setValue('profilePicture', val)
-  //   setChosenPicture(val.name);
-  // }
-
-  // File selector and show image preview
-
-  const [file, setFile] = useState(null);
-  const [fileDataURL, setFileDataURL] = useState(null);
-
-  const changeHandler = (e) => {
-    const file = e.target.files[0];
-    setValue("picture", file);
-    if (!file.type.match(imageMimeType)) {
-      alert("Image mime type is not valid");
-      return;
+  const createUser = useMutation(
+    async (data) => {
+      setIsLoading(true);
+      await userapi.register(data);
+    },
+    {
+      onSuccess: () => {
+        setIsLoading(false);
+        history.navigate("/account/created");
+      },
+      onError: (error) => {
+        setIsLoading(false);
+        dispatch(alertActions.error(error));
+      },
     }
-    setFile(file);
-  };
-  useEffect(() => {
-    let fileReader,
-      isCancel = false;
-    if (file) {
-      fileReader = new FileReader();
-      fileReader.onload = (e) => {
-        const { result } = e.target;
-        if (result && !isCancel) {
-          setFileDataURL(result);
-        }
+  );
+
+  async function onSubmit(e) {
+    e.preventDefault();
+
+    if (!isLastStep) {
+      return next();
+    }
+
+    var profilePicture = null;
+
+    if (formData.profilePictureFile) {
+      var base64 = await imageService.toBase64(formData.profilePictureFile);
+
+      profilePicture = {
+        name: formData.profilePictureFile.name,
+        base64: base64,
       };
-      fileReader.readAsDataURL(file);
     }
-    return () => {
-      isCancel = true;
-      if (fileReader && fileReader.readyState === 1) {
-        fileReader.abort();
-      }
-    };
-  }, [file]);
+
+    await createUser.mutate({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      username: formData.userName,
+      password: formData.password,
+      passwordConfirm: formData.passwordConfirm,
+      profilePicture: profilePicture,
+    });
+  }
+
+  function previous() {
+    setIsLoading(false);
+    setError(null);
+    back();
+  }
 
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h4 className="mt-10 text-center text-3xl font-bold leading-9 tracking-tight text-gray-900">
-          Register
-        </h4>
-      </div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm space-y-6"
-      >
-        <div className="mb-4">
-          <div className="relative">
-            <label className="mb-3">Event picture</label>
-            <label
-              htmlFor="fileInput"
-              className="flex items-center justify-center w-8 h-8 bg-yellow-500 text-white rounded-full cursor-pointer"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 3a1 1 0 0 1 1 1v4h4a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H6a1 1 0 0 1 0-2h4V4a1 1 0 0 1 1-1z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </label>
-            <input
-              id="image"
-              name="picture"
-              type="file"
-              accept="image/*"
-              onChange={changeHandler}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-          </div>
-          <div className="text-green-500 mt-2">
-            {fileDataURL ? (
-              <p className="img-preview-wrapper">
-                {
-                  <img
-                    className="md:max-w-xs"
-                    src={fileDataURL}
-                    alt="preview"
-                  />
-                }
-              </p>
-            ) : null}
-          </div>{" "}
-        </div>
-        <div>
-          <label className="block text-md font-medium leading-6 text-gray-900">
-            First Name
-          </label>
-          <div className="mt-2">
-            <input
-              name="firstName"
-              type="text"
-              {...register("firstName")}
-              className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-                errors.firstName ? "is-invalid" : ""
-              }`}
-            />
-            <div className="invalid-feedback">{errors.firstName?.message}</div>
-          </div>
-        </div>
-        <div>
-          <label className="block text-md font-medium leading-6 text-gray-900">
-            Last Name
-          </label>
-          <div className="mt-2">
-            <input
-              name="lastName"
-              type="text"
-              {...register("lastName")}
-              className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-                errors.lastName ? "is-invalid" : ""
-              }`}
-            />
-            <div className="invalid-feedback">{errors.lastName?.message}</div>
-          </div>
-        </div>
-        <div>
-          <label className="block text-md font-medium leading-6 text-gray-900">
-            Email
-          </label>
-          <div className="mt-2">
-            <input
-              name="email"
-              type="text"
-              {...register("email")}
-              className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-                errors.email ? "is-invalid" : ""
-              }`}
-            />
-            <div className="invalid-feedback">{errors.email?.message}</div>
-          </div>
+    <div>
+      <form onSubmit={onSubmit} className="flex flex-col px-1 py-1 lg:px-8 ">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+          <Header
+            title={"Account creation"}
+            overwriteClickHandler={!isFirstStep ? previous : undefined}
+          />
+          <RegisterProgress
+            progress={progress()}
+            currentStepCount={currentStepIndex + 1}
+            stepsCount={steps.length}
+          />
         </div>
 
-        <div>
-          <label className="block text-md font-medium leading-6 text-gray-900">
-            Username
-          </label>
-          <div className="mt-2">
-            <input
-              name="username"
-              type="text"
-              {...register("username")}
-              className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-                errors.username ? "is-invalid" : ""
-              }`}
-            />
-            <div className="invalid-feedback">{errors.username?.message}</div>
-          </div>
-        </div>
-        <div>
-          <div className="mt-2">
-            <label className="block text-md font-medium leading-6 text-gray-900">
-              Password
-            </label>
-            <input
-              name="password"
-              type="password"
-              {...register("password")}
-              className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-                errors.password ? "is-invalid" : ""
-              }`}
-            />
-            <div className="invalid-feedback">{errors.password?.message}</div>
-          </div>
+        <div className="mt-8 mb-8">
+          {step}
+          <FormStepError error={error} />
         </div>
 
-        <div className="mt-2"></div>
-        <button className="btn-primary w-full">
-          {isSubmitting ? (
-            <>
-              <span className="spinner-border spinner-border-sm me-1"></span>
-              <span className="font-medium">Processing...</span>
-            </>
-          ) : (
-            "Register"
-          )}
-        </button>
-        <button
-          onClick={() => history.navigate(`/login`)}
-          className="btn-negative w-full"
-        >
-          Cancel
-        </button>
+        <div className="flex flex-col justify-items-center">
+          <button
+            disabled={isLoading === true || error !== null}
+            className="btn-primary w-full disabled:opacity-60"
+            type="submit"
+          >
+            {isLoading === true ? (
+              <>
+                <div className="flex justify-center">
+                  <svg
+                    className="flex mr-3 h-5 w-5 animate-spin text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                </div>
+              </>
+            ) : isLastStep ? (
+              "Create"
+            ) : (
+              "Next"
+            )}
+          </button>
+        </div>
       </form>
     </div>
   );

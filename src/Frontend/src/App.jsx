@@ -17,9 +17,10 @@ import { AdminLayout } from "admin/AdminLayout";
 import { YourProfile } from "./profile";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCheckSquare, faCoffee } from "@fortawesome/free-solid-svg-icons";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 library.add(faCheckSquare, faCoffee);
-
 
 // Initialze the client
 const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
@@ -56,28 +57,30 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="app-container xs ">
-        <Nav />
-        <Alert />
-        <div className="container pt-3 pb-3">
-          <Routes>
-            {/* private */}
-            <Route element={<PrivateRoute />}>
-              <Route
-                path="/"
-                element={<Home connection={connection} messages={messages} />}
-              />
-              <Route path="users/*" element={<UsersLayout />} />
-              <Route path="events/*" element={<EventsLayout />} />
-              <Route path="admin/*" element={<AdminLayout />} />
-            </Route>
-            {/* public */}
-            <Route path="account/*" element={<AccountLayout />} />
-            <Route path="profile/*" element={<YourProfile />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <div className="app-container xs ">
+          <Nav />
+          <Alert />
+          <div className="container pt-3 pb-3">
+            <Routes>
+              {/* private */}
+              <Route element={<PrivateRoute />}>
+                <Route
+                  path="/"
+                  element={<Home connection={connection} messages={messages} />}
+                />
+                <Route path="users/*" element={<UsersLayout />} />
+                <Route path="events/*" element={<EventsLayout />} />
+                <Route path="admin/*" element={<AdminLayout />} />
+              </Route>
+              {/* public */}
+              <Route path="account/*" element={<AccountLayout />} />
+              <Route path="profile/*" element={<YourProfile />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </div>
         </div>
-      </div>
+      </LocalizationProvider>
     </QueryClientProvider>
   );
 }
