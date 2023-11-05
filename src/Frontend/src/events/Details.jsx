@@ -31,6 +31,7 @@ function EventDetails() {
           <Header
             className="flex flex-row justify-between text-base/6"
             title={data.title}
+            overwriteClickHandler={() => history.navigate("/events")}
             settings={<EventDetailsSettings event={data} />}
           >
             {/* <time dateTime={data.startsAt} className="text-sm text-gray-500">

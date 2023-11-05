@@ -59,20 +59,20 @@ export { EventDetailsSettings };
 
 function EventDetailsSettings({ event }) {
   const queryClient = useQueryClient();
-
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const { dialog, handleClickOpen } = AlertDialog({
     alertText: `Delete this event?`,
+    confirmText: "Delete",
+    cancelCallback: () => handleClose(),
     confirmCallback: async () => {
+      console.log("EventDetailsSettings");
       await eventapi.deleteById(event.id);
       queryClient.invalidateQueries({
         queryKey: [`/user/events/${userService.currentUser.id}`],
       });
       history.navigate("/events");
     },
-    cancelCallback: () => handleClose(),
-    confirmText: "Delete",
   });
 
   const handleClick = (event) => {

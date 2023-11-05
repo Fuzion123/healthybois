@@ -4,7 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-// import DialogTitle from "@mui/material/DialogTitle";
+import { CircularProgress } from "@mui/material";
 
 export default function AlertDialog({
   alertText,
@@ -14,6 +14,7 @@ export default function AlertDialog({
   cancelCallback,
 }) {
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -21,9 +22,15 @@ export default function AlertDialog({
 
   async function handleClose(confirm) {
     if (confirm === true && typeof confirmCallback === "function") {
+      console.log("AlertDialog");
+      setLoading(true);
       await confirmCallback();
+      setLoading(false);
     } else if (confirm === false && typeof cancelCallback === "function") {
+      console.log("c");
+      setLoading(true);
       await cancelCallback();
+      setLoading(false);
     }
 
     setOpen(false);
@@ -38,21 +45,26 @@ export default function AlertDialog({
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          {/* <DialogTitle id="alert-dialog-title">
-              {"Use Google's location service?"}
-            </DialogTitle> */}
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               {alertText}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={async () => await handleClose(false)}>
+            <Button
+              disabled={loading === true}
+              onClick={async () => await handleClose(false)}
+            >
               {cancelText ? cancelText : "cancel"}
             </Button>
-            <Button onClick={async () => await handleClose(true)} autoFocus>
+            <Button
+              disabled={loading === true}
+              onClick={async () => await handleClose(true)}
+              autoFocus
+            >
               {confirmText ? confirmText : "confirm"}
             </Button>
+            {loading === true && <CircularProgress size={24} />}
           </DialogActions>
         </Dialog>
       </React.Fragment>
