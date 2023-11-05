@@ -54,9 +54,15 @@ export default function ActivityResult(props) {
           score
         </label>
         <div className="relative">
-        <span className="mb-2 text-sm font-medium text-gray-900">
-          {participant.firstName} 
-          </span>
+        <div className="mb-2 flex items-center">
+  <img
+    src={participant.profilePictureUrl}
+    alt={`${participant.firstName}'s Profile`}
+    className="w-8 h-8 rounded-full mr-2"
+  />
+  <span className="text-sm font-medium text-gray-900">{participant.firstName}</span>
+</div>
+
           <input
             defaultValue={props?.result?.score}
             name="score"
