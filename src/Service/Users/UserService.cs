@@ -282,7 +282,8 @@ public class UserService : IUserService
             FirstName = x.FirstName,
             LastName = x.LastName,
             UserId = x.Id,
-            ProfilePictureUri = pictureService.GetPicture(x.ProfilePictureId)
+            ProfilePictureUri = pictureService.GetPicture(x.ProfilePictureId),
+            UserName = x.UserName
         }).ToList();
     }
 

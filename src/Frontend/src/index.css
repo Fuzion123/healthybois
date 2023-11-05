@@ -60,3 +60,22 @@
     animation: flexAnimation 2s infinite; /* Adjust the duration as needed */
     transform-origin: center bottom; /* Set the rotation origin */
   }
+
+
+  .MuiFormControl-root [type='text']:focus, .MuiFormControl-root [type='email']:focus, .MuiFormControl-root [type='url']:focus, .MuiFormControl-root [type='password']:focus, .MuiFormControl-root [type='number']:focus, .MuiFormControl-root [type='date']:focus, .MuiFormControl-root [type='datetime-local']:focus, .MuiFormControl-root [type='month']:focus, .MuiFormControl-root [type='search']:focus, .MuiFormControl-root [type='tel']:focus, .MuiFormControl-root [type='time']:focus, .MuiFormControl-root [type='week']:focus, .MuiFormControl-root [multiple]:focus, .MuiFormControl-root textarea:focus, .MuiFormControl-root select:focus {
+    box-shadow: none;
+  }
+
+  .mui-validation-error {
+    color: #d32f2f;
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    font-weight: 400;
+    font-size: 0.75rem;
+    line-height: 1.66;
+    letter-spacing: 0.03333em;
+    text-align: left;
+    margin-top: 3px;
+    margin-right: 14px;
+    margin-bottom: 0;
+    margin-left: 14px;
+  }

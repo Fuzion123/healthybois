@@ -10,12 +10,7 @@ function Title(props) {
   return (
     <div>
       <div className="mb-8">
-        <InputField
-          autoFocus={true}
-          name={title.name}
-          label={title.label}
-          fullWidth
-        />
+        <InputField name={title.name} label={title.label} fullWidth />
       </div>
     </div>
   );

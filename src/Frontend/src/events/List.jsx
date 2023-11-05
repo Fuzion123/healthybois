@@ -64,12 +64,6 @@ function List() {
           >
             Add event
           </button>
-          <button
-            onClick={() => navigate(`/events/add_v2`)}
-            className="w-full btn-primary"
-          >
-            Add event v2
-          </button>
         </div>
       </div>
 

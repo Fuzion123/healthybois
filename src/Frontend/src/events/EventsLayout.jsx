@@ -13,8 +13,7 @@ function EventsLayout() {
     <div className="container">
       <Routes>
         <Route index element={<List />} />
-        <Route path="add" element={<AddEdit />} />
-        <Route path="add_v2" element={<CreateEvent />} />
+        <Route path="add" element={<CreateEvent />} />
         <Route path="edit/:id" element={<AddEdit />} />
         <Route path="/:id" element={<Details />} />
         <Route path="/:id/addActivity" element={<AddActivity />} />

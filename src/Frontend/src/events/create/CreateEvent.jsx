@@ -6,40 +6,65 @@ import { Header } from "_components/Header";
 import validationSchema from "./validationSchema";
 import formModel from "./formModel";
 import initialValues from "./initialValues";
-
+import { imageService } from "_helpers/ImageService";
 import { CircularProgress } from "@mui/material";
-
+import { eventapi } from "_api";
 import { useMultiStepForm } from "account";
 import { Formik, Form } from "formik";
-
-const { formId, formField } = formModel;
+import Participants from "./steps/Participants";
+import { history } from "_helpers";
+import { useQueryClient } from "react-query";
+import { userService } from "_helpers";
 
 export { CreateEvent };
 
+const { formId, formField } = formModel;
+
 function CreateEvent() {
+  const queryClient = useQueryClient();
   const { currentStepIndex, step, next, back, isLastStep, isFirstStep } =
     useMultiStepForm([
       <Title formField={formField} />,
-      <Description formField={formField} />,
-      <EventDate formField={formField} />,
       <Image formField={formField} />,
+      <Participants formField={formField} />,
+      <EventDate formField={formField} />,
+      <Description formField={formField} />,
     ]);
 
   const currentValidationSchema = validationSchema[currentStepIndex];
 
-  function _sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
   async function _submitForm(values, actions) {
-    await _sleep(1000);
-    alert(JSON.stringify(values, null, 2));
+    actions.setSubmitting(true);
+
+    await eventapi.create({
+      title: values["title"],
+      description: values["description"],
+      startsAt: values["startsAt"],
+      endsAt: values["endsAt"],
+      picture: {
+        name: values["image"].name,
+        base64: await imageService.toBase64(values["image"]),
+      },
+      participants: values["participants"].map((p) => ({
+        userId: p.userId,
+      })),
+    });
+
     actions.setSubmitting(false);
 
-    next();
+    queryClient.invalidateQueries({
+      queryKey: [`/user/events/${userService.currentUser.id}`],
+    });
+
+    // clean up of image data
+    // without this, if creating another event, the old event image will show again.
+    formModel.formField.image.url = "";
+    formModel.formField.image.file = null;
+
+    history.navigate("/events");
   }
 
-  function _handleSubmit(values, actions) {
+  async function _handleSubmit(values, actions) {
     if (isLastStep) {
       _submitForm(values, actions);
     } else {

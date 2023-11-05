@@ -20,6 +20,17 @@ const formModel = {
       label: "Event ends on",
       requiredErrorMsg: "End date is required",
     },
+    image: {
+      name: "image",
+      label: "Image",
+      url: "",
+      file: null,
+    },
+    participants: {
+      name: "participants",
+      label: "Participants",
+      value: [],
+    },
   },
 };
 
