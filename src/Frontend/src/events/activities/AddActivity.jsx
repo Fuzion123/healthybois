@@ -9,12 +9,15 @@ import { useState } from "react";
 import { alertActions } from "_store";
 import { useDispatch } from "react-redux";
 // import { useState } from 'react';
+import { Header } from "_components/Header";
+import { useQueryClient } from "react-query";
 
 export default AddActivity;
 
-function AddActivity(props) {
+function AddActivity() {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   // form validation rules
   const validationSchema = Yup.object().shape({
@@ -41,6 +44,9 @@ function AddActivity(props) {
     {
       onSuccess: () => {
         setIsLoading(false);
+        queryClient.invalidateQueries({
+          queryKey: [`/getById/${id}`],
+        });
         history.navigate(-1);
       },
       onError: (error) => {
@@ -70,14 +76,16 @@ function AddActivity(props) {
   // };
 
   return (
-    <div>
-      <form
-        onSubmit={handleSubmit(submit)}
-        className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm space-y-6"
+    <div className="mt-4">
+      <Header
+        className="flex flex-row justify-between text-base/6"
+        title="Add new activity"
       >
-        <h1 className="block text-md font-medium leading-6 text-gray-900 text-3xl">
-          Add new activity
-        </h1>
+        {/* <time dateTime={data.startsAt} className="text-sm text-gray-500">
+              {date.formatDate(data.startsAt)}
+            </time> */}
+      </Header>
+      <form onSubmit={handleSubmit(submit)} className="mt-10 space-y-6">
         <div>
           <label className="block text-md font-medium leading-6 text-gray-900">
             Title
@@ -129,12 +137,6 @@ function AddActivity(props) {
           ) : (
             "Add"
           )}
-        </button>
-        <button
-          onClick={() => history.navigate(`/events`)}
-          className="btn-negative w-full"
-        >
-          Cancel
         </button>
       </form>
     </div>

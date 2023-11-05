@@ -57,7 +57,7 @@ function List() {
     <div>
       <div className="grid grid-cols-2 gap-2">
         <h1 className="text-2xl font-bold justify-self-start">Events</h1>
-        <div>
+        <div className="justify-self-end">
           <button
             onClick={() => navigate(`/events/add`)}
             className="w-full btn-primary"

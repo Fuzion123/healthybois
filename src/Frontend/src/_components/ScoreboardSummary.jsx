@@ -87,8 +87,7 @@ export default function ScoreboardSummary({ event }) {
   };
 
   return (
-    <div className="">
-      <h1 className="text-2xl font-bold mb-2">Event Scoreboard</h1>
+    <div>
       <MultiLineChart activities={activities} participants={participants} />
     </div>
   );

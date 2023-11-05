@@ -1,12 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { eventapi } from "_api";
-import { date } from "_helpers";
+// import { date } from "_helpers";
 import ProgressBar from "_components/ProgressBar";
 import ActivityList from "./activities/ActivityList";
 // import ScoreBoard from '_components/Scoreboard';
 import { history } from "_helpers";
 import ScoreboardSummary from "_components/ScoreboardSummary";
+import { Header } from "_components/Header";
+import { EventDetailsSettings } from "events/EventDetailsSettings";
 
 export default EventDetails;
 
@@ -26,12 +28,16 @@ function EventDetails() {
     <div>
       {data && (
         <>
-          <div className="flex flex-row justify-between text-base/6">
-            <h1 className="text-2xl font-bold">{data.title}</h1>
-            <time dateTime={data.startsAt} className="text-sm text-gray-500">
+          <Header
+            className="flex flex-row justify-between text-base/6"
+            title={data.title}
+            settings={<EventDetailsSettings event={data} />}
+          >
+            {/* <time dateTime={data.startsAt} className="text-sm text-gray-500">
               {date.formatDate(data.startsAt)}
-            </time>
-          </div>
+            </time> */}
+          </Header>
+
           <div className="my-2">
             <ProgressBar progress={data.progress} />
           </div>
@@ -51,14 +57,6 @@ function EventDetails() {
               </button>
             </div>
           </div>
-          <button
-            onClick={() => history.navigate(`/events`)}
-            className="btn-back"
-          >
-            <div className="flex justify-center">
-              <p className="">Back</p>
-            </div>
-          </button>
         </>
       )}
     </div>
