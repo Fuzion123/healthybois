@@ -34,9 +34,7 @@ function CreateEvent() {
   const currentValidationSchema = validationSchema[currentStepIndex];
 
   async function _submitForm(values, actions) {
-    actions.setSubmitting(true);
-
-    await eventapi.create({
+    var response = await eventapi.create({
       title: values["title"],
       description: values["description"],
       startsAt: values["startsAt"],
@@ -61,12 +59,12 @@ function CreateEvent() {
     formModel.formField.image.url = "";
     formModel.formField.image.file = null;
 
-    history.navigate("/events");
+    history.navigate(`/events/${response.id}`);
   }
 
   async function _handleSubmit(values, actions) {
     if (isLastStep) {
-      _submitForm(values, actions);
+      await _submitForm(values, actions);
     } else {
       next();
       actions.setTouched({});
@@ -79,14 +77,14 @@ function CreateEvent() {
   }
 
   return (
-    <div>
-      <div>
+    <div className="flex flex-col justify-center sm:mx-auto sm:w-full sm:max-w-lg mt-2 mb-2">
+      <div className="mb-4">
         <Header
           title={"Create Event"}
           overwriteClickHandler={!isFirstStep ? _handleBack : undefined}
         />
       </div>
-      <div className="mt-8 mb-8">
+      <div>
         <Formik
           initialValues={initialValues}
           validationSchema={currentValidationSchema}
@@ -102,8 +100,13 @@ function CreateEvent() {
                     disabled={isSubmitting}
                     type="submit"
                   >
-                    {isLastStep ? "Create event" : "Next"}
-                    {isSubmitting && <CircularProgress size={24} />}
+                    {isSubmitting ? (
+                      <CircularProgress size={24} />
+                    ) : isLastStep ? (
+                      "Create event"
+                    ) : (
+                      "Next"
+                    )}
                   </button>
                 </div>
               </div>

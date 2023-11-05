@@ -13,8 +13,8 @@ const {
 const exportModel = {
   [title.name]: "",
   [description.name]: "",
-  [startsAt.name]: dayjs(new Date()),
-  [endsAt.name]: dayjs(addHours(new Date(), 1)),
+  [startsAt.name]: dayjs(addHours(new Date(), 1)),
+  [endsAt.name]: dayjs(addHours(new Date(), 2)),
   [participants.name]: [],
   [image.name]: "",
 };

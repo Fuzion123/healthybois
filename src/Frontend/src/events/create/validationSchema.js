@@ -23,10 +23,7 @@ const exportObject = [
       }),
   }),
   Yup.object().shape({
-    [participants.name]: Yup.array().min(
-      1,
-      "Your event must have at least 1 participant"
-    ),
+    [participants.name]: Yup.array(),
   }),
   Yup.object().shape({
     [startsAt.name]: Yup.date()

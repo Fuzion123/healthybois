@@ -31,7 +31,7 @@ export default function Participants(props) {
 
   useEffect(() => {
     if (inputValue === "") {
-      setOptions(field.value ? field.value : []);
+      setOptions([]);
 
       return;
     }
@@ -86,9 +86,9 @@ export default function Participants(props) {
         onInputChange={(event, newInputValue) => {
           if (newInputValue === null || newInputValue.length === 0) {
             setLoading(false);
+          } else {
+            setLoading(true);
           }
-
-          setLoading(true);
 
           setInputValue(newInputValue);
         }}
