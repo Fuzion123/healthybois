@@ -125,9 +125,9 @@ function Register() {
   }
 
   return (
-    <div>
+    <div className="sm:mx-auto sm:w-full sm:max-w-lg">
       <form onSubmit={onSubmit} className="flex flex-col px-1 py-1 lg:px-8 ">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <div>
           <Header
             title={"Account creation"}
             overwriteClickHandler={!isFirstStep ? previous : undefined}

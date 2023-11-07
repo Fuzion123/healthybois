@@ -5,7 +5,7 @@ import { useMutation } from "react-query";
 import { emailapi } from "_api";
 import { useDispatch } from "react-redux";
 import { alertActions } from "_store";
-import BackButton from "_components/BackButton";
+import { Header } from "_components/Header";
 
 export { ForgotPassword };
 
@@ -43,20 +43,9 @@ function ForgotPassword() {
   }
 
   return (
-    <div className="flex min-h-full flex-col justify-center lg:px-8">
-      <BackButton title={"back"} useTitleAndLogo={true}></BackButton>
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img
-          alt="healthybois-logo"
-          className="mx-auto h-28 w-28 filter drop-shadow-2xl"
-          src={process.env.PUBLIC_URL + "/logo.png"}
-        />
-        <h4 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Forgot password
-        </h4>
-      </div>
-
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <div className="flex min-h-full flex-col justify-center lg:px-8 sm:mx-auto sm:w-full sm:max-w-lg">
+      <Header title={"Forgot password"} />
+      <div className="mt-10">
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <label className="block text-md font-medium leading-6 text-gray-900">
             Email
@@ -65,6 +54,7 @@ function ForgotPassword() {
             <input
               name="email"
               type="text"
+              placeholder="enter email to recover password "
               {...register("email")}
               className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
                 errors.email ? "is-invalid" : ""

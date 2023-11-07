@@ -44,7 +44,7 @@ function ForgotPassword() {
 
   return (
     <div className="flex min-h-full flex-col justify-center px-10 py-14 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+      <div className="">
         <img
           alt="healthybois-logo"
           className="mx-auto h-60 w-60 filter drop-shadow-2xl"

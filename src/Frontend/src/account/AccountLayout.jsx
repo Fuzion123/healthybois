@@ -18,15 +18,13 @@ function AccountLayout() {
   return (
     <div className="container">
       <div className="row">
-        <div className="col-sm-4 m-auto">
-          <Routes>
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-            <Route path="forgotpassword" element={<ForgotPassword />} />
-            <Route path="resetpassword/:code" element={<ResetPassword />} />
-            <Route path="/created" element={<AccountCreated />} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="forgotpassword" element={<ForgotPassword />} />
+          <Route path="resetpassword/:code" element={<ResetPassword />} />
+          <Route path="/created" element={<AccountCreated />} />
+        </Routes>
       </div>
     </div>
   );
