@@ -63,9 +63,18 @@ namespace WebApi.Controllers
         [Produces(typeof(List<EventDetailDto>))]
         public async Task<IActionResult> GetAllEventsReferencedByUser(CancellationToken cancellationToken)
         {
-            var Events = await EventService.GetAllEventsReferencedByUser(CurrentUser.Id, cancellationToken);
+            var events = await EventService.GetAllEventsReferencedByUser(CurrentUser.Id, cancellationToken);
 
-            return Ok(Events);
+            var activeEvents = events.Where(x => x.Active).ToArray();
+            var upcomingEvents = events.Where(x => x.Upcoming).ToArray();
+            var completedEvents = events.Where(x => x.Completed).ToArray();
+
+            return Ok(new
+            {
+                activeEvents,
+                upcomingEvents,
+                completedEvents
+            });
         }
 
         [HttpPut("{eventId}/addOrUpdatePicture")]

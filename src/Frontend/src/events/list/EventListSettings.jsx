@@ -12,9 +12,9 @@ import AlertDialog from "../_components/AlertDialog";
 import { useQueryClient } from "react-query";
 import { userService } from "_helpers";
 
-export { EventDetailsSettings };
+export { EventListSettings };
 
-function EventDetailsSettings({ event }) {
+function EventListSettings({ event }) {
   const queryClient = useQueryClient();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);

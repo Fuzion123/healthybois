@@ -22,10 +22,9 @@ namespace Infrastructure.Repositories.Events.Configurations
 
             builder.HasMany<Participant>("_participants").WithOne().HasForeignKey(x => x.EventId).OnDelete(DeleteBehavior.Cascade).IsRequired();
             builder.HasMany<Activity>("_activities").WithOne().HasForeignKey(x => x.EventId).OnDelete(DeleteBehavior.Cascade).IsRequired();
-            
+
             builder.Ignore(x => x.Participants);
             builder.Ignore(x => x.Activities);
-            builder.Ignore(x => x.EventIsActive);
 
             builder.HasKey(x => x.Id).IsClustered(true);
             builder.HasIndex(x => x.Title).IsClustered(false).IsUnique();

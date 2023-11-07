@@ -1,15 +1,12 @@
 import { useSelector } from "react-redux";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { eventapi } from "_api";
 import { useQuery } from "react-query";
-import { date } from "_helpers";
-// import { Messages } from '_components';
+import EventListDetails from "events/list/EventListDetails";
 
 export { Home };
 
 function Home() {
-  const navigate = useNavigate();
   const auth = useSelector((x) => x.auth.value);
 
   // query
@@ -32,15 +29,6 @@ function Home() {
   if (error) {
     return <div>{error}</div>;
   }
-  var today = new Date().toISOString();
-
-  const currentEvent = data.filter((event) => {
-    return event.startsAt <= today && today <= event.endsAt;
-  });
-
-  const nextEvents = data.filter((event) => {
-    return event.startsAt >= today;
-  });
 
   return (
     <div className="min-h-screen">
@@ -57,28 +45,9 @@ function Home() {
         <section className="mb-8">
           <h2 className="text-xl font-bold mb-4">Current Event</h2>
           <div className="grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-10 lg:grid-cols-3">
-            {currentEvent.map((event) => (
-              <div
-                key={event.id}
-                className="flex flex-col my-8 shadow-md rounded-lg"
-              >
-                <div
-                  className=""
-                  onClick={() => navigate(`/events/${event.id}`)}
-                >
-                  <img
-                    className="object-cover w-full h-52 md:h-72 rounded-t-lg"
-                    src={event.eventPictureUrl}
-                    alt="stock"
-                  ></img>
-                  <h5 className="text-1xl font-bold px-3 py-3">
-                    {event.title}
-                  </h5>
-                  <div className="text-1xl px-3 pb-3">{event.description}</div>
-                  <div className="flex flex-wrap justify-between items-center px-3 pb-3 text-xs">
-                    <span>Starts at: {date.formatDate(event.startsAt)}</span>
-                  </div>
-                </div>
+            {data.activeEvents.map((event) => (
+              <div key={event.id}>
+                <EventListDetails event={event} />
               </div>
             ))}
           </div>
@@ -89,28 +58,9 @@ function Home() {
         <section className="mb-8">
           <h2 className="text-xl font-bold mb-4">Your Upcoming Events</h2>
           <div className="grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-10 lg:grid-cols-3">
-            {nextEvents.slice(0, 3).map((event) => (
-              <div
-                key={event.id}
-                className="flex flex-col my-8 shadow-md rounded-lg"
-              >
-                <div
-                  className=""
-                  onClick={() => navigate(`/events/${event.id}`)}
-                >
-                  <img
-                    className="object-cover w-full h-52 md:h-72 rounded-t-lg"
-                    src={event.eventPictureUrl}
-                    alt="stock"
-                  ></img>
-                  <h5 className="text-1xl font-bold px-3 py-3">
-                    {event.title}
-                  </h5>
-                  <div className="text-1xl px-3 pb-3">{event.description}</div>
-                  <div className="flex flex-wrap justify-between items-center px-3 pb-3 text-xs">
-                    <span>Starts at: {date.formatDate(event.startsAt)}</span>
-                  </div>
-                </div>
+            {data.upcomingEvents.slice(0, 3).map((event) => (
+              <div key={event.id}>
+                <EventListDetails event={event} />
               </div>
             ))}
           </div>

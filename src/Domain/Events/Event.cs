@@ -14,7 +14,6 @@ namespace Domain.Events
         public DateTime StartsAt { get; private set; }
         public DateTime EndsAt { get; private set; }
         public string EventPictureId { get; private set; }
-        public bool EventIsActive => DateTime.UtcNow >= StartsAt && DateTime.UtcNow >= EndsAt;
         private readonly List<Participant> _participants;
         public IReadOnlyList<Participant> Participants => _participants.AsReadOnly();
 
@@ -60,7 +59,7 @@ namespace Domain.Events
                 }
             }
 
-            CreatedAt = DateTime.UtcNow;
+            CreatedAt = DateTime.Now;
             UpdatedAt = CreatedAt;
             EventPictureId = pictureId;
         }
@@ -110,7 +109,7 @@ namespace Domain.Events
 
             if (updated)
             {
-                UpdatedAt = DateTime.UtcNow;
+                UpdatedAt = DateTime.Now;
             }
 
             return updated;
@@ -132,7 +131,7 @@ namespace Domain.Events
 
             _participants.Add(participant);
 
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.Now;
 
             return participant;
         }
@@ -154,7 +153,7 @@ namespace Domain.Events
 
                 _participants.Remove(p);
 
-                UpdatedAt = DateTime.UtcNow;
+                UpdatedAt = DateTime.Now;
             }
 
             return removed;
@@ -176,7 +175,7 @@ namespace Domain.Events
 
             _activities.Add(activity);
 
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.Now;
 
             return activity;
         }
@@ -195,7 +194,7 @@ namespace Domain.Events
 
             if (activity.Update(input))
             {
-                UpdatedAt = DateTime.UtcNow;
+                UpdatedAt = DateTime.Now;
 
                 return true;
             }
@@ -220,7 +219,7 @@ namespace Domain.Events
 
                 _activities.Remove(a);
 
-                UpdatedAt = DateTime.UtcNow;
+                UpdatedAt = DateTime.Now;
             }
 
             return removed;
@@ -256,7 +255,7 @@ namespace Domain.Events
             if (EventPictureId != eventPictureId)
             {
                 EventPictureId = eventPictureId;
-                UpdatedAt = DateTime.UtcNow;
+                UpdatedAt = DateTime.Now;
                 return true;
             }
 

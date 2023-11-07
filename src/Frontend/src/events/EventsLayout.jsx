@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import List from "./List";
+import EventList from "./list/EventList";
 import AddEdit from "./AddEdit";
 import Details from "./Details";
 import AddActivity from "./activities/AddActivity";
@@ -12,7 +12,7 @@ function EventsLayout() {
   return (
     <div className="container">
       <Routes>
-        <Route index element={<List />} />
+        <Route index element={<EventList />} />
         <Route path="add" element={<CreateEvent />} />
         <Route path="edit/:id" element={<AddEdit />} />
         <Route path="/:id" element={<Details />} />

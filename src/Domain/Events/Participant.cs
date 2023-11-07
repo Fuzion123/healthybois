@@ -22,7 +22,7 @@ namespace Domain.Events
             }
 
             UserId = input.UserId;
-            CreatedAt = DateTime.UtcNow;
+            CreatedAt = DateTime.Now;
             UpdatedAt = CreatedAt;
             EventId = eventId;
         }

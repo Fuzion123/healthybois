@@ -50,7 +50,6 @@ namespace Service.Events.Mappers
             {
                 Id = @event.Id,
                 EndsAt = @event.EndsAt,
-                EventIsActive = @event.EventIsActive,
                 Title = @event.Title,
                 Description = @event.Description,
                 StartsAt = @event.StartsAt,
@@ -183,7 +182,6 @@ namespace Service.Events.Mappers
             {
                 Id = @event.Id,
                 EndsAt = @event.EndsAt,
-                EventIsActive = @event.EventIsActive,
                 Title = @event.Title,
                 StartsAt = @event.StartsAt,
                 EventPictureUrl = pictureService.GetPicture(@event.EventPictureId)

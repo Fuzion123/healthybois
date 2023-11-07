@@ -76,7 +76,7 @@ function AddActivity() {
   // };
 
   return (
-    <div className="mt-4">
+    <div className="flex flex-col sm:mx-auto sm:w-full sm:max-w-lg mt-2 mb-2">
       <Header
         className="flex flex-row justify-between text-base/6"
         title="Add new activity"

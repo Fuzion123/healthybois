@@ -30,7 +30,7 @@ namespace Domain.Events
             EventId = input.EventId;
             OwnerUserId = input.OwnerUserId;
             Title = input.Title;
-            CreatedAt = DateTime.UtcNow;
+            CreatedAt = DateTime.Now;
             UpdatedAt = CreatedAt;
             CompletedOn = null;
         }
@@ -74,7 +74,7 @@ namespace Domain.Events
 
             if (updated)
             {
-                UpdatedAt = DateTime.UtcNow;
+                UpdatedAt = DateTime.Now;
             }
 
             return updated;
@@ -95,7 +95,7 @@ namespace Domain.Events
 
             if (updated)
             {
-                UpdatedAt = DateTime.UtcNow;
+                UpdatedAt = DateTime.Now;
             }
 
             return updated;

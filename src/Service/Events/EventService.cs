@@ -131,7 +131,11 @@ namespace Service.Events
         {
             var Events = await eventRepository.GetAllReferencedEvents(userId, cancellationToken);
 
-            return Events.Select(async x => await eventMapper.Map(x, cancellationToken)).Select(x => x.Result).ToList();
+            return Events
+                .Select(async x => await eventMapper.Map(x, cancellationToken))
+                .Select(x => x.Result)
+                .OrderByDescending(x => x.StartsAt)
+                .ToList();
         }
 
         public async Task<EventDetailDto> GetByTitle(string title, CancellationToken cancellationToken)
@@ -251,7 +255,7 @@ namespace Service.Events
             if (activity == null)
                 return null;
 
-            activity.SetCompleted(DateTime.UtcNow);
+            activity.SetCompleted(DateTime.Now);
 
             await eventRepository.SaveChangesAsync(cancellationToken);
 

@@ -21,7 +21,7 @@ namespace Infrastructure.EmailService
                 throw new ArgumentException($"'{nameof(email)}' cannot be null or empty.", nameof(email));
             }
 
-            var expiresAt = DateTime.UtcNow.Add(azureEmailSettings.ResetPasswordExpireTimeSpan);
+            var expiresAt = DateTime.Now.Add(azureEmailSettings.ResetPasswordExpireTimeSpan);
 
             var code = Guid.NewGuid().ToString();
 
@@ -58,7 +58,7 @@ namespace Infrastructure.EmailService
                 throw new Exception();
             }
 
-            if (DateTime.UtcNow > recoverObj.ExpiresAt)
+            if (DateTime.Now > recoverObj.ExpiresAt)
             {
                 throw new Exception($"Recover code has expired after {azureEmailSettings.ResetPasswordExpireTimeSpan.ToString("mm':'ss")}, please send a new recover email and try again.");
             }

@@ -8,7 +8,9 @@ namespace Service.Events.Models
         public string Description { get; set; }
         public DateTime StartsAt { get; set; }
         public DateTime EndsAt { get; set; }
-        public bool EventIsActive { get; set; }
+        public bool Completed => DateTime.Now > EndsAt;
+        public bool Active => DateTime.Now >= StartsAt && DateTime.Now < EndsAt;
+        public bool Upcoming => DateTime.Now < StartsAt;
         public Uri EventPictureUrl { get; set; }
         public EventOwnerDto EventOwner { get; set; }
         public List<EventUserParticipantDto> Participants { get; set; }

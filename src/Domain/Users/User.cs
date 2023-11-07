@@ -45,7 +45,7 @@ public class User
         LastName = lastName;
         UserName = userName;
         PasswordHash = passwordHash;
-        CreatedAt = DateTime.UtcNow;
+        CreatedAt = DateTime.Now;
         UpdatedAt = CreatedAt;
         Role = Role.User;
         ProfilePictureId = profilePictureId;
@@ -96,7 +96,7 @@ public class User
 
         if (updated)
         {
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.Now;
         }
 
         return updated;
@@ -131,7 +131,7 @@ public class User
         if (!string.IsNullOrEmpty(profilePictureId) && ProfilePictureId != profilePictureId)
         {
             ProfilePictureId = profilePictureId;
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.Now;
             return true;
         }
 
@@ -141,7 +141,7 @@ public class User
     public void DeleteProfilePicture()
     {
         ProfilePictureId = null;
-        UpdatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.Now;
     }
 
     public bool UpdatePassword(string passwordHash)
@@ -157,7 +157,7 @@ public class User
         }
 
         PasswordHash = passwordHash;
-        UpdatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.Now;
 
         return true;
     }

@@ -25,7 +25,7 @@ namespace Domain.Events
             ActivityId = activityId;
             ParticipantId = input.ParticipantId;
             Score = input.Score;
-            CreatedAt = DateTime.UtcNow;
+            CreatedAt = DateTime.Now;
             UpdatedAt = CreatedAt;
         }
 
@@ -39,7 +39,7 @@ namespace Domain.Events
 
                 Score = score;
 
-                UpdatedAt = DateTime.UtcNow;
+                UpdatedAt = DateTime.Now;
             }
 
             return updated;

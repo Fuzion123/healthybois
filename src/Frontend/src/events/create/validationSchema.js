@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 import formModel from "./formModel";
-import dayjs from "dayjs";
+// import dayjs from "dayjs";
 
 const {
   formField: { title, description, startsAt, endsAt, image, participants },
@@ -26,9 +26,8 @@ const exportObject = [
     [participants.name]: Yup.array(),
   }),
   Yup.object().shape({
-    [startsAt.name]: Yup.date()
-      .required(`${endsAt.requiredErrorMsg}`)
-      .min(dayjs(new Date()), "Date is too early"),
+    [startsAt.name]: Yup.date().required(`${endsAt.requiredErrorMsg}`),
+    // .min(dayjs(new Date()), "Date is too early"),
     [endsAt.name]: Yup.date()
       .required(`${endsAt.requiredErrorMsg}`)
       .min(Yup.ref("startsAt"), "End date can't be before start date"),

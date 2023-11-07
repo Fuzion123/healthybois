@@ -28,7 +28,7 @@ function Nav() {
       <Disclosure as="nav" className="bg-gray-800">
         {({ open, close }) => (
           <>
-            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-10xl sm:w-full sm:max-w-lg md:max-w-screen-lg px-2 sm:px-6 lg:px-8">
               <div className="relative flex h-16 items-center justify-between">
                 <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                   {/* Mobile menu button*/}

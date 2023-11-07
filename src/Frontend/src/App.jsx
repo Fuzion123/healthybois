@@ -58,10 +58,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <div className="app-container xs ">
+        <div className="app-container">
           <Nav />
           <Alert />
-          <div className="container pt-3 pb-3">
+          <div className="container pt-3 pb-3 sm:w-full sm:max-w-lg md:max-w-screen-lg">
             <Routes>
               {/* private */}
               <Route element={<PrivateRoute />}>
