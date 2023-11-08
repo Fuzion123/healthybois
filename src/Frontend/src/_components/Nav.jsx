@@ -6,6 +6,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
 
 import { authActions } from "_store";
+import { Avatar } from "@mui/material";
 
 export { Nav };
 
@@ -93,10 +94,10 @@ function Nav() {
                     <div>
                       <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                         <span className="sr-only">Open user menu</span>
-                        <img
-                          className="h-8 w-8 rounded-full"
+                        <Avatar
+                          alt={auth?.firstName}
                           src={auth?.profilePictureUrl}
-                          alt="Profile Pic"
+                          sx={{ width: 32, height: 32 }}
                         />
                       </Menu.Button>
                     </div>
@@ -307,10 +308,10 @@ function Nav() {
                   <div>
                     <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open user menu</span>
-                      <img
-                        className="h-8 w-8 rounded-full"
+                      <Avatar
+                        alt={auth?.firstName}
                         src={auth?.profilePictureUrl}
-                        alt="Profile Pic"
+                        sx={{ width: 32, height: 32 }}
                       />
                     </Menu.Button>
                   </div>

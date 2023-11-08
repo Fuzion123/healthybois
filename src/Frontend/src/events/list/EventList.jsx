@@ -76,7 +76,19 @@ function EventList() {
             <div>
               {data.completedEvents.length > 0 && (
                 <div className="py-4">
-                  <h1 className="text-2xl font-bold">Completed events</h1>
+                  <div className="flex">
+                    <h1 className="text-2xl font-bold">Completed events</h1>
+                    {data.completedEvents.length > 0 &&
+                      showCompleted === true && (
+                        <div className="ml-6 grid justify-items-center">
+                          <button onClick={() => setShowCompleted(false)}>
+                            hide
+                            <KeyboardArrowUpIcon />
+                          </button>
+                        </div>
+                      )}
+                  </div>
+
                   <div className="grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-10 lg:grid-cols-3">
                     {data.completedEvents.map((event) => (
                       <EventListDetails key={event.id} event={event} />

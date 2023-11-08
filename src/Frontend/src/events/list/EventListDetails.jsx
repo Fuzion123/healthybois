@@ -32,7 +32,7 @@ export default function EventListDetails({ event }) {
           onClick={goToEvent}
           className="flex flex-wrap justify-between items-center px-3 pb-3 pt-2 text-xs"
         >
-          <span>Starts at: {date.formatDate(event.startsAt)}</span>
+          <span>{date.formatDate(event.startsAt)}</span>
           <EventStatus event={event} />
         </div>
       </div>
