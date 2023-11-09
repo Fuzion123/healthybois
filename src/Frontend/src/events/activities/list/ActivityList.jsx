@@ -1,7 +1,24 @@
+import React from "react";
 import { useParams } from "react-router-dom";
 import { history } from "_helpers";
 
 export default ActivityList;
+
+function getRandomGradient() {
+  const color1 = "#" + Math.floor(Math.random()*16777215).toString(16);
+  const color2 = "#" + Math.floor(Math.random()*16777215).toString(16);
+
+  return `linear-gradient(45deg, ${color1}, ${color2})`;
+}
+
+function getActivityPosition(index, totalActivities) {
+  const angle = ((index / totalActivities) * 2 - 0.5) * Math.PI;
+
+  const x = Math.cos(angle) * 150; 
+  const y = Math.sin(angle) * 150;
+
+  return { transform: `translate(${x}px, ${y}px)` };
+}
 
 function ActivityList(props) {
   const { id } = useParams();
@@ -15,17 +32,27 @@ function ActivityList(props) {
   }
 
   return (
-    <div>
-      <h3 className="text-2xl font-bold mb-2">Activities</h3>
-      <div className="flex flex-col justify-between text-gray-900 bg-white border rounded-lg">
-        {props.activities.map((p, index) => (
+    <div className="flex flex-wrap">
+      {props.activities.map((p, index) => (
+        <div key={p.id} className="m-4 relative">
+          <section className="stage">
+            <figure className="ball" style={{ background: getRandomGradient() }}>
+              <span className="shadow"></span>
+            </figure>
+          </section>
+
           <div
             onClick={() => goTo(p)}
-            key={p.id}
-            className="relative inline-flex items-center w-full px-2 py-2 text-sm font-medium border-gray-200 cursor-pointer hover:bg-slate-100"
+            className="bubble relative inline-flex items-center p-4 text-sm font-medium border cursor-pointer hover:bg-slate-100 rounded-full"
+            style={{
+              background: getRandomGradient(),
+              minWidth: "10rem",
+              whiteSpace: "nowrap",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1), 0 6px 12px rgba(0, 0, 0, 0.1)"
+            }}
           >
-            <div className="ml-2 font-bold mr-6">#{index + 1}</div>
-            <div className="text font-bold my-2">{p.title}</div>
+            <div className="ml-2 font-bold mr-4"># {index + 1}</div>
+            <div className="font-bold">{p.title}</div>
             {p.completed && (
               <div className="self-center justify-center m-2">
                 <svg
@@ -40,8 +67,8 @@ function ActivityList(props) {
               </div>
             )}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }
