@@ -1,46 +1,26 @@
 import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
 import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import EditIcon from "@mui/icons-material/Edit";
+
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { eventapi } from "_api";
-import { history } from "_helpers";
-import AlertDialog from "../_components/AlertDialog";
-import { useQueryClient } from "react-query";
-import { userService } from "_helpers";
 
-export { EventDetailsSettings };
+export { Settings };
 
-function EventDetailsSettings({ event }) {
-  const queryClient = useQueryClient();
+function Settings({ children }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const { dialog, handleClickOpen } = AlertDialog({
-    alertText: `Delete this event?`,
-    confirmText: "Delete",
-    cancelCallback: () => handleClose(),
-    confirmCallback: async () => {
-      await eventapi.deleteById(event.id);
-      queryClient.invalidateQueries({
-        queryKey: [`/user/events/${userService.currentUser.id}`],
-      });
-      history.navigate("/events");
-    },
-  });
 
-  const handleClick = (event) => {
+  const handleSettingClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  async function handleClose(event, callback) {
+  async function handleClose() {
     setAnchorEl(null);
+  }
 
-    if (callback && typeof callback === "function") {
-      await callback();
-    }
+  if (!children || children.length === 0) {
+    return undefined;
   }
 
   return (
@@ -51,7 +31,7 @@ function EventDetailsSettings({ event }) {
         aria-controls={open ? "long-menu" : undefined}
         aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
-        onClick={handleClick}
+        onClick={handleSettingClick}
       >
         <MoreVertIcon />
       </IconButton>
@@ -64,16 +44,8 @@ function EventDetailsSettings({ event }) {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose} disableRipple>
-          <EditIcon />
-          Edit
-        </MenuItem>
-        <MenuItem onClick={() => handleClickOpen()} disableRipple>
-          <DeleteIcon />
-          Delete
-        </MenuItem>
+        {children}
       </StyledMenu>
-      {dialog}
     </div>
   );
 }

@@ -3,12 +3,12 @@ import { useQuery } from "react-query";
 import { eventapi } from "_api";
 // import { date } from "_helpers";
 import ProgressBar from "_components/ProgressBar";
-import ActivityList from "./activities/ActivityList";
+import ActivityList from "../activities/list/ActivityList";
 // import ScoreBoard from '_components/Scoreboard';
 import { history } from "_helpers";
 import ScoreboardSummary from "_components/ScoreboardSummary";
 import { Header } from "_components/Header";
-import { EventDetailsSettings } from "events/EventDetailsSettings";
+import { Settings } from "events/detail/Settings";
 
 export default EventDetails;
 
@@ -32,12 +32,8 @@ function EventDetails() {
             className="flex flex-row justify-between text-base/6"
             title={data.title}
             overwriteClickHandler={() => history.navigate("/events")}
-            settings={<EventDetailsSettings event={data} />}
-          >
-            {/* <time dateTime={data.startsAt} className="text-sm text-gray-500">
-              {date.formatDate(data.startsAt)}
-            </time> */}
-          </Header>
+            settings={<Settings event={data} />}
+          ></Header>
 
           <div className="my-2">
             <ProgressBar progress={data.progress} />

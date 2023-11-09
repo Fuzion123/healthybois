@@ -9,11 +9,6 @@ function ScoreBoard({ event }) {
     `scoreboard/${event.id}`,
     async () => {
       return await eventapi.getScoreboardByEventId(event.id);
-    },
-    {
-      onSuccess: (d) => {
-        console.log(d);
-      },
     }
   );
 

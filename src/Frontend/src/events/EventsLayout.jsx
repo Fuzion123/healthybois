@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import EventList from "./list/EventList";
 import AddEdit from "./AddEdit";
-import Details from "./Details";
-import AddActivity from "./activities/AddActivity";
-import ActivityDetails from "./activities/ActivityDetails";
+import Details from "./detail/Details";
+import AddActivity from "./activities/create/AddActivity";
+import ActivityDetails from "./activities/detail/ActivityDetails";
 import { CreateEvent } from "./create/CreateEvent";
 
 export { EventsLayout };

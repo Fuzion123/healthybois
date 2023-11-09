@@ -1,5 +1,4 @@
-export * from './ActivityList';
-export * from './ActivityDetails';
-export * from './AddActivity';
-export * from './ActivityResult';
-
+export * from "./list/ActivityList";
+export * from "./detail/ActivityDetails";
+export * from "./create/AddActivity";
+export * from "./results/ActivityResult";
