@@ -46,12 +46,12 @@ function EventDetails() {
           <div>
             <div className="my-2">
               <ActivityList activities={data.activities} />
-              <button
+              {/* <button
                 onClick={() => history.navigate(`/events/${id}/addActivity`)}
                 className="mt-3 btn-primary"
               >
                 Add Activity
-              </button>
+              </button> */}
             </div>
           </div>
         </>
