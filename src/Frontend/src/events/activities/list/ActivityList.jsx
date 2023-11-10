@@ -36,7 +36,7 @@ export default function ActivityList(props) {
     const radius = (minDimension / 2) * (radiusPercentage / 100);
 
     let gapSize;
-    if (containerSize >= 768) {
+    if (containerSize < 390) {
       // mobile
       gapSize = 5;
     } else {
@@ -65,7 +65,7 @@ export default function ActivityList(props) {
           containerSize
         );
 
-        const isMobile = containerSize >= 768;
+        const isMobile = containerSize < 390;
 
         const baseBubbleSize = isMobile ? 80 : 120;
         const bubbleSize = baseBubbleSize;
@@ -93,7 +93,7 @@ export default function ActivityList(props) {
               }}
             >
               <div
-                className="font-bold"
+                className="font-bold text-white	drop-shadow-lg"
                 style={{
                   fontSize: fontSize,
                   textAlign: "center", 
@@ -102,7 +102,7 @@ export default function ActivityList(props) {
                 # {index + 1}
               </div>
               <div
-                className="font-bold"
+                className="font-bold text-white	"
                 style={{
                   fontSize: fontSize,
                   textAlign: "center", 
@@ -113,7 +113,7 @@ export default function ActivityList(props) {
               {p.completed && (
                 <div className="button self-center justify-center m-2">
                   <svg
-                    className="w-3 h-3  text-green-500 dark:text-green-400 flex-shrink-0"
+                    className="w-3 h-3  text-white dark:text-green-400 flex-shrink-0"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="currentColor"
