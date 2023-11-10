@@ -38,7 +38,7 @@ export default function ActivityList(props) {
     let gapSize;
     if (containerSize > 390) {
       // mobile
-      gapSize = 5;
+      gapSize = 9;
     } else {
       // desktop
       gapSize = 8;
@@ -47,10 +47,11 @@ export default function ActivityList(props) {
   const adjustedRadius = radius + gapSize;
 
   
-  const x = Math.cos(angle) * adjustedRadius * (containerSize > 390 ? 1 : 0.8);
-  const y = Math.sin(angle) * adjustedRadius * (containerSize < 390 ? 1 : 0.6);  
-    return { x, y };
-  }
+  const x = Math.cos(angle) * adjustedRadius;
+  const y = Math.sin(angle) * adjustedRadius;
+
+  return { x, y };
+}
 
   function goTo(p) {
     history.navigate(`/events/${id}/${p.id}`);
@@ -91,6 +92,7 @@ export default function ActivityList(props) {
                   "0 4px 6px rgba(0, 0, 0, 0.1), 0 6px 12px rgba(0, 0, 0, 0.1)",
                 width: `${bubbleSize}px`,
                 height: `${bubbleSize}px`,
+          
               }}
             >
               <div

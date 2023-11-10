@@ -51,13 +51,13 @@ function EventDetails() {
 
 
             <button
-              onClick={() => setRenderActivityList(false)}
+              onClick={() => setRenderActivityList(true)}
               className="mt-3 btn-primary"
             >
               v1
             </button>
             <button
-              onClick={() => setRenderActivityList(true)}
+              onClick={() => setRenderActivityList(false)}
               className="mt-3  btn-back"
             >
               v2
@@ -65,9 +65,10 @@ function EventDetails() {
 
             <div className="my-2">
               {renderActivityList ? (
-                <ActivityList activities={data.activities} />
-              ) : (
                 <OldActivityList activities={data.activities} />
+              ) : (
+                <ActivityList activities={data.activities} />
+
               )}
 
 
