@@ -36,7 +36,7 @@ export default function ActivityList(props) {
     const radius = (minDimension / 2) * (radiusPercentage / 100);
 
     let gapSize;
-    if (containerSize < 390) {
+    if (containerSize > 390) {
       // mobile
       gapSize = 5;
     } else {
@@ -57,6 +57,7 @@ export default function ActivityList(props) {
   }
 
   return (
+    <div><h3 className="text-2xl font-bold mb-2">Activities</h3>
     <div className="relative mt-72">
       {props.activities.map((p, index) => {
         const { x, y } = calculateBubblePosition(
@@ -65,7 +66,7 @@ export default function ActivityList(props) {
           containerSize
         );
 
-        const isMobile = containerSize < 390;
+        const isMobile = containerSize > 390;
 
         const baseBubbleSize = isMobile ? 80 : 120;
         const bubbleSize = baseBubbleSize;
@@ -131,11 +132,13 @@ export default function ActivityList(props) {
 <button
   onClick={() => history.navigate(`/events/${id}/addActivity`)}
   className={`add absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-teal-400 hover:bg-teal-300 text-white font-bold ${
-    containerSize < 390 ? 'py-1 px-2 text-xs' : 'py-2 px-4'
+    containerSize > 390 ? 'py-1 px-2 text-xs' : 'py-2 px-4'
   } border-b-4 border-teal-700 hover:border-teal-500 rounded`}
 >
   Add Activity
 </button>
     </div>
+    </div>
   );
 }
+
