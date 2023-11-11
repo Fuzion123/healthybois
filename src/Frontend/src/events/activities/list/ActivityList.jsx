@@ -36,7 +36,7 @@ export default function ActivityList(props) {
     const radius = (minDimension / 2) * (radiusPercentage / 100);
 
     let gapSize;
-    if (containerSize > 390) {
+    if (containerSize < 390) {
       // mobile
       gapSize = 9;
     } else {
@@ -67,7 +67,7 @@ export default function ActivityList(props) {
           containerSize
         );
 
-        const isMobile = containerSize > 390;
+        const isMobile = containerSize < 390;
 
         const baseBubbleSize = isMobile ? 80 : 120;
         const bubbleSize = baseBubbleSize;
