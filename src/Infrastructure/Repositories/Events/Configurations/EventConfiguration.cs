@@ -11,14 +11,13 @@ namespace Infrastructure.Repositories.Events.Configurations
             builder.Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
             builder.Property(x => x.CreatedAt).IsRequired();
             builder.Property(x => x.UpdatedAt).IsRequired();
-            builder.Property<byte[]>("RowVersion").IsRowVersion().IsRequired(); // this supercedes the 'Version' property
 
             builder.Property(x => x.Title).HasMaxLength(255).IsRequired();
             builder.Property(x => x.Description).HasMaxLength(255).IsRequired(false);
             builder.Property(x => x.OwnerUserId).IsRequired();
             builder.Property(x => x.StartsAt).IsRequired();
             builder.Property(x => x.EndsAt).IsRequired();
-            builder.Property(x => x.EventPictureId).IsRequired(false);
+            builder.Property(x => x.EventPictureId).HasMaxLength(255).IsRequired(false);
 
             builder.HasMany<Participant>("_participants").WithOne().HasForeignKey(x => x.EventId).OnDelete(DeleteBehavior.Cascade).IsRequired();
             builder.HasMany<Activity>("_activities").WithOne().HasForeignKey(x => x.EventId).OnDelete(DeleteBehavior.Cascade).IsRequired();

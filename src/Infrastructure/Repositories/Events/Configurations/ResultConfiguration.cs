@@ -11,7 +11,6 @@ namespace Infrastructure.Repositories.Events.Configurations
             builder.Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
             builder.Property(x => x.CreatedAt).IsRequired();
             builder.Property(x => x.UpdatedAt).IsRequired();
-            builder.Property<byte[]>("RowVersion").IsRowVersion().IsRequired(); // this supercedes the 'Version' property
 
             builder.Property(x => x.ActivityId).IsRequired();
             builder.Property(x => x.ParticipantId).IsRequired();

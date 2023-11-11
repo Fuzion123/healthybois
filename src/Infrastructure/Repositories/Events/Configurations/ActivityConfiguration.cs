@@ -12,7 +12,6 @@ namespace Infrastructure.Repositories.Events.Configurations
             builder.Property(x => x.CreatedAt).IsRequired();
             builder.Property(x => x.UpdatedAt).IsRequired();
             builder.Property(x => x.CompletedOn).IsRequired(false);
-            builder.Property<byte[]>("RowVersion").IsRowVersion().IsRequired(); // this supercedes the 'Version' property
 
             builder.Property(x => x.Title).HasMaxLength(255).IsRequired();
             builder.Property(x => x.OwnerUserId).IsRequired();
