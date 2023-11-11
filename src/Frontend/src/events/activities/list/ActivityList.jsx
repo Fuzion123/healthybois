@@ -47,8 +47,9 @@ export default function ActivityList(props) {
   const adjustedRadius = radius + gapSize;
 
   
-  const x = Math.cos(angle) * adjustedRadius;
-  const y = Math.sin(angle) * adjustedRadius;
+  const x = Math.cos(angle) * adjustedRadius * (containerSize > 390 ? 1 : 0.8);
+  const y = Math.sin(angle) * adjustedRadius * (containerSize < 390 ? 1 : 0.6);
+
 
   return { x, y };
 }
@@ -69,7 +70,7 @@ export default function ActivityList(props) {
 
         const isMobile = containerSize < 390;
 
-        const baseBubbleSize = isMobile ? 80 : 120;
+        const baseBubbleSize = isMobile ? 50 : 120;
         const bubbleSize = baseBubbleSize;
         const fontSize = isMobile ? "8px" : "12px";
 
@@ -134,7 +135,7 @@ export default function ActivityList(props) {
 <button
   onClick={() => history.navigate(`/events/${id}/addActivity`)}
   className={`add absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-teal-400 hover:bg-teal-300 text-white font-bold ${
-    containerSize > 390 ? 'py-1 px-2 text-xs' : 'py-2 px-4'
+    containerSize < 390 ? 'py-1 px-2 text-xs' : 'py-2 px-4'
   } border-b-4 border-teal-700 hover:border-teal-500 rounded`}
 >
   Add Activity
