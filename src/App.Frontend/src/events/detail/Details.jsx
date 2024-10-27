@@ -47,9 +47,9 @@ function EventDetails() {
             <ScoreboardSummary event={data}></ScoreboardSummary>
           </div>
 
-          <div>
+          <OldActivityList activities={data.activities} />
 
-
+          {/* <div>
             <button
               onClick={() => setRenderActivityList(true)}
               className="mt-3 btn-primary"
@@ -62,18 +62,13 @@ function EventDetails() {
             >
               v2
             </button>
-
             <div className="my-2">
               {renderActivityList ? (
-                <OldActivityList activities={data.activities} />
               ) : (
                 <ActivityList activities={data.activities} />
-
               )}
-
-
             </div>
-          </div>
+          </div> */}
         </>
       )}
     </div>
