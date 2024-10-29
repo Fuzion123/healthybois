@@ -30,6 +30,6 @@
       <Folder Include="Migrations\" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Startup\Startup.csproj" />
+      <ProjectReference Include="../Startup/Startup.csproj" />
     </ItemGroup>
 </Project>

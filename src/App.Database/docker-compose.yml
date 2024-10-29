@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    container_name: healtybois-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=toppak123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - c:\Temp\healtybois\data:/var/opt/mssql/data
