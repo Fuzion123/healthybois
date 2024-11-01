@@ -3,7 +3,7 @@ import React from "react";
 import { Line } from "react-chartjs-2";
 
 export default function ScoreboardSummary({ event }) {
-  console.log(Chart);
+  console.debug(Chart.length);
 
   const activities = event.activities.map((activity) => activity.title);
 
@@ -31,7 +31,7 @@ export default function ScoreboardSummary({ event }) {
     };
   });
 
-  console.log(participants);
+  //console.log(participants);
 
   const MultiLineChart = ({ activities, participants }) => {
     // Create a dataset for each participant

@@ -1,4 +1,4 @@
-import { activityapi } from "_api";
+import { activityapi, resultapi } from "_api";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import { useParams } from "react-router-dom";
 import ActivityResult from "../results/ActivityResult";
@@ -17,14 +17,31 @@ function ActivityDetails() {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [scores, setScores] = useState([]);
+
+  var updateScore = function (participantId, score) {
+    const updatedScores = [...scores];
+
+    const participant = updatedScores.find(
+      (a) => a.participantId === participantId
+    );
+
+    if (participant && participant !== null) {
+      participant.score = score;
+    } else {
+      updatedScores.push({
+        participantId: participantId,
+        score: score,
+      });
+    }
+
+    setScores(updatedScores);
+  };
 
   const { data, error, isLoading } = useQuery(
     `/activityapi.getById/${id}/${activityId}`,
     async () => {
       return await activityapi.getById(id, activityId);
-    },
-    {
-      onSuccess: (d) => {},
     }
   );
 
@@ -51,35 +68,35 @@ function ActivityDetails() {
     }
   );
 
-  const toggleCompleteMutation = useMutation(
-    async (val) => {
-      if (val === true) {
-        await activityapi.markUnDone(id, activityId);
-      } else {
-        await activityapi.markDone(id, activityId);
+  const saveMutation = useMutation(
+    async (scores) => {
+      if (scores.length === 0) {
+        history.navigate(`/events/${id}`);
       }
 
-      queryClient.invalidateQueries({
-        queryKey: [`/activityapi.getById/${id}/${activityId}`],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [`/getById/${id}`],
-      });
+      setIsProcessing(true);
+
+      await resultapi.AddOrUpdateResult(id, activityId, scores);
     },
     {
       onSuccess: () => {
         setIsProcessing(false);
+        queryClient.invalidateQueries({
+          queryKey: `/getById/${id}`,
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: [`/activityapi.getById/${id}/${activityId}`],
+        });
+
+        console.log("navigating back");
+        history.navigate(`/events/${id}`);
       },
       onError: (err) => {
         setIsProcessing(false);
       },
     }
   );
-
-  async function toggleComplete(val) {
-    setIsProcessing(true);
-    await toggleCompleteMutation.mutate(val);
-  }
 
   if (error) return <div>Request Failed</div>;
 
@@ -95,8 +112,10 @@ function ActivityDetails() {
       <Header
         className="flex flex-row justify-between text-base/6"
         title={data.title}
-        overwriteClickHandler={() => {
-          history.navigate(`/events/${id}`);
+        overwriteClickHandler={async () => {
+          await saveMutation.mutate(scores);
+
+          // history.navigate(`/events/${id}`);
         }}
         settings={
           <Settings>
@@ -123,31 +142,6 @@ function ActivityDetails() {
       ></Header>
 
       <br></br>
-      {!isLoading && (
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            onChange={() => toggleComplete(data.completed)}
-            checked={data.completed}
-            value=""
-            className="sr-only peer"
-          />
-          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-          <span className="ml-3 text-m font-medium text-black-300">
-            Completed
-          </span>
-          {isProcessing ? (
-            <div className="ml-4 max-h-4 text-center">
-              <span className="spinner-border spinner-border-lg align-center"></span>
-            </div>
-          ) : (
-            <></>
-          )}
-        </label>
-      )}
-      <br></br>
-      <br></br>
-      <h4 className="text-x3 font-bold mb-2">Results</h4>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {data.participants.map((p, i) => {
@@ -160,11 +154,27 @@ function ActivityDetails() {
                 result={p.result}
                 isProcessing={isProcessing}
                 setIsProcessing={setIsProcessing}
+                updateScore={updateScore}
               />
             </div>
           );
         })}
       </div>
+
+      <button
+        disabled={isProcessing}
+        className="mt-3 btn-primary"
+        onClick={() => saveMutation.mutate(scores)}
+      >
+        {isProcessing ? (
+          <>
+            <span className="spinner-border spinner-border-sm me-1"></span>
+            <span className="font-medium">Processing...</span>
+          </>
+        ) : (
+          "Nice, save that! 😎"
+        )}
+      </button>
     </div>
   );
 }

@@ -7,54 +7,54 @@ using WebApi.Authorization;
 
 namespace WebApi.Controllers
 {
-    [Authorize]
-    [ApiController]
-    [Route("[controller]")]
-    public class ResultsController : ControllerWithUserBase
-    {
-        private readonly EventService eventService;
+		[Authorize]
+		[ApiController]
+		[Route("[controller]")]
+		public class ResultsController : ControllerWithUserBase
+		{
+				private readonly EventService eventService;
 
-        public ResultsController(IHttpContextAccessor accessor, EventService eventService) : base(accessor)
-        {
-            this.eventService = eventService;
-        }
+				public ResultsController(IHttpContextAccessor accessor, EventService eventService) : base(accessor)
+				{
+						this.eventService = eventService;
+				}
 
-        [HttpPut("{eventId}/{activityId}")]
-        [Produces(typeof(ActivityListingDto))]
-        public async Task<IActionResult> AddOrUpdateResult(int eventId, int activityId, ResultInput resultInput, CancellationToken cancellationToken)
-        {
-            var activity = await eventService.AddOrUpdateResult(eventId, activityId, resultInput, cancellationToken);
+				[HttpPut("{eventId}/{activityId}")]
+				[Produces(typeof(ActivityListingDto))]
+				public async Task<IActionResult> AddOrUpdateResult(int eventId, int activityId, List<ResultInput> resultInputs, CancellationToken cancellationToken)
+				{
+						var activity = await eventService.AddOrUpdateResults(eventId, activityId, resultInputs, cancellationToken);
 
-            return Ok(activity);
-        }
+						return Ok(activity);
+				}
 
-        [HttpGet("{eventId}/{activityId}")]
-        [Produces(typeof(List<ResultDto>))]
-        public async Task<IActionResult> GetAll(int eventId, int activityId, CancellationToken cancellationToken)
-        {
-            var results = await eventService.GetAllResults(eventId, activityId, cancellationToken).ConfigureAwait(false);
+				[HttpGet("{eventId}/{activityId}")]
+				[Produces(typeof(List<ResultDto>))]
+				public async Task<IActionResult> GetAll(int eventId, int activityId, CancellationToken cancellationToken)
+				{
+						var results = await eventService.GetAllResults(eventId, activityId, cancellationToken).ConfigureAwait(false);
 
-            return Ok(results);
-        }
+						return Ok(results);
+				}
 
-        [HttpGet("{eventId}/{activityId}/{resultId}")]
-        [Produces(typeof(ResultDto))]
-        public async Task<IActionResult> GetById(int eventId, int activityId, int resultId, CancellationToken cancellationToken)
-        {
-            var result = await eventService.GetResultById(eventId, activityId, resultId, cancellationToken);
+				[HttpGet("{eventId}/{activityId}/{resultId}")]
+				[Produces(typeof(ResultDto))]
+				public async Task<IActionResult> GetById(int eventId, int activityId, int resultId, CancellationToken cancellationToken)
+				{
+						var result = await eventService.GetResultById(eventId, activityId, resultId, cancellationToken);
 
-            if (result != null)
-                return Ok(result);
+						if (result != null)
+								return Ok(result);
 
-            return NotFound();
-        }
+						return NotFound();
+				}
 
-        [HttpDelete("{eventId}/{activityId}/{resultId}")]
-        public async Task<IActionResult> RemoveResult(int eventId, int activityId, int resultId, CancellationToken cancellationToken)
-        {
-            await eventService.RemoveResult(eventId, activityId, resultId, cancellationToken);
+				[HttpDelete("{eventId}/{activityId}/{resultId}")]
+				public async Task<IActionResult> RemoveResult(int eventId, int activityId, int resultId, CancellationToken cancellationToken)
+				{
+						await eventService.RemoveResult(eventId, activityId, resultId, cancellationToken);
 
-            return Ok();
-        }
-    }
+						return Ok();
+				}
+		}
 }
