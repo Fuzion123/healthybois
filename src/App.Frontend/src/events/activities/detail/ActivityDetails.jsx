@@ -8,7 +8,7 @@ import { Header } from "_components/Header";
 import { Settings } from "./Settings";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MenuItem from "@mui/material/MenuItem";
-import EditIcon from "@mui/icons-material/Edit";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
 export default ActivityDetails;
 
@@ -113,15 +113,23 @@ function ActivityDetails() {
         className="flex flex-row justify-between text-base/6"
         title={data.title}
         overwriteClickHandler={async () => {
-          await saveMutation.mutate(scores);
-
-          // history.navigate(`/events/${id}`);
+          history.navigate(`/events/${id}`);
         }}
         settings={
           <Settings>
-            <MenuItem disableRipple>
-              <EditIcon />
-              Edit
+            <MenuItem
+              disableRipple
+              onClick={async () => {
+                var result = window.confirm("Delete the item?");
+
+                if (result === true) {
+                  await deleteMutation.mutate();
+                  history.navigate(`/events/${id}`);
+                }
+              }}
+            >
+              <RestartAltIcon />
+              Reset scores
             </MenuItem>
             <MenuItem
               disableRipple
@@ -141,9 +149,7 @@ function ActivityDetails() {
         }
       ></Header>
 
-      <br></br>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10">
         {data.participants.map((p, i) => {
           return (
             <div key={p.participant.id} className="">
@@ -163,7 +169,7 @@ function ActivityDetails() {
 
       <button
         disabled={isProcessing}
-        className="mt-3 btn-primary"
+        className="mt-10 btn-primary"
         onClick={() => saveMutation.mutate(scores)}
       >
         {isProcessing ? (
@@ -172,7 +178,7 @@ function ActivityDetails() {
             <span className="font-medium">Processing...</span>
           </>
         ) : (
-          "Nice, save that! 😎"
+          "Nice, save that! 🍆🍑"
         )}
       </button>
     </div>

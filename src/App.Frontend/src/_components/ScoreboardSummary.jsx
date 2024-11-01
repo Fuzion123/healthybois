@@ -31,8 +31,6 @@ export default function ScoreboardSummary({ event }) {
     };
   });
 
-  //console.log(participants);
-
   const MultiLineChart = ({ activities, participants }) => {
     // Create a dataset for each participant
     const datasets = participants.map((participant) => ({
@@ -80,11 +78,15 @@ export default function ScoreboardSummary({ event }) {
     };
 
     return (
-      <div>
+      <div className="h-96">
         <Line data={chartData} options={chartOptions} />
       </div>
     );
   };
+
+  if (activities.length === 0) {
+    return <div></div>;
+  }
 
   return (
     <div>
