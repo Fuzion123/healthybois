@@ -237,7 +237,17 @@ namespace Domain.Events
 								throw new DomainException($"No Participant found on the event with that id");
 						}
 
-						return activity.AddOrUpdateResult(resultInputs);
+						var updated = activity.AddOrUpdateResult(resultInputs);
+
+						if (updated)
+						{
+								if (activity.Results.Count() == _participants.Count())
+								{
+										activity.SetCompleted(DateTime.Now);
+								}
+						}
+
+						return updated;
 				}
 
 				public bool RemoveActivityResult(int activityId, int resultId)

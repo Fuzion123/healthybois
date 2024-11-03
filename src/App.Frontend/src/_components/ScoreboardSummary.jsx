@@ -84,13 +84,13 @@ export default function ScoreboardSummary({ event }) {
     );
   };
 
-  if (activities.length === 0) {
-    return <div></div>;
+  if (event.activities.some((obj) => obj.results.length > 0)) {
+    return (
+      <div>
+        <MultiLineChart activities={activities} participants={participants} />
+      </div>
+    );
   }
 
-  return (
-    <div>
-      <MultiLineChart activities={activities} participants={participants} />
-    </div>
-  );
+  return <div></div>;
 }

@@ -76,7 +76,9 @@ function ActivityDetails() {
 
       setIsProcessing(true);
 
-      await resultapi.AddOrUpdateResult(id, activityId, scores);
+      var validScores = scores.filter((x) => x.score !== "");
+
+      await resultapi.AddOrUpdateResult(id, activityId, validScores);
     },
     {
       onSuccess: () => {
@@ -106,6 +108,9 @@ function ActivityDetails() {
         <span className="spinner-border spinner-border-lg align-center"></span>
       </div>
     );
+
+  console.log();
+  console.log(scores);
 
   return (
     <div className="">
@@ -168,7 +173,7 @@ function ActivityDetails() {
       </div>
 
       <button
-        disabled={isProcessing}
+        disabled={isProcessing || !scores.some((x) => x.score !== "")}
         className="mt-10 btn-primary"
         onClick={() => saveMutation.mutate(scores)}
       >

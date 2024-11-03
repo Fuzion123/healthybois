@@ -6,9 +6,10 @@ import ProgressBar from "_components/ProgressBar";
 import OldActivityList from "../activities/list/OldActivityList";
 // import ScoreBoard from '_components/Scoreboard';
 import { history } from "_helpers";
-import ScoreboardSummary from "_components/ScoreboardSummary";
+// import ScoreboardSummary from "_components/ScoreboardSummary";
 import { Header } from "_components/Header";
 import { Settings } from "events/detail/Settings";
+import ScoreBoardv2 from "_components/Scoreboardv2";
 
 export default EventDetails;
 
@@ -45,7 +46,7 @@ function EventDetails() {
             <img
               src={data.eventPictureUrl}
               alt="yo"
-              className="object-cover w-full h-52 md:h-72 rounded-t-lg"
+              className="object-cover w-full h-40 md:h-72 rounded-t-lg"
             />
           </div>
 
@@ -54,7 +55,7 @@ function EventDetails() {
           </div>
 
           <div className="my-4">
-            <ScoreboardSummary event={data}></ScoreboardSummary>
+            <ScoreBoardv2 eventId={data.id}></ScoreBoardv2>
           </div>
 
           <OldActivityList activities={data.activities} />
