@@ -32,12 +32,12 @@ function AddActivity() {
   const mutation = useMutation(
     async (data) => {
       setIsLoading(true);
-      var response = await activityapi.create(id, data);
+      await activityapi.create(id, data);
       setIsLoading(false);
       queryClient.invalidateQueries({
         queryKey: [`/getById/${id}`],
       });
-      history.navigate(`events/${id}/${response.id}`);
+      history.navigate(`events/${id}`);
     },
     {
       onError: (error) => {

@@ -456,16 +456,24 @@ namespace Service.Events
 
 						var usersById = users.ToDictionary(x => x.Id);
 
-						var results = await eventRepository.GetAllResultsForEvent(eventId, cancellationToken);
+						var finishedActivities = @event.Activities.Where(x => x.CompletedOn != null);
 
-						var totalScoreByUserId = results
+						if (finishedActivities.Count() == 0)
+						{
+								return new ScoreboardSummaryDto()
+								{
+										EventId = eventId,
+										Results = new List<ScoreboardSummaryResultDto>()
+								};
+						}
+
+						var totalScoreByUserId = finishedActivities.SelectMany(x => x.Results)
 								.GroupBy(x => x.ParticipantId)
 								.ToDictionary(x => x.Key, value => value.Sum(u => u.Score));
 
 						var participantResults = eventMapper.MapParticipantResults(@event);
 
 						var participantResultsByParticipantId = participantResults.ToDictionary(x => x.Id);
-
 
 						return new ScoreboardSummaryDto()
 						{

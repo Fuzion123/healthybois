@@ -91,7 +91,6 @@ function ActivityDetails() {
           queryKey: [`/activityapi.getById/${id}/${activityId}`],
         });
 
-        console.log("navigating back");
         history.navigate(`/events/${id}`);
       },
       onError: (err) => {
@@ -108,9 +107,6 @@ function ActivityDetails() {
         <span className="spinner-border spinner-border-lg align-center"></span>
       </div>
     );
-
-  console.log();
-  console.log(scores);
 
   return (
     <div className="">
@@ -154,7 +150,7 @@ function ActivityDetails() {
         }
       ></Header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-10">
         {data.participants.map((p, i) => {
           return (
             <div key={p.participant.id} className="">
