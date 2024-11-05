@@ -164,6 +164,7 @@ namespace Service.Events.Mappers
 						{
 								Id = participantResult.Id,
 								Email = user.Email,
+								UserName = user.UserName,
 								FirstName = user.FirstName,
 								LastName = user.LastName,
 								UserId = user.Id,

@@ -1,5 +1,5 @@
 function MapXLabel(result) {
-  var firstName = result.participant.firstName;
+  var firstName = result.participant.userName;
   var placement = result.participant.eventPlacement;
 
   var icon = "";

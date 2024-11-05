@@ -246,38 +246,6 @@ namespace Service.Events
 						return activityMapper.MapActivity(activity);
 				}
 
-				public async Task<ActivityListingDto> MarkComplete(int eventId, int activityId, CancellationToken cancellationToken)
-				{
-						var Event = await eventRepository.GetById(eventId, cancellationToken);
-
-						var activity = Event.Activities.FirstOrDefault(x => x.Id == activityId);
-
-						if (activity == null)
-								return null;
-
-						activity.SetCompleted(DateTime.Now);
-
-						await eventRepository.SaveChangesAsync(cancellationToken);
-
-						return activityMapper.MapActivity(activity);
-				}
-
-				public async Task<ActivityListingDto> MarkUnComplete(int eventId, int activityId, CancellationToken cancellationToken)
-				{
-						var Event = await eventRepository.GetById(eventId, cancellationToken);
-
-						var activity = Event.Activities.FirstOrDefault(x => x.Id == activityId);
-
-						if (activity == null)
-								return null;
-
-						activity.SetUnCompleted();
-
-						await eventRepository.SaveChangesAsync(cancellationToken);
-
-						return activityMapper.MapActivity(activity);
-				}
-
 				public async Task<EventDetailDto> RemoveActivity(int eventId, int activityId, int userId, CancellationToken cancellationToken)
 				{
 						var @event = await eventRepository.GetById(eventId, cancellationToken);

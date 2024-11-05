@@ -12,7 +12,7 @@ export default function ActivityResult(props) {
       </div>
 
       <div className="flex-col w-full basis-3/4">
-        <div>{participant.firstName}</div>
+        <div>{participant.userName}</div>
         <input
           id={participant.id + "resultId"}
           defaultValue={result?.score}

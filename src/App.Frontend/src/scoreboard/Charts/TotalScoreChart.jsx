@@ -18,11 +18,20 @@ export default function TotalScoreChart({ series }) {
       textAnchor: "end",
       style: {
         colors: ["#333"],
+        fontFamily: "Grandstander",
       },
     },
     yaxis: {
       labels: {
         show: true,
+        style: {
+          fontFamily: "Grandstander",
+        },
+      },
+    },
+    xaxis: {
+      labels: {
+        show: false,
       },
     },
   };
