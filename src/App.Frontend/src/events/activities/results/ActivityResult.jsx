@@ -7,11 +7,11 @@ export default function ActivityResult(props) {
         <img
           src={participant.profilePictureUrl}
           alt={`${participant.firstName}'s Profile`}
-          className="rounded-full h-24"
+          className="rounded-full h-20"
         />
       </div>
 
-      <div className="flex-col w-full ml-4 basis-3/4">
+      <div className="flex-col w-full basis-3/4">
         <div>{participant.firstName}</div>
         <input
           id={participant.id + "resultId"}

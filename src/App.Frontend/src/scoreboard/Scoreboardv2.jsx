@@ -1,10 +1,16 @@
 import { Scoreboardapi } from "_api_v2";
 import { useQuery } from "react-query";
-import Chart from "react-apexcharts";
 import { useState } from "react";
 import { useEffect } from "react";
+import TotalScoreChart from "./Charts/TotalScoreChart";
+import { ScoreboardHelper } from "./ScoreboardHelper";
+import Dropdown from "_components/Dropdown";
+
+const defaultOption = "Total scores";
 
 export default function ScoreBoardv2({ eventId }) {
+  const [options, setOptions] = useState([...defaultOption]);
+  const [currentOption, setCurrentOption] = useState(defaultOption);
   const [series, setSeries] = useState([
     {
       name: "Scores",
@@ -15,7 +21,16 @@ export default function ScoreBoardv2({ eventId }) {
   const { refetch } = useQuery(
     `scoreboard/${eventId}`,
     async () => {
-      return await Scoreboardapi.getByEventId(eventId);
+      var limitedToActivities = [];
+
+      if (currentOption !== defaultOption) {
+        limitedToActivities.push(currentOption);
+      }
+
+      return await Scoreboardapi.getByEventId(
+        eventId,
+        limitedToActivities.join()
+      );
     },
     {
       onSuccess: (data) => {
@@ -26,7 +41,7 @@ export default function ScoreBoardv2({ eventId }) {
         const seriesData = data.results
           .map((result) => {
             return {
-              x: MapXLabel(result),
+              x: ScoreboardHelper.MapXLabel(result),
               y: result.totalScoreSum,
             };
           })
@@ -40,60 +55,24 @@ export default function ScoreBoardv2({ eventId }) {
             data: seriesData,
           },
         ]);
+
+        setOptions([defaultOption, ...data.activityNames]);
       },
     }
   );
 
   useEffect(() => {
     refetch();
-  }, [refetch]);
-
-  const options = {
-    plotOptions: {
-      bar: {
-        horizontal: true,
-        dataLabels: {
-          position: "top",
-        },
-      },
-    },
-    noData: {
-      text: "Loading...",
-    },
-    dataLabels: {
-      enabled: true,
-      textAnchor: "end",
-      style: {
-        colors: ["#333"],
-      },
-    },
-    yaxis: {
-      labels: {
-        show: true,
-      },
-    },
-  };
-
-  function MapXLabel(result) {
-    var firstName = result.participant.firstName;
-    var placement = result.participant.eventPlacement;
-
-    var icon = "";
-
-    if (placement === 1) {
-      icon = "🥇";
-    } else if (placement === 2) {
-      icon = "🥈";
-    } else if (placement === 3) {
-      icon = "🥉";
-    }
-
-    return `${firstName} ${icon}`;
-  }
+  }, [refetch, currentOption]);
 
   return (
     <div id="scoreboard-chart-container">
-      <Chart options={options} series={series} type="bar"></Chart>
+      <Dropdown
+        currentOption={currentOption}
+        setCurrentOption={setCurrentOption}
+        options={options}
+      ></Dropdown>
+      <TotalScoreChart series={series} type="bar"></TotalScoreChart>
     </div>
   );
 }

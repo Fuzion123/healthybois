@@ -98,9 +98,9 @@ namespace Service.Events.Mappers
 						return leaders;
 				}
 
-				public List<ParticipantResult> MapParticipantResults(Event @event)
+				public List<ParticipantResult> MapParticipantResults(Event @event, List<string> limitedToActivities = null)
 				{
-						var orderGroupingOfScores = @event.Activities.Where(x => x.CompletedOn != null)
+						var orderGroupingOfScores = @event.Activities.Where(x => x.CompletedOn != null && (limitedToActivities != null && limitedToActivities.Any() ? limitedToActivities.Contains(x.Title) : true))
 								.SelectMany(a => a.Results.Select(r =>
 								{
 										return new

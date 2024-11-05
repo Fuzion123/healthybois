@@ -150,7 +150,7 @@ function ActivityDetails() {
         }
       ></Header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
         {data.participants.map((p, i) => {
           return (
             <div key={p.participant.id} className="">
@@ -170,7 +170,7 @@ function ActivityDetails() {
 
       <button
         disabled={isProcessing || !scores.some((x) => x.score !== "")}
-        className="mt-10 btn-primary"
+        className="mt-4 btn-primary"
         onClick={() => saveMutation.mutate(scores)}
       >
         {isProcessing ? (

@@ -1,15 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { eventapi } from "_api";
-// import { date } from "_helpers";
 import ProgressBar from "_components/ProgressBar";
 import OldActivityList from "../activities/list/OldActivityList";
-// import ScoreBoard from '_components/Scoreboard';
 import { history } from "_helpers";
-// import ScoreboardSummary from "_components/ScoreboardSummary";
 import { Header } from "_components/Header";
 import { Settings } from "events/detail/Settings";
-import ScoreBoardv2 from "_components/Scoreboardv2";
+import ScoreBoardv2 from "scoreboard/Scoreboardv2";
 
 export default EventDetails;
 

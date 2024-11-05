@@ -440,7 +440,7 @@ namespace Service.Events
 						return results.Select(x => resultMapper.MapResult(eventId, x)).ToList();
 				}
 
-				public async Task<ScoreboardSummaryDto> GetScoreboardSummary(int eventId, int currentUserId, CancellationToken cancellationToken)
+				public async Task<ScoreboardSummaryDto> GetScoreboardSummary(int eventId, int currentUserId, List<string> limitedToActivities, CancellationToken cancellationToken)
 				{
 						var @event = await eventRepository.GetById(eventId, cancellationToken);
 
@@ -457,13 +457,20 @@ namespace Service.Events
 						var usersById = users.ToDictionary(x => x.Id);
 
 						var finishedActivities = @event.Activities.Where(x => x.CompletedOn != null);
+						var allFinishedActivityNames = finishedActivities.Select(x => x.Title).ToList();
+
+						if (limitedToActivities.Any())
+						{
+								finishedActivities = finishedActivities.Where(x => limitedToActivities.Contains(x.Title));
+						}
 
 						if (finishedActivities.Count() == 0)
 						{
 								return new ScoreboardSummaryDto()
 								{
 										EventId = eventId,
-										Results = new List<ScoreboardSummaryResultDto>()
+										Results = new List<ScoreboardSummaryResultDto>(),
+										ActivityNames = new List<string>()
 								};
 						}
 
@@ -471,13 +478,14 @@ namespace Service.Events
 								.GroupBy(x => x.ParticipantId)
 								.ToDictionary(x => x.Key, value => value.Sum(u => u.Score));
 
-						var participantResults = eventMapper.MapParticipantResults(@event);
+						var participantResults = eventMapper.MapParticipantResults(@event, limitedToActivities);
 
 						var participantResultsByParticipantId = participantResults.ToDictionary(x => x.Id);
 
 						return new ScoreboardSummaryDto()
 						{
 								EventId = eventId,
+								ActivityNames = allFinishedActivityNames,
 								Results = @event.Participants.Select(x =>
 								{
 										double score = 0;
