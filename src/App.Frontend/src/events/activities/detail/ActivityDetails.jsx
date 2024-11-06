@@ -60,6 +60,10 @@ function ActivityDetails() {
         queryClient.invalidateQueries({
           queryKey: [`scoreboard/${id}`],
         });
+
+        queryClient.invalidateQueries({
+          queryKey: [`/activities/${id}}/eventlistingviewmodel`],
+        });
       },
       onError: (err) => {
         setIsProcessing(false);

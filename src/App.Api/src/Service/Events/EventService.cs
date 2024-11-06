@@ -294,19 +294,7 @@ namespace Service.Events
 				{
 						var activities = await eventRepository.GetAllActivities(eventId, cancellationToken);
 
-						return activities.Select(activity =>
-						{
-								return new ActivityListingDto()
-								{
-										CreatedAt = activity.CreatedAt,
-										UpdatedAt = activity.UpdatedAt,
-										EventId = activity.EventId,
-										Id = activity.Id,
-										OwnerUserId = activity.OwnerUserId,
-										Title = activity.Title,
-										Results = activity.Results.Select(x => resultMapper.MapResult(eventId, x)).ToList()
-								};
-						}).ToList();
+						return activities.Select(activity => activityMapper.MapActivity(activity)).ToList();
 				}
 
 				public async Task<ActivityDetailsDto> GetActivityById(int eventId, int activityId, CancellationToken cancellationToken)

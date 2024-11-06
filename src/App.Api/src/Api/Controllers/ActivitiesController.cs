@@ -91,5 +91,67 @@ namespace WebApi.Controllers
 
 						return Ok();
 				}
+
+				[HttpGet("{eventId}/eventlistingviewmodel")]
+				public async Task<IActionResult> GetAllForEventListingViewmodel(int eventId, CancellationToken cancellationToken)
+				{
+						var activities = await eventService.GetAllActivities(eventId, cancellationToken).ConfigureAwait(false);
+						var participants = await eventService.GetAllParticipants(eventId, cancellationToken);
+						var participantsById = participants.ToDictionary(x => x.Id);
+
+						var mappedActivities = activities.Select(activity =>
+						{
+								int? winnerParticipantId = activity.Completed ? activity.Results.OrderByDescending(x => x.Score).First().ParticipantId : null;
+
+								return new
+								{
+										activity.Id,
+										activity.Title,
+										activity.Completed,
+										CompletedOnPrettyText = CompletedOnToPrettyText(activity.CompletedOn),
+										Winner = winnerParticipantId.HasValue ? new
+										{
+												participantsById[winnerParticipantId.Value].FirstName,
+												participantsById[winnerParticipantId.Value].LastName,
+												participantsById[winnerParticipantId.Value].ProfilePictureUrl
+										} : null
+								};
+						});
+
+						return Ok(mappedActivities);
+				}
+
+				private string CompletedOnToPrettyText(DateTime? completedOn)
+				{
+						if (!completedOn.HasValue)
+								return "";
+
+						var difference = DateTime.Now - completedOn.Value;
+
+						if (difference.Days > 3)
+						{
+								return completedOn.Value.ToString();
+						}
+						else if (difference.Days > 0 && difference.Days <= 3)
+						{
+								return $"completed {difference.Days} day{(difference.Days == 1 ? "" : "s")} ago";
+						}
+						else if (difference.Hours > 0)
+						{
+								return $"completed {difference.Hours} hour{(difference.Hours == 1 ? "" : "s")} ago";
+						}
+						else if (difference.Minutes > 0)
+						{
+								return $"completed {difference.Minutes} minute{(difference.Minutes == 1 ? "" : "s")} ago";
+						}
+						else if (difference.Seconds > 10)
+						{
+								return $"completed {difference.Seconds} second{(difference.Seconds == 1 ? "" : "s")} ago";
+						}
+						else
+						{
+								return $"completed a moment ago";
+						}
+				}
 		}
 }

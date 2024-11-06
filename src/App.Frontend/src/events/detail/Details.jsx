@@ -55,7 +55,7 @@ function EventDetails() {
             <ScoreBoardv2 eventId={data.id}></ScoreBoardv2>
           </div>
 
-          <ActivityList activities={data.activities} />
+          <ActivityList eventId={id} />
         </>
       )}
     </div>

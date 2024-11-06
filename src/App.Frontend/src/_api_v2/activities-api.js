@@ -22,10 +22,15 @@ const deleteById = async (eventId, activityId) => {
   return await fetchWrapper.delete(`${baseUrl}/${eventId}/${activityId}`);
 };
 
+const getAllForEventListingViewmodel = async (eventId) => {
+  return await fetchWrapper.get(`${baseUrl}/${eventId}/eventlistingviewmodel`);
+};
+
 export const activityapi = {
   getById: getById,
   create: create,
   update: update,
   getAllForEvent: getAllForEvent,
   deleteById: deleteById,
+  getAllForEventListingViewmodel: getAllForEventListingViewmodel,
 };

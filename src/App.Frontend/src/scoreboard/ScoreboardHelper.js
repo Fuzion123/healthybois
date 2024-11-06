@@ -5,14 +5,14 @@ function MapXLabel(result) {
   var icon = "";
 
   if (placement === 1) {
-    icon = "🥇";
+    icon = "🏆";
   } else if (placement === 2) {
     icon = "🥈";
   } else if (placement === 3) {
     icon = "🥉";
   }
 
-  return `${firstName} ${icon}`;
+  return `${icon} ${firstName}`;
 }
 
 export const ScoreboardHelper = {

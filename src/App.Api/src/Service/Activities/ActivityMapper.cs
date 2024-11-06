@@ -30,7 +30,7 @@ namespace Service.Activities
 								OwnerUserId = activity.OwnerUserId,
 								UpdatedAt = activity.UpdatedAt,
 								CompletedOn = activity.CompletedOn,
-								Results = activity.Results.Select(y => resultMapper.MapResult(activity.EventId, y)).ToList(),
+								Results = activity.Results.Select(y => resultMapper.MapResult(activity.EventId, y)).ToList()
 						};
 				}
 
